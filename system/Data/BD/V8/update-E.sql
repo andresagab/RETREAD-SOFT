@@ -1,0 +1,4 @@
+--FIle create 10-09-2018--
+ALTER TABLE llanta
+  ALTER COLUMN rp DROP DEFAULT;
+

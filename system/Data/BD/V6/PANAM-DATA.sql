@@ -1,0 +1,22 @@
+insert into rol (nombre, estado, fechaRegistro) values ('Administrador', 't', now());
+insert into usuario (usuario, clave, idrol, estado, fechaRegistro) values ('admin', md5('12345'), 1, 't', now());
+
+INSERT INTO opcion VALUES (1, NULL, '<span class="fa fa-gear"></span>', NULL, 'Configuracion', '2018-02-06 18:08:42');
+INSERT INTO opcion VALUES (2, NULL, '<span class="fa fa-list"></span>', NULL, 'Informes', '2018-02-06 18:09:01');
+INSERT INTO opcion VALUES (3, 2, 'Bodega', 'system/Pages/informeBodega.php', '', '2018-02-06 18:11:49');
+INSERT INTO opcion VALUES (4, 1, 'Cargos empleado', 'system/Pages/cargosEmpleado.php', '', '2018-02-06 18:12:09');
+INSERT INTO opcion VALUES (5, 1, 'Gravados de llanta', 'system/Pages/gravadosLlanta.php', '', '2018-02-06 18:12:23');
+INSERT INTO opcion VALUES (6, 1, 'Puestos de trabajo', 'system/Pages/puestosTrabajo.php', '', '2018-02-06 18:12:40');
+INSERT INTO opcion VALUES (7, 1, 'Unidades de medida', 'system/Pages/unidadesMedida.php', '', '2018-02-06 18:12:51');
+INSERT INTO opcion VALUES (8, 1, 'Presentaciones de producto', 'system/Pages/presentacionesProducto.php', '', '2018-02-06 18:13:00');
+INSERT INTO opcion VALUES (9, 1, 'Marcas de llanta', 'system/Pages/marcasLlantas.php', '', '2018-02-06 18:13:30');
+INSERT INTO opcion VALUES (10, 1, 'Marcas de vehiculos', 'system/Pages/marcasVehiculo.php', '', '2018-02-06 18:13:48');
+INSERT INTO opcion VALUES (11, 1, 'Tipos de llanta', 'system/Pages/tiposLlantas.php', '', '2018-02-06 18:14:10');
+INSERT INTO opcion VALUES (12, 1, 'Rechazos', 'system/Pages/rechazos.php', '', '2018-02-06 18:14:19');
+INSERT INTO opcion VALUES (13, 1, 'Tipos de servicio', 'system/Pages/tiposServicio.php', '', '2018-02-06 18:14:31');
+INSERT INTO opcion VALUES (14, 1, 'Dimensiones de llantas', 'system/Pages/dimensionesLlanta.php', '', '2018-02-06 18:14:50');
+INSERT INTO opcion VALUES (15, NULL, 'Funcionarios', 'system/Pages/empleados.php', '', '2018-02-06 18:15:14');
+INSERT INTO opcion VALUES (16, NULL, 'Clientes', 'system/Pages/clientes.php', '', '2018-02-06 18:15:27');
+INSERT INTO opcion VALUES (17, NULL, 'Kardex', 'system/Pages/categoriasProducto.php', '', '2018-02-06 18:15:42');
+INSERT INTO opcion VALUES (19, 2, 'Rencauche', 'system/Pages/informeRencauche.php', '', '2018-02-21 22:29:10');
+INSERT INTO opcion VALUES (18, NULL, 'Ordenes de servicio', 'system/Pages/ordenesServicio.php', '', '2018-02-06 18:15:58');

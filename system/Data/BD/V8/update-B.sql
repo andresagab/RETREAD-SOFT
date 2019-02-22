@@ -1,0 +1,1 @@
+ALTER TABLE public.servicio ADD CONSTRAINT "servicio_numeroFactura_unique_key" UNIQUE (numerofactura);
