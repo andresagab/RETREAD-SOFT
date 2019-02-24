@@ -12,7 +12,7 @@
 /**
  * Observaciones de la clase Referencia_Tipo_Llanta:
  *
- * Define las propiedades id, referencia, observaciones, fechaRegistro las cuales permite identificar las marcas de llanta que se manejaran en el sistema de informacion.
+ * Define las propiedades id, idTipoLlanta, idMarcaLlanta, referencia, observaciones, fechaRegistro las cuales permite identificar las marcas de llanta que se manejaran en el sistema de informacion.
  *
  * @author Andres Geovanny Angulo Botina <Sugerencia a andrescabj981@gmail.com>
  *
@@ -22,6 +22,7 @@ class Referencia_Tipo_Llanta {
     //Propiedades
     private $id;
     private $idTipoLlanta;
+    private $idMarcaLlanta;
     private $referencia;
     private $observaciones;
     private $fechaRegistro;
@@ -36,7 +37,7 @@ class Referencia_Tipo_Llanta {
                 foreach ($campo as $key => $value) $this->$key=$value;
                 $this->cargarAtributos($campo);
             } else {
-                $sql="select id, idTipoLlanta, referencia, observaciones, fechaRegistro from {$P}referencia_tipo_llanta where $campo=$valor $filtro $orden";
+                $sql="select id, idTipoLlanta, idMarcaLlanta, referencia, observaciones, fechaRegistro from {$P}referencia_tipo_llanta where $campo=$valor $filtro $orden";
                 $resultado=Conector::ejecutarQuery($sql, null);
                 if (count($resultado)>0) {
                     foreach ($resultado[0] as $key => $value) $this->$key=$value;
@@ -49,6 +50,7 @@ class Referencia_Tipo_Llanta {
 
     private function cargarAtributos($arreglo){
     	$this->idTipoLlanta=$arreglo['idtipollanta'];
+    	$this->idMarcaLlanta=$arreglo['idmarcallanta'];
     	$this->fechaRegistro=$arreglo['fecharegistro'];
     }
     
@@ -82,6 +84,11 @@ class Referencia_Tipo_Llanta {
         else return new Tipo_Llanta (null, null, null, null);
     }
 
+    function getMarcaLlanta() {
+        if ($this->idMarcaLlanta!=null) return new Marca_Llanta('id', $this->idMarcaLlanta, null, null);
+        else return new Marca_Llanta(null, null, null, null);
+    }
+
     function setId($id) {
         $this->id = $id;
     }
@@ -102,15 +109,31 @@ class Referencia_Tipo_Llanta {
         $this->fechaRegistro = $fechaRegistro;
     }
 
+    /**
+     * @return int id - primary key
+     */
+    public function getIdMarcaLlanta()
+    {
+        return $this->idMarcaLlanta;
+    }
+
+    /**
+     * @param int id - primary key $idMarcaLlanta
+     */
+    public function setIdMarcaLlanta($idMarcaLlanta)
+    {
+        $this->idMarcaLlanta = $idMarcaLlanta;
+    }
+
     public function grabar() {
         $P='';
-        $sql="insert into {$P}referencia_tipo_llanta (idTipoLlanta, referencia, observaciones, fechaRegistro) values ($this->idTipoLlanta, '$this->referencia', '$this->observaciones', '$this->fechaRegistro')";
+        $sql="insert into {$P}referencia_tipo_llanta (idTipoLlanta, idMarcaLlanta, referencia, observaciones, fechaRegistro) values ($this->idTipoLlanta, $this->idMarcaLlanta, '$this->referencia', '$this->observaciones', '$this->fechaRegistro')";
         Conector::ejecutarQuery($sql, null);
     }
 
     public function modificar() {
         $P='';
-        $sql="update {$P}referencia_tipo_llanta set idTipoLlanta=$this->idTipoLlanta, referencia='$this->referencia', observaciones='$this->observaciones' where id=$this->id";
+        $sql="update {$P}referencia_tipo_llanta set idTipoLlanta=$this->idTipoLlanta, idMarcaLlanta=$this->idMarcaLlanta, referencia='$this->referencia', observaciones='$this->observaciones' where id=$this->id";
         Conector::ejecutarQuery($sql, null);
     }
 
@@ -123,7 +146,7 @@ class Referencia_Tipo_Llanta {
     public static function getLista($filtro, $orden) {
         $P='';
         if ($filtro!=null) $filtro=" where $filtro";
-        $sql="select id, idTipoLlanta, referencia, observaciones, fechaRegistro from {$P}referencia_tipo_llanta $filtro $orden";
+        $sql="select id, idTipoLlanta, idMarcaLlanta, referencia, observaciones, fechaRegistro from {$P}referencia_tipo_llanta $filtro $orden";
         return Conector::ejecutarQuery($sql, null);
     }
     
@@ -242,6 +265,36 @@ class Referencia_Tipo_Llanta {
             }
         }
         return $status;
+    }
+
+    public static function getDataJsonSQL($idTipoLlanta) {
+        $JSON = array();
+        if ($idTipoLlanta!=null) {
+            $sql = "select ref.id, ref.idTipoLlanta, ref.idMarcaLlanta, ref.referencia, ref.observaciones, ref.fecharegistro,
+                       tip.nombre as tipoLlanta, tip.descripcion as tipoLlantaDescripcion, tip.fecharegistro as tipoLlantafechaRegistro
+                from referencia_tipo_llanta as ref, tipo_llanta as tip
+                where ref.idtipollanta=$idTipoLlanta and tip.id=ref.idtipollanta order by ref.referencia";
+            $result = Conector::ejecutarQuery($sql, null);
+            for ($i=0; $i<count($result); $i++) {
+                $data = array();
+                foreach ($result[$i] as $key => $val) {
+                    $data["$key"] = $val;
+                    ${$key} = $val;
+                }
+                $object = new Referencia_Tipo_Llanta(null, null, null, null);
+                $object->setId($id);
+                $data["numeroMedidas"] = $object->getNumeroMedidas();
+                if (@$idmarcallanta!=null) {
+                    $sql = "select nombre as marcallanta from marca_llanta where id=$idmarcallanta limit 1";
+                    $marcaLlanta = Conector::ejecutarQuery($sql, null);
+                    if (count($marcaLlanta)>0) {
+                        foreach ($marcaLlanta[0] as $key => $val) $data["$key"] = $val;
+                    } else $data["marcallanta"] = null;
+                } else $data["marcallanta"] = null;
+                array_push($JSON, $data);
+            }
+        }
+        return json_encode($JSON, JSON_UNESCAPED_UNICODE);
     }
 
 }

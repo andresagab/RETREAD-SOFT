@@ -273,4 +273,18 @@ and percli.identificacion=cl.identificacion
 and um.id=pr.idunidadmedida
 and pp.id=pr.idpresentacion;
 
+--2019-02-23 20:34
+select ref.id, ref.idTipoLlanta, ref.idMarcaLlanta, ref.referencia, ref.observaciones, ref.fecharegistro,
+       tip.nombre as tipoLlanta, tip.descripcion as tipoLlantaDescripcion, tip.fecharegistro as tipoLlantafechaRegistro,
+       mar.nombre as marcaLlanta, mar.descripcion as marcaLlantaDescripcion, mar.fecharegistro as marcaLlantafechaRegistro
+from referencia_tipo_llanta as ref, tipo_llanta as tip, marca_llanta as mar
+where tip.id=ref.idtipollanta
+and mar.id=ref.idMarcaLlanta;
+
+select ref.id, ref.idTipoLlanta, ref.idMarcaLlanta, ref.referencia, ref.observaciones, ref.fecharegistro,
+       tip.nombre as tipoLlanta, tip.descripcion as tipoLlantaDescripcion, tip.fecharegistro as tipoLlantafechaRegistro
+from referencia_tipo_llanta as ref, tipo_llanta as tip
+where tip.id=ref.idtipollanta
+--END 2019-02-23 20:34
+
 --END 2019-02-05 23:50

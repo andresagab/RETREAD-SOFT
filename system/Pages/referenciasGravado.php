@@ -44,6 +44,7 @@
                             <thead class="text text-uppercase">
                                 <tr class="active">
                                     <th class="mdl-data-table__cell--non-numeric" ng-click="orden='referencia'">Referencia</th>
+                                    <th class="mdl-data-table__cell--non-numeric" ng-click="orden='referencia'">Marca</th>
                                     <th ng-click="orden='numeroMedidas'">N° medidas</th>
                                     <th class="mdl-data-table__cell--non-numeric" ng-click="orden='observaciones'">Observaciones</th>
                                     <th class="mdl-data-table__cell--non-numeric">Acciones</th>
@@ -52,6 +53,7 @@
                             <tbody>
                                 <tr ng-repeat="objeto in objetos | filter: buscar | orderBy: orden">
                                     <td class="mdl-data-table__cell--non-numeric">{{ objeto.referencia }}</td>
+                                    <td class="mdl-data-table__cell--non-numeric">{{ objeto.marcallanta }}</td>
                                     <td>{{ objeto.numeroMedidas }}</td>
                                     <td class="mdl-data-table__cell--non-numeric">{{ objeto.observaciones }}</td>
                                     <td class="mdl-data-table__cell--non-numeric">

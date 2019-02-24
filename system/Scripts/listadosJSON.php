@@ -80,6 +80,9 @@ switch ($_GET['metodo']) {
 	case 'referenciasTipoLlantaJSON':
             echo Referencia_Tipo_Llanta::getObjetosJSON("idTipoLlanta={$_GET['idTipoLlanta']}", 'order by fecharegistro desc');
             break;
+    case 'referenciasTipoLlantaJSONSQL':
+        echo Referencia_Tipo_Llanta::getDataJsonSQL($_GET['idTipoLlanta']);
+        break;
 	case 'dimensionesReferenciaJSON':
             echo Dimension_Referencia::getObjetosJSON("idReferenciaTipoLlanta={$_GET['idReferencia']}", 'order by fecharegistro desc');
             break;

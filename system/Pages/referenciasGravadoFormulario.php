@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__FILE__).'/../Clases/Tipo_Llanta.php';
 require_once dirname(__FILE__).'/../Clases/Referencia_Tipo_Llanta.php';
+require_once dirname(__FILE__).'/../Clases/Marca_Llanta.php';
 if (isset($_GET['id'])) {
     $objeto=new Referencia_Tipo_Llanta('id', $_GET['id'], null, null);
     $accion="Modificar";
@@ -10,6 +11,7 @@ if (isset($_GET['id'])) {
     $accion="Adicionar";
 }
 $tipoLlanta=$objeto->getTipoLlanta();
+$marcaLlanta = $objeto->getMarcaLlanta();
 ?>
 <div class="col-md-12">
     <div class="col-md-3" ></div>
@@ -27,6 +29,13 @@ $tipoLlanta=$objeto->getTipoLlanta();
                         <div class="input-group">
                             <span class="input-group-addon">* Referencia:</span>
                             <input type="text" class="form-control has-primary input-sm" id="referencia" name="referencia" value="<?= rtrim($objeto->getReferencia())?>" placeholder="Ejemplo: IDE2" maxlength="15" required=""/>
+                            <div class="mdl-tooltip" for="referencia">Este campo es obligatorio</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon">* Marca:</span>
+                            <select class="form-control has-success" name="idMarcaLlanta"><?= Marca_Llanta::getDatosEnOptions(null, "order by nombre asc", $marcaLlanta->getId()) ?></select>
                             <div class="mdl-tooltip" for="referencia">Este campo es obligatorio</div>
                         </div>
                     </div>

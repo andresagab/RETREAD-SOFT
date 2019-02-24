@@ -1,12 +1,14 @@
 <?php
 require_once dirname(__FILE__).'/../Clases/Tipo_Llanta.php';
 require_once dirname(__FILE__).'/../Clases/Referencia_Tipo_Llanta.php';
+require_once dirname(__FILE__).'/../Clases/Marca_Llanta.php';
 foreach ($_POST as $key => $value) ${$key}=$value;
 foreach ($_GET as $key => $value) ${$key}=$value;
 switch ($accion){
     case 'Adicionar':
         $objeto=new Referencia_Tipo_Llanta(null, null, null, null);
         $objeto->setIdTipoLlanta($idGravadoLlanta);
+        $objeto->setIdMarcaLlanta($idMarcaLlanta);
         $objeto->setReferencia($referencia);
         $objeto->setObservaciones($observaciones);
         $objeto->setFechaRegistro(date("Y-m-d H:i:s"));
@@ -15,6 +17,7 @@ switch ($accion){
     case 'Modificar':
         $objeto=new Referencia_Tipo_Llanta('id', $id, null, null);
         $objeto->setIdTipoLlanta($idGravadoLlanta);
+        $objeto->setIdMarcaLlanta($idMarcaLlanta);
         $objeto->setReferencia($referencia);
         $objeto->setObservaciones($observaciones);
         $objeto->setFechaRegistro(date("Y-m-d H:i:s"));
