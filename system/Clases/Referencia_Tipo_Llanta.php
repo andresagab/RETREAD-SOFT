@@ -267,13 +267,13 @@ class Referencia_Tipo_Llanta {
         return $status;
     }
 
-    public static function getDataJsonSQL($idTipoLlanta) {
+    public static function getDataJsonSQL($idTipoLlanta, $filter = null, $extras = true) {
         $JSON = array();
         if ($idTipoLlanta!=null) {
             $sql = "select ref.id, ref.idTipoLlanta, ref.idMarcaLlanta, ref.referencia, ref.observaciones, ref.fecharegistro,
                        tip.nombre as tipoLlanta, tip.descripcion as tipoLlantaDescripcion, tip.fecharegistro as tipoLlantafechaRegistro
                 from referencia_tipo_llanta as ref, tipo_llanta as tip
-                where ref.idtipollanta=$idTipoLlanta and tip.id=ref.idtipollanta order by ref.referencia";
+                where ref.idtipollanta=$idTipoLlanta and tip.id=ref.idtipollanta $filter order by ref.referencia";
             $result = Conector::ejecutarQuery($sql, null);
             for ($i=0; $i<count($result); $i++) {
                 $data = array();
@@ -283,7 +283,7 @@ class Referencia_Tipo_Llanta {
                 }
                 $object = new Referencia_Tipo_Llanta(null, null, null, null);
                 $object->setId($id);
-                $data["numeroMedidas"] = $object->getNumeroMedidas();
+                if (settype($extras, 'boolean')) $data["numeroMedidas"] = $object->getNumeroMedidas();
                 if (@$idmarcallanta!=null) {
                     $sql = "select nombre as marcallanta from marca_llanta where id=$idmarcallanta limit 1";
                     $marcaLlanta = Conector::ejecutarQuery($sql, null);

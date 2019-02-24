@@ -151,11 +151,6 @@ else {
                                 <div class="input-group">
                                     <span class="input-group-addon">* Serie:</span>
                                     <input class="form-control has-primary" id="txtSerie" name="serie" type="number" ng-model="llanta.serie" ng-change="buscarSerieLlanta(llanta.serie)" min="1" required="">
-                                    <!--<span class="input-group-btn">
-                                        <button class="input-group btn btn-warning" id="btnBuscarSerie" type="button" ng-click="buscarSerieLlanta(llanta.serie);">
-                                            <span class="fa fa-search input-group"></span>
-                                        </button>
-                                    </span>-->
                                 </div>
                             </div>
                         </div>
@@ -163,22 +158,26 @@ else {
                         <div class="col-sm-12 col-lg-6">
                             <div class="form-group">
                                 <div class="input-group">
+                                    <span class="input-group-addon">Cargar todos?</span>
+                                    <span class="input-group-addon">
+                                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="tcdo">
+                                            <input class="mdl-checkbox__input" type="checkbox" id="tcdo" name="tcdo" ng-model="llanta.tcdo" checked ng-change="loadSpinnerReferenciasTipo(llanta.idTipoDisenoOriginal, llanta.tcdo, true)">
+                                            <span class="input-group-addon mdl-checkbox__label" ng-show="llanta.tcdo">Si</span>
+                                            <span class="input-group-addon mdl-checkbox__label" ng-show="!llanta.tcdo">No</span>
+                                        </label>
+                                    </span>
+                                </div>
+                                <div class="input-group">
                                     <span class="input-group-addon">* Dise&ntilde;o original:</span>
-                                    <select class="form-control" id="spnDisenoOriginal" name="idTipoDisenoOriginal" ng-model="llanta.idTipoDisenoOriginal" ng-change="cargarSpnReferenciasTipo(llanta.idTipoDisenoOriginal);"><?= Tipo_Llanta::getDatosEnOptions(null, null, null) ?></select>
+                                    <select class="form-control" id="spnDisenoOriginal" name="idTipoDisenoOriginal" ng-model="llanta.idTipoDisenoOriginal" ng-change="loadSpinnerReferenciasTipo(llanta.idTipoDisenoOriginal, llanta.tcdo, true);"><?= Tipo_Llanta::getDatosEnOptions(null, null, null) ?></select>
                                 </div>
                                 <div class="input-group" ng-show="elementos.spnReferenciaOriginal">
                                     <span class="input-group-addon">* Referencia original:</span>
                                     <select class="form-control" id="spnReferenciaDisenoOriginal" name="idReferenciaTipoDisenoOriginal" ng-model="llanta.idReferenciaTipoDisenoOriginal" ng-options="option.referencia for option in elementos.referenciasTipoDisenoOriginal"></select>
-                                    <!--<select class="form-control" id="spnReferenciaDisenoOriginal" name="idReferenciaTipoDisenoOriginal" ng-model="llanta.idReferenciaTipoDisenoOriginal" ng-change="cargarSpnMedidasReferenciaTipo(llanta.idReferenciaTipoDisenoOriginal);" ng-options="option.referencia for option in elementos.referenciasTipoDisenoOriginal"></select>-->
-                                </div>
-                                <div class="input-group" ng-show="elementos.spnMedidaReferenciaOriginal">
-                                    <span class="input-group-addon">Medida original:</span>
-                                    <select class="form-control" id="spnMedidaReferenciaDisenoOriginal" name="idAplicacionOriginal" ng-model="llanta.idAplicacionOriginal" ng-options="option.medidaCompleta for option in elementos.dimensionesReferenciaTipoLlantaOriginal"></select>
                                 </div>
                             </div>
                             <div class="alert alert-danger text-center" id="paddinTop10" ng-show="llanta.idTipoDisenoOriginal=='#' && frmformularioLlantaOS_A.$submitted">Debes seleccionar un diseño original para este registro</div>
                             <div class="alert alert-danger text-center" id="paddinTop10" ng-show="llanta.idReferenciaTipoDisenoOriginal=='#' && frmformularioLlantaOS_A.$submitted">Debes seleccionar una referencia original para este registro</div>
-                            <!--<div class="alert alert-danger text-center" id="paddinTop10" ng-show="llanta.idAplicacionOriginal=='#' && frmformularioLlantaOS_A.$submitted">Debes seleccionar una medida original para este registro</div>-->
                         </div>
                         <!--Fin Diseño original-->
                         <!----------------------------------------------------->
@@ -186,22 +185,26 @@ else {
                         <div class="col-sm-12 col-lg-6">
                             <div class="form-group">
                                 <div class="input-group">
+                                    <span class="input-group-addon">Cargar todos?</span>
+                                    <span class="input-group-addon">
+                                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="tcds">
+                                            <input class="mdl-checkbox__input" type="checkbox" id="tcds" name="tcds" ng-model="llanta.tcds" checked ng-change="loadSpinnerReferenciasTipo(llanta.idTipoDisenoSolicitado, llanta.tcds, false)">
+                                            <span class="input-group-addon mdl-checkbox__label" ng-show="llanta.tcds">Si</span>
+                                            <span class="input-group-addon mdl-checkbox__label" ng-show="!llanta.tcds">No</span>
+                                        </label>
+                                    </span>
+                                </div>
+                                <div class="input-group">
                                     <span class="input-group-addon">* Dise&ntilde;o solicitado:</span>
-                                    <select class="form-control" id="spnDisenoSolicitado" name="idTipoDisenoSolicitado" ng-model="llanta.idTipoDisenoSolicitado" ng-change="cargarSpnReferenciasTipoSolicitado(llanta.idTipoDisenoSolicitado);"><?= Tipo_Llanta::getDatosEnOptions(null, null, null) ?></select>
+                                    <select class="form-control" id="spnDisenoSolicitado" name="idTipoDisenoSolicitado" ng-model="llanta.idTipoDisenoSolicitado" ng-change="loadSpinnerReferenciasTipo(llanta.idTipoDisenoSolicitado, llanta.tcds, false);"><?= Tipo_Llanta::getDatosEnOptions(null, null, null) ?></select>
                                 </div>
                                 <div class="input-group" ng-show="elementos.spnReferenciaSolicitada">
                                     <span class="input-group-addon">* Referencia solicitada:</span>
                                     <select class="form-control" id="spnReferenciaDisenoSolicitado" name="idReferenciaTipoDisenoSolicitado" ng-model="llanta.idReferenciaTipoDisenoSolicitado" ng-options="option.referencia for option in elementos.referenciasTipoDisenoSolicitado"></select>
-                                    <!--<select class="form-control" id="spnReferenciaDisenoSolicitado" name="idReferenciaTipoDisenoSolicitado" ng-model="llanta.idReferenciaTipoDisenoSolicitado" ng-change="cargarSpnMedidasReferenciaTipoSolicitado(llanta.idReferenciaTipoDisenoSolicitado);" ng-options="option.referencia for option in elementos.referenciasTipoDisenoSolicitado"></select>-->
-                                </div>
-                                <div class="input-group" ng-show="elementos.spnMedidaReferenciaSolicitada">
-                                    <span class="input-group-addon">Medida solicitada:</span>
-                                    <select class="form-control" id="spnMedidaReferenciaDisenoSolicitado" name="idAplicacionSolicitada" ng-model="llanta.idAplicacionSolicitada" ng-options="option.medidaCompleta for option in elementos.dimensionesReferenciaTipoLlantaSolicitada"></select>
                                 </div>
                             </div>
                             <div class="alert alert-danger text-center" id="paddinTop10" ng-show="llanta.idTipoDisenoSolicitado=='#' && frmformularioLlantaOS_A.$submitted">Debes seleccionar un diseño solicitado para este registro</div>
                             <div class="alert alert-danger text-center" id="paddinTop10" ng-show="llanta.idReferenciaTipoDisenoSolicitado=='#' && frmformularioLlantaOS_A.$submitted">Debes seleccionar una referencia solicitada para este registro</div>
-                            <!--<div class="alert alert-danger text-center" id="paddinTop10" ng-show="llanta.idAplicacionSolicitada=='#' && frmformularioLlantaOS_A.$submitted">Debes seleccionar una medida solicitada para este registro</div>-->
                         </div>
                         <!--Fin Diseño solicitado-->
                         <!----------------------------------------------------->

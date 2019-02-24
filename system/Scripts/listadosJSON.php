@@ -81,7 +81,11 @@ switch ($_GET['metodo']) {
             echo Referencia_Tipo_Llanta::getObjetosJSON("idTipoLlanta={$_GET['idTipoLlanta']}", 'order by fecharegistro desc');
             break;
     case 'referenciasTipoLlantaJSONSQL':
-        echo Referencia_Tipo_Llanta::getDataJsonSQL($_GET['idTipoLlanta']);
+        if (isset($_GET['filter'])) $filter = $_GET['filter'];
+        else $filter = null;
+        if (isset($_GET['extras'])) $extras = $_GET['extras'];
+        else $extras = true;
+        echo Referencia_Tipo_Llanta::getDataJsonSQL($_GET['idTipoLlanta'], $filter, $extras);
         break;
 	case 'dimensionesReferenciaJSON':
             echo Dimension_Referencia::getObjetosJSON("idReferenciaTipoLlanta={$_GET['idReferencia']}", 'order by fecharegistro desc');
