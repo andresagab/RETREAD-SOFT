@@ -1283,6 +1283,10 @@ class Llanta {
                     if ($llanta->getEstadoInformeRencauche()==2 && $data['salida']->id==null || $llanta->getEstadoInformeRencauche()==3 && $data['salida']->id==null) $data['rencauchada_rechazada']= true;
                     else $data['rencauchada_rechazada'] = false;
                     if (strtolower($data["nombreEstado"])!="reencauchando" && strtolower($data["nombreEstado"])!="sin procesar") $data['medidas'] = json_decode($llanta->getMedidasProcesadas(true));
+                    if (strtolower($data["nombreEstado"])!="procesada (rechazada)" && strtolower($data["nombreEstado"])!="sin procesar") {
+                        $corteBanda = Corte_Banda::getListaEnObjetos("idpreparacion in (select id from preparacion where idraspado in (select id from raspado where idinspeccion in (select id from inspeccion_inicial where idllanta={$llanta->getId()}))) limit 1", null);
+                        if (count($corteBanda)>0) $data['idCorteBanda'] = $corteBanda[0]->getId();
+                    }
                 }
                 array_push($JSON, $data);
             }

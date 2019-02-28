@@ -44,7 +44,6 @@ class Corte_Banda{
                 $this->cargarAtributos($campo);
             } else {
                 $sql="select id, idpreparacion, idRelleno, idPuestoTrabajo, idEmpleado, estado, empates, foto, observaciones, fechaRegistro from {$P}corte_banda where $campo=$valor $filtro $orden";
-                //echo $sql;
                 $resultado=Conector::ejecutarQuery($sql, null);
                 if (count($resultado)>0) {
                     foreach ($resultado[0] as $key => $value) $this->$key=$value;
@@ -234,7 +233,7 @@ class Corte_Banda{
     public static function getLista($filtro, $orden) {
         $P='';
         if ($filtro!=null) $filtro=" where $filtro";
-        $sql="select idm idPreparacion, idRelleno, idPuestoTrabajo, idEmpleado, estado, empates, foto, observaciones, fechaRegistro from {$P}corte_banda $filtro $orden";
+        $sql="select id, idPreparacion, idRelleno, idPuestoTrabajo, idEmpleado, estado, empates, foto, observaciones, fechaRegistro from {$P}corte_banda $filtro $orden";
         return Conector::ejecutarQuery($sql, null);
     }
     
@@ -265,7 +264,7 @@ class Corte_Banda{
         $arreglo['observaciones']=$objeto->getObservaciones();
         $arreglo['fechaRegistro']=$objeto->getFechaRegistro();
         $arreglo['puestoTrabajo']= json_decode(Puesto_Trabajo::getObjetoJSON('id', $objeto->getIdPuestoTrabajo(), null, null));
-        $relleno=$objeto->getRelleno();
+        //$relleno=$objeto->getRelleno();
         $arreglo['empleado']= json_decode(Empleado::getObjetoJSON('id', $objeto->getIdEmpleado(), null, null));
         $arreglo['usosInsumos']= json_decode(Uso_Insumo_Proceso::getUsosInforme($objeto->getId(), 6));
         $arreglo['relleno']= json_decode(Relleno::getObjetoJSON('id', $objeto->getIdRelleno(), null, null));
@@ -408,4 +407,81 @@ class Corte_Banda{
             else return 0;
         } else return 0;
     }
+
+    /*LINE INSERT SINCE 2019-02-27 23:34*/
+    public static function getData($type, $field, $value, $filter, $order, $sql, $extras) {
+        $JSON = array();
+        switch ($type) {
+            case 0:
+                if ($field!=null && $value!=null) {
+                    foreach ($object = new Corte_Banda($field, $value, $filter, $order) as $item => $val) {
+                        $JSON["$item"] = $val;
+                        ${$item} = $val;
+                    }
+                    if ($object->getFoto()==null || $object->getFoto()=='') {
+                        $JSON['notImage']=true;
+                        $JSON['nombreEstado']=$object->getNameEstado();
+                    }
+                    if ($extras) {
+                        $JSON['puestoTrabajo'] = json_decode(Puesto_Trabajo::getObjetoJSON('id', $object->getIdPuestoTrabajo(), null, null));
+                        $JSON['empleado'] = json_decode(Empleado::getObjetoJSON('id', $object->getIdEmpleado(), null, null));
+                        $JSON['usosInsumos'] = json_decode(Uso_Insumo_Proceso::getUsosInforme($object->getId(), 6));
+                        $JSON['relleno'] = json_decode(Relleno::getObjetoJSON('id', $object->getIdRelleno(), null, null));
+                    }
+                }
+                break;
+            case 1:
+                $objects = Corte_Banda::getListaEnObjetos($filter, $order);
+                for ($i=0; $i<count($objects); $i++) {
+                    $data = array();
+                    $object = $objects[$i];
+                    foreach ($objects[$i] as $item => $val) {
+                        $data["$item"] = $val;
+                        ${$item} = $val;
+                    }
+                    if ($object->getFoto()==null || $object->getFoto()=='') {
+                        $data['notImage']=true;
+                        $data['nombreEstado']=$object->getNameEstado();
+                    }
+                    if ($extras) {
+                        $data['puestoTrabajo'] = json_decode(Puesto_Trabajo::getObjetoJSON('id', $object->getIdPuestoTrabajo(), null, null));
+                        $data['empleado'] = json_decode(Empleado::getObjetoJSON('id', $object->getIdEmpleado(), null, null));
+                        $data['usosInsumos'] = json_decode(Uso_Insumo_Proceso::getUsosInforme($object->getId(), 6));
+                        $data['relleno'] = json_decode(Relleno::getObjetoJSON('id', $object->getIdRelleno(), null, null));
+                    }
+                    array_push($JSON, $data);
+                }
+                break;
+            case 2:
+                if ($sql!=null) {
+                    $result = Conector::ejecutarQuery($sql, null);
+                    for ($i=0; $i<count($result); $i++) {
+                        $data = array();
+                        foreach ($result[$i] as $item => $val) {
+                            $data["$item"] = $val;
+                            ${$item} = $val;
+                        }
+                        $object = new Corte_Banda(null, null, null, null);
+                        $object->setId(@$id);
+                        $object->setFoto(@$foto);
+                        $object->setEstado(@$estado);
+                        if ($object->getFoto()==null || $object->getFoto()=='') {
+                            $data['notImage']=true;
+                            $data['nombreEstado']=$object->getNameEstado();
+                        }
+                        if ($extras) {
+                            $data['puestoTrabajo'] = json_decode(Puesto_Trabajo::getObjetoJSON('id', @$idpuestotrabajo, null, null));
+                            $data['empleado'] = json_decode(Empleado::getObjetoJSON('id', @$idempleado, null, null));
+                            $data['usosInsumos'] = json_decode(Uso_Insumo_Proceso::getUsosInforme(@$id, 6));
+                            $data['relleno'] = json_decode(Relleno::getObjetoJSON('id', @$idrelleno(), null, null));
+                        }
+                        array_push($JSON, $data);
+                    }
+                }
+                break;
+        }
+        return json_encode($JSON, JSON_UNESCAPED_UNICODE);
+    }
+    /*LINE INSERT SINCE 2019-02-27 23:34*/
+
 }

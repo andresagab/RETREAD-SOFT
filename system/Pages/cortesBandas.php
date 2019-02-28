@@ -102,10 +102,10 @@ if ($USUARIO->getRol()->getNombre()!='operario') {
                                 <td class="mdl-data-table__cell--non-numeric">{{ object.fecharegistro }}</td>
                                 <td class="mdl-data-table__cell--non-numeric">
                                     <h4>
-                                        <a ng-show="!object.estado" class="text-success" href="/#dlgAddCorte" data-toggle="modal" title="Registrar corte de banda" ng-click="setItem(object);cargarProceso(object.id, 'getCorteBandaJSON');cargarEmpleado(<?= $USUARIO->getIdEmpleadoUsuario() ?>);setNumeroProceso(6)">
+                                        <a ng-show="!object.estado" class="text-success" href="/#dlgAddCorte" data-toggle="modal" title="Registrar corte de banda" ng-click="setItemPage(object);cargarProceso(object.id, 'getDataCorteBandaJSON');cargarEmpleado(<?= $USUARIO->getIdEmpleadoUsuario() ?>);setNumeroProceso(6)">
                                             <span class="material-icons">check</span>
                                         </a>
-                                        <a ng-show="object.estado" class="text-primary" href="/#dlgDetails" data-toggle="modal" title="Informacion de la llanta" ng-click="setItem(object);">
+                                        <a ng-show="object.estado" class="text-primary" href="/#dlgDetails" data-toggle="modal" title="Informacion de la llanta" ng-click="setItemPage(object);">
                                             <span class="material-icons">info</span>
                                         </a>
                                     </h4>
@@ -162,13 +162,13 @@ if ($USUARIO->getRol()->getNombre()!='operario') {
                                     <label class="text text-nowrap">Dise&ntilde;o solicitado:</label><span class="text text-muted"> {{ page.data.dlgCorte.item.referenciasolicitada }} <span class="text-muted">({{ page.data.dlgCorte.item.tipollantasolicitada }})</span></span></span>
                                 </div>
                                 <div class="col-xs-6 col-sm-6 col-md-6">
-                                    <label class="text text-nowrap">Dimension:</label><span class="text text-muted"> {{ page.data.dlgCorte.dimension }}</span>
+                                    <label class="text text-nowrap">Dimension:</label><span class="text text-muted"> {{ page.data.dlgCorte.item.dimension }}</span>
                                 </div>
                                 <div class="col-xs-6 col-sm-6 col-md-6">
                                     <label class="text text-nowrap">Urgente:</label><span class="text text-muted"> {{ page.data.dlgCorte.item.nombreUrgente }}</span>
                                 </div>
                                 <div class="col-xs-6 col-sm-6 col-md-6">
-                                    <label class="text text-nowrap">Estado:</label><span class="text text-muted"> {{ page.data.dlgCorte.item.nombreEstadoLlanta }}</span>
+                                    <label class="text text-nowrap">Estado:</label><span class="text text-muted"> {{ page.data.dlgCorte.item.nombreEstado }}</span>
                                 </div>
                                 <div class="col-sm-12 col-md-6">
                                     <label class="text text-nowrap">Observaciones:</label><span class="text text-muted"> {{ page.data.dlgCorte.item.observacionesllanta }}</span>
@@ -290,13 +290,13 @@ if ($USUARIO->getRol()->getNombre()!='operario') {
                                                         <label class="text text-nowrap">Dise&ntilde;o solicitado:</label><span class="text text-muted"> {{ page.data.dlgCorte.item.referenciasolicitada }} <span class="text-muted">({{ page.data.dlgCorte.item.tipollantasolicitada }})</span></span></span>
                                                     </div>
                                                     <div class="col-xs-6 col-sm-6 col-md-6">
-                                                        <label class="text text-nowrap">Dimension:</label><span class="text text-muted"> {{ page.data.dlgCorte.dimension }}</span>
+                                                        <label class="text text-nowrap">Dimension:</label><span class="text text-muted"> {{ page.data.dlgCorte.item.dimension }}</span>
                                                     </div>
                                                     <div class="col-xs-6 col-sm-6 col-md-6">
                                                         <label class="text text-nowrap">Urgente:</label><span class="text text-muted"> {{ page.data.dlgCorte.item.nombreUrgente }}</span>
                                                     </div>
                                                     <div class="col-xs-6 col-sm-6 col-md-6">
-                                                        <label class="text text-nowrap">Estado:</label><span class="text text-muted"> {{ page.data.dlgCorte.item.nombreEstadoLlanta }}</span>
+                                                        <label class="text text-nowrap">Estado:</label><span class="text text-muted"> {{ page.data.dlgCorte.item.nombreEstado }}</span>
                                                     </div>
                                                     <div class="col-sm-12 col-md-6">
                                                         <label class="text text-nowrap">Observaciones:</label><span class="text text-muted"> {{ page.data.dlgCorte.item.observacionesllanta }}</span>

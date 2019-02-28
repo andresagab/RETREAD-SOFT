@@ -178,7 +178,11 @@ switch ($_GET['metodo']) {
         break;
     case 'getCorteBandaJSON':
         if (isset($_GET['id'])) echo Corte_Banda::getObjetoJSON('id', $_GET['id'], null, null);
-        else echo '[]';
+        else header('Location: principal.php?CON=system/pages/unknowData.php');
+        break;
+    case 'getDataCorteBandaJSON':
+        if (isset($_GET['id'])) echo Corte_Banda::getData(0, 'id', $_GET['id'], null, null, null, false);
+        else header('Location: principal.php?CON=system/pages/unknowData.php');
         break;
     case 'getEmbandadoJSON':
         if (isset($_GET['id'])) echo Embandado::getObjetoJSON('id', $_GET['id'], null, null);
@@ -236,5 +240,13 @@ switch ($_GET['metodo']) {
         break;
     case 'getRechazosLlantaJSON':
         echo Rechazo_Llanta::getRechazosLlantaJSON($_GET['idLlanta']);
+        break;
+    case 'getLlantaJSONSQL':
+        if (isset($_GET['id'])) echo Llanta::getLlantasOrdenServicio("ll.id={$_GET['id']}", null, false);
+        else header('Location: principal.php?CON=system/pages/unknowData.php');
+        break;
+    case 'getCorteBandaEditar':
+        if (isset($_GET['id'])) echo Corte_Banda::getData(0, 'id', $_GET['id'], null, null, null, false);
+        else header('Location: principal.php?CON=system/pages/unknowData.php');
         break;
 }

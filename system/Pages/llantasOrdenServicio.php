@@ -70,6 +70,11 @@ else {
                                   <span class="material-icons">airplay</span>
                               </a>
                           </span>
+                          <span id="paddingLeft10" ng-show="objeto.idCorteBanda!=null">
+                              <a href="principal.php?CON=system/Pages/llantasEditarCorteBanda.php&id={{ objeto.id }}&idCorteBanda={{ objeto.idCorteBanda }}" id="btnLlantaEditarCorteBanda_{{ objeto.id }}" title="Editar corte de banda" class="mdl-color-text--orange-900">
+                                  <span class="material-icons">border_color</span>
+                              </a>
+                          </span>
                           <span id="paddingLeft10" class="<?= $btnRegistrar ?>">
                               <a title="Imprimir tiquete" ng-click="printTicket(objeto)" href>
                                   <span class="material-icons" style="color: {{ objeto.colorIcon }}">note</span>
