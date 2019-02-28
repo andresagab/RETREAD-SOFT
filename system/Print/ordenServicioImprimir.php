@@ -36,23 +36,6 @@ $today= date("Y-m-d");
                 <center>
                     <table border="0">
                         <tr>
-<!--                            <td>
-                                <div style="padding-top: 10px">
-                                    <img src="../../design/pics/imagenes/LogoPanam.png" width="70px">
-                                </div>
-                            </td>
-                            <td>
-                                <div style="margin-top: -20px">
-                                    <h3>Panam</h3>
-                                    <div style="margin-top: -25px">
-                                        <span class="text text-muted small">Reencauchadora</span>
-                                    </div>
-                                    <br>
-                                    <div style="margin-top: -20px">
-                                        <span class="text text-muted small">Panam de Colombia S.A.S</span>
-                                    </div>
-                                </div>
-                            </td>-->
                             <td colspan="2">
                                 <img src="../../design/pics/imagenes/PanamLogoEmpresa.png" width="400px" height="170px">
                             </td>
@@ -174,29 +157,28 @@ $today= date("Y-m-d");
                             <thead>
                                 <tr style="font-size: 12px;">
                                     <th class="mdl-data-table__cell--non-numeric" ng-click="ordenar='consecutivo'">N°</th>
-                                    <th ng-click="ordenar='nombreMarca'">Marca</th>
-                                    <th ng-click="ordenar='nombre'">Gravado</th>
-                                    <th ng-click="ordenar='rp'">RP</th>
-                                    <th ng-click="ordenar='serie'">Serie</th>
-                                    <th ng-click="ordenar='dimension'">Dimension</th>
-                                    <th ng-click="ordenar='medidaCompleta'">Dis.sol</th>
-                                    <th ng-click="ordenar='medidas.anchobanda'">Ancho</th>
-                                    <th ng-click="ordenar='medidas,largobanda'">Largo</th>
-                                    <th ng-click="ordenar='nombreEstado'">Estado</th>
-                                    <th ng-click="ordenar='salida.valor'">Valor</th>
-                                    <th >Casco</th>
+                                    <th>Marca</th>
+                                    <th>Gravado</th>
+                                    <th>RP</th>
+                                    <th>Serie</th>
+                                    <th>Dimension</th>
+                                    <th>Dis.sol</th>
+                                    <th>Ancho</th>
+                                    <th>Largo</th>
+                                    <th>Estado</th>
+                                    <th>Valor</th>
+                                    <th>Casco</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!--<tr ng-repeat="objeto in llantas | filter: buscar | orderBy: ordenar" ng-show="llantas" style="background: {{ objeto.colorEstado }}; color: {{ objeto.colorLetraEstado }};">-->
-                                <tr ng-repeat="objeto in llantas | filter: buscar | orderBy: ordenar" ng-show="llantas">
+                                <tr ng-repeat="objeto in llantas" ng-show="llantas">
                                     <td><strong>{{ objeto.consecutivo }}</strong></td>
-                                    <td><strong>{{ objeto.nombreMarca }}</strong></td>
-                                    <td><strong>{{ objeto.gravado[0].nombre }}</strong></td>
+                                    <td><strong>{{ objeto.nombremarca }}</strong></td>
+                                    <td><strong>{{ objeto.nombregravado }}</strong></td>
                                     <td><strong>{{ objeto.rp }}</strong></td>
                                     <td><strong>{{ objeto.serie }}</strong></td>
                                     <td><strong>{{ objeto.dimension }}</strong></td>
-                                    <td><strong>{{ objeto.referenciaSolicitada[0].referencia}}</strong></td>
+                                    <td><strong>{{ objeto.referenciasolicitada }}</strong></td>
                                     <td><strong>{{ objeto.medidas.anchobanda }}</strong></td>
                                     <td><strong>{{ objeto.medidas.largobanda }}</strong></td>
                                     <td><strong>{{ objeto.nombreEstado }}</strong></td>

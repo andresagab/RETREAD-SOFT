@@ -272,6 +272,7 @@ and cl.id=ter.idcliente
 and percli.identificacion=cl.identificacion
 and um.id=pr.idunidadmedida
 and pp.id=pr.idpresentacion;
+--END 2019-02-05 23:50
 
 --2019-02-23 20:34
 select ref.id, ref.idTipoLlanta, ref.idMarcaLlanta, ref.referencia, ref.observaciones, ref.fecharegistro,
@@ -284,7 +285,33 @@ and mar.id=ref.idMarcaLlanta;
 select ref.id, ref.idTipoLlanta, ref.idMarcaLlanta, ref.referencia, ref.observaciones, ref.fecharegistro,
        tip.nombre as tipoLlanta, tip.descripcion as tipoLlantaDescripcion, tip.fecharegistro as tipoLlantafechaRegistro
 from referencia_tipo_llanta as ref, tipo_llanta as tip
-where tip.id=ref.idtipollanta
+where tip.id=ref.idtipollanta;
 --END 2019-02-23 20:34
 
---END 2019-02-05 23:50
+-- 2019-02-27 14:42
+
+select s.id as idOs, s.numerofactura, s.os, s.estado as estadoServicio, s.idCliente, s.idvendedor,
+       pcl.identificacion as identificacionCliente, pcl.nombres || ' ' || pcl.apellidos as nombresCliente, cl.razonsocial,
+       pv.identificacion as identificacionVendedor, pv.nombres || ' ' || pv.apellidos as nombresVendedor,
+       ll.id as idLlanta, ll.rp, ll.serie, ll.consecutivo, ll.urgente as llantaUrgente, ll.procesado as llantaProcesado, ll.observaciones as observacionesllanta, ll.fecharegistro as fecharegistrollanta, ll.fechainicioproceso,
+       mll.id as idMarca, mll.nombre as nombreMarca,
+       gll.id as idGravado, gll.nombre as nombreGravado,
+       dll.id as idDimension, dll.dimension,
+       rtllo.id as idReferenciaTipoLlantaOriginal, rtllo.referencia as referenciaOriginal,
+       tllo.id as idTipoLlantaOriginal, tllo.nombre as tipoLlantaOriginal,
+       rtlls.id as idReferenciaTipoLlantaSolicitada, rtlls.referencia as referenciaSolicitada,
+       tlls.id as idTipoLlantaSolicitada, tlls.nombre as tipoLlantaSolicitada
+from llanta as ll, servicio as s, cliente as cl, persona as pcl, empleado as v, persona as pv, marca_llanta as mll, gravado_llanta as gll, dimension_llanta as dll, referencia_tipo_llanta as rtllo, referencia_tipo_llanta as rtlls, tipo_llanta as tllo, tipo_llanta as tlls
+where s.id=ll.idservicio
+  and cl.id=s.idcliente
+  and pcl.identificacion=cl.identificacion
+  and v.id=s.idvendedor
+  and pv.identificacion=v.identificacion
+  and mll.id=ll.idmarca
+  and gll.id=ll.idgravado
+  and dll.id=ll.iddimension
+  and rtllo.id=ll.idreferenciaoriginal
+  and tllo.id=rtllo.idtipollanta
+  and rtlls.id=ll.idreferenciasolicitada
+  and tlls.id=rtlls.idtipollanta
+-- END 2019-02-27 14:42

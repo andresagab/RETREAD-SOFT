@@ -225,4 +225,13 @@ class Cliente {
         }
         return json_encode($json);
     }
+
+    public static function getNameEnterprise($nameClient, $nameEnterprise) {
+        $finalName = "";
+        if ($nameClient!=null && $nameEnterprise!=null) $finalName = "$nameClient ($nameEnterprise)";
+        elseif ($nameClient!=null && $nameEnterprise==null) $finalName = "$nameClient";
+        else $finalName = $nameEnterprise;
+        return $finalName;
+    }
+
 }

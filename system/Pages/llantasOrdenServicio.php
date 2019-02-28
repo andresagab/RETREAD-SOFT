@@ -8,47 +8,45 @@ else {
     $btnEliminarRegistro='';
 }
 ?>
-<!--Tabla de registro-->
 <div class="col-md-12 table-responsive" ng-controller="llantasOS">
     <div class="hide" id="btnCargarOS" ng-click="cargarOrdenServicio(<?= $objeto->getId() ?>);loadDimensiones();"></div>
     <div ng-hide="llantas" ng-show="elementos.barraCargaListaLlantas" class="col-md-12 text-center">
         <div class="mdl-spinner mdl-js-spinner is-active"></div>
     </div>
+    <!--Tabla de registro-->
     <center class="" id="paddinTop10">
         <table class="mdl-data-table mdl-js-data-table">
             <thead>
                 <tr class="text-uppercase">
-                    <th class="mdl-data-table__cell--non-numeric" ng-click="ordenar='consecutivo'">N°</th>
+                    <th ng-click="ordenar='consecutivo'">N°</th>
                     <th ng-click="ordenar='rp'">RP</th>
                     <th ng-click="ordenar='serie'">Serie</th>
-                    <th ng-click="ordenar='nombreMarca'">Marca</th>
-                    <th ng-click="ordenar='gravado[0].nombre'">Gravado</th>
-                    <th ng-click="ordenar='referenciaOriginal[0].referencia'">Diseño original</th>
-                    <th ng-click="ordenar='dimension'">Dimension</th>
-                    <th ng-click="ordenar='referenciaSolicitada[0].referencia'">Diseño solicitado</th>
-                    <th class="hide" ng-click="ordenar='aplicacionEntregada[0].medidaCompleta'">Diseño entregado</th>
-                    <th ng-click="ordenar='nombreEstado'">Estado</th>
-                    <th ng-click="ordenar='nombreUrgente'">Urgente</th>
+                    <th class="mdl-data-table__cell--non-numeric" ng-click="ordenar='nombremarca'">Marca</th>
+                    <th class="mdl-data-table__cell--non-numeric" ng-click="ordenar='nombregravado'">Gravado</th>
+                    <th class="mdl-data-table__cell--non-numeric" ng-click="ordenar='referenciaoriginal'">Diseño original</th>
+                    <th class="mdl-data-table__cell--non-numeric" ng-click="ordenar='dimension'">Dimension</th>
+                    <th class="mdl-data-table__cell--non-numeric" ng-click="ordenar='referenciasolicitada'">Diseño solicitado</th>
+                    <th class="mdl-data-table__cell--non-numeric" ng-click="ordenar='nombreEstado'">Estado</th>
+                    <th class="mdl-data-table__cell--non-numeric" ng-click="ordenar='nombreUrgente'">Urgente</th>
                     <th ng-click="ordenar='salida.valor'">Valor</th>
                     <th><span ng-hide="ObjetoOrdenServicio.btnAcciones" class="fa fa-plus <?= $btnRegistrar ?>" id="btnAdicionarLlanta" href="/#_FormularioLlanta_A" data-toggle="modal" ng-click="abrirModalDialogFormularioLlanta_A();"></span></th>
                     <div class="mdl-tooltip" for="btnAdicionarLlanta">Adicionar llanta</div>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="objeto in llantas | filter: buscar | orderBy: ordenar" ng-show="llantas" style="background: {{ objeto.colorEstado }}; color: {{ objeto.colorLetraEstado }};">
-                    <td class="mdl-data-table__cell--non-numeric">{{ objeto.consecutivo }}</td>
+                <tr ng-repeat="objeto in llantas | orderBy: ordenar" ng-show="llantas" style="background: {{ objeto.colorEstado }}; color: {{ objeto.colorLetraEstado }};">
+                    <td>{{ objeto.consecutivo }}</td>
                     <td>
                         <h4 ng-dblclick="openProcesoRencauche(objeto.id);">{{ objeto.rp }}</h4>
                     </td>
                     <td>{{ objeto.serie }}</td>
-                    <td>{{ objeto.nombreMarca }}</td>
-                    <td>{{ objeto.gravado[0].nombre }}</td>
-                    <td>{{ objeto.referenciaOriginal[0].referencia }}</td>
-                    <td>{{ objeto.dimension }}</td>
-                    <td>{{ objeto.referenciaSolicitada[0].referencia}}</td>
-                    <td class="hide">{{ objeto.aplicacionEntregada[0].medidaCompleta }}</td>
-                    <td>{{ objeto.nombreEstado }}</td>
-                    <td style="background: {{ objeto.colorUrgente }}">{{ objeto.nombreUrgente }}</td>
+                    <td class="mdl-data-table__cell--non-numeric">{{ objeto.nombremarca }}</td>
+                    <td class="mdl-data-table__cell--non-numeric">{{ objeto.nombregravado }}</td>
+                    <td class="mdl-data-table__cell--non-numeric">{{ objeto.referenciaoriginal }}</td>
+                    <td class="mdl-data-table__cell--non-numeric">{{ objeto.dimension }}</td>
+                    <td class="mdl-data-table__cell--non-numeric">{{ objeto.referenciasolicitada }}</td>
+                    <td class="mdl-data-table__cell--non-numeric">{{ objeto.nombreEstado }}</td>
+                    <td class="mdl-data-table__cell--non-numeric" style="background: {{ objeto.colorUrgente }}">{{ objeto.nombreUrgente }}</td>
                     <td>{{ objeto.salida.valor }}</td>
                     <td>
                       <h3>
@@ -65,11 +63,6 @@ else {
                           <span id="paddingLeft10"  class="<?= $btnRegistrar ?>" ng-show="objeto.rencauchada_rechazada">
                               <a href="/#dlgRegistrarSalida" data-toggle="modal" title="Registrar salida de la llanta" ng-click="setLlantaSalida(objeto)">
                                   <span class="material-icons" style="color: {{ objeto.colorIcon }}">call_end</span>
-                              </a>
-                          </span>
-                          <span id="paddingLeft10"  class="<?= $btnRegistrar ?>" ng-show="objeto.btnRegistrarDisenoEntregado" >
-                              <a href="/#_FormularioDisenoEntregado" data-toggle='modal' title="Registrar dise&ntilde;o entregado" ng-click="instantLlanta(objeto)">
-                                  <span class="material-icons">playlist_add_check</span>
                               </a>
                           </span>
                           <span id="paddingLeft10" >
@@ -266,76 +259,6 @@ else {
     </div>
     <!--FIN Formulario llanta-->
     <!------------------------------------------------------------------------->
-    <!--Formulario diseno entregado-->
-    <div class='modal fade' id='_FormularioDisenoEntregado'>
-        <div class='modal-dialog modal-lg'>
-            <div class='modal-content'>
-                <div class='modal-header'>
-                    <button type='button' class='close' id="btnCerrarDialogFormularioDisenoEnregado" data-dismiss='modal' data-dismiss='modal' ng-click="cleanDataDisenoEntregado()">&times;</button>
-                    <h3 class="text text-primary">REGISTRAR DISE&Ntilde;O ENTREGADO</h3>
-                </div>
-                <form id="frmFormularioDisenoEntregado" name="frmDisenoEntregado" ng-submit="registrarDisenoEntregado();">
-                    <div class="modal-footer">
-                        <div class="col-sm-12 col-lg-12 text-center" ng-show="elementos.barraCarga" id="paddinBottom10">
-                            <div class="col-sm-1 col-lg-2"></div>
-                            <div class="col-sm-10 col-lg-8">
-                                <div class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
-                            </div>
-                            <div class="col-sm-1 col-lg-2"></div>
-                        </div>
-                        <div class="col-sm-12 col-lg-12" ng-show="tools.alertaDialog">
-                            <div class="alert alert-{{ tools.colorAlertaDialog }} text-center">{{ tools.mjsAlertaDialog }}</div>
-                        </div>
-                        <!--Diseño original-->
-                        <div class="col-sm-12 col-lg-12">
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <span class="input-group-addon">Dise&ntilde;o entregada:</span>
-                                    <select class="form-control" id="spnDisenoEntregado" name="idTipoDisenoEntregado" ng-model="dataDisenoEntregado.idTipoDisenoEntregado" ng-change="cargarSpnReferenciasTipoEntregado(dataDisenoEntregado.idTipoDisenoEntregado);"><?= Tipo_Llanta::getDatosEnOptions(null, null, null) ?></select>
-                                </div>
-                                <div class="input-group" ng-show="dataDisenoEntregado.spnReferenciaEntregada">
-                                    <span class="input-group-addon">Referencia entregada:</span>
-                                    <select class="form-control" id="spnReferenciaDisenoEntregado" name="idReferenciaTipoDisenoEntregado" ng-model="dataDisenoEntregado.idReferenciaTipoDisenoEntregado" ng-change="cargarSpnMedidasReferenciaTipoEntregado(dataDisenoEntregado.idReferenciaTipoDisenoEntregado);" ng-options="option.referencia for option in dataDisenoEntregado.referenciasTipoDisenoEntregado"></select>
-                                </div>
-                                <div class="input-group" ng-show="dataDisenoEntregado.spnMedidaReferenciaEntregada">
-                                    <span class="input-group-addon">Medida entregada:</span>
-                                    <select class="form-control" id="spnMedidaReferenciaDisenoEntregado" name="idAplicacionEntregada" ng-model="dataDisenoEntregado.idAplicacionEntregada" ng-options="option.medidaCompleta for option in dataDisenoEntregado.dimensionesReferenciaTipoLlantaEntregada"></select>
-                                </div>
-                            </div>
-                            <div class="alert alert-danger text-center" id="paddinTop10" ng-show="dataDisenoEntregado.idTipoDisenoEntregado=='#' && frmDisenoEntregado.$submitted">Debes seleccionar un diseño para este registro</div>
-                            <div class="alert alert-danger text-center" id="paddinTop10" ng-show="dataDisenoEntregado.idReferenciaTipoDisenoEntregado=='#' && frmDisenoEntregado.$submitted">Debes seleccionar una referencia para este registro</div>
-                            <div class="alert alert-danger text-center" id="paddinTop10" ng-show="dataDisenoEntregado.idAplicacionEntregada=='#' && frmDisenoEntregado.$submitted ">Debes seleccionar una medida para este registro</div>
-                        </div>
-                        <!--Fin Diseño original-->
-                        <div class="col-sm-12 col-lg-12">
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <span class="input-group-addon">Observaciones:</span>
-                                    <textarea class="form-control" id="txtObservacionesLlanta2" name="observaciones" placeholder="Escribe aqui unas observaciones para este registro" ng-model="dataDisenoEntregado.observaciones" maxlength="1000"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class='modal-footer'>
-                        <button type='button' id="btnCancelarFormularioDisenoEntregado" class='btn btn-danger' data-dismiss='modal' ng-click="cleanDataDisenoEntregado()">Cancelar</button>
-                        <button type='submit' class='btn btn-success' ng-disabled="dataDisenoEntregado.btnFrmRegistrarDisenoEntregado">Aceptar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <!--TOOLTIPS-->
-        <div class="mdl-tooltip" data-mdl-for="btnCerrarDialogFormularioDisenoEntregado">Cerrar</div>
-        <!--FIN TOOLTIPS-->
-        <!--------------------------------------------------------------------->
-        <!--TOAST-->
-        <div id="toast-dialog-de" class="mdl-js-snackbar mdl-snackbar">
-            <div class="mdl-snackbar__text"></div>
-            <button class="mdl-snackbar__action" type="button"></button>
-        </div>
-        <!--FIN TOAST-->
-    </div>
-    <!--FIN Formulario diseno entregado-->
-    <!------------------------------------------------------------------------->
     <!--Dlg Eliminar llanta-->
     <div ng-repeat="objeto in llantas" class="modal fade" id="dlgEliminarLlanta_{{ objeto.id }}">
         <div class="modal-dialog">
@@ -368,41 +291,38 @@ else {
                             <div class="mdl-spinner mdl-js-spinner is-active"></div>
                         </div>
                         <div class="col-sm-12 col-lg-12">
-                            <h3>Llanta</h3>
+                            <h3 class="text text-success">Llanta</h3>
                         </div>
-                        <div class="text-justify">
+                        <div class="col-lg-12 text-justify" id="paddinTop20">
                             <div class="col-sm-12 col-lg-6">
-                                <label class="text-nowrap">RP:</label><span class="text text-muted"> {{ dataPage.dataSalida.llanta.rp }}</span>
+                                <label class="text-nowrap">RP: </label><span class="text text-muted"> {{ dataPage.dataSalida.llanta.rp }}</span>
                             </div>
                             <div class="col-sm-12 col-lg-6">
-                                <label class="text-nowrap">Serie:</label><span class="text text-muted"> {{ dataPage.dataSalida.llanta.serie }}</span>
+                                <label class="text-nowrap">Serie: </label><span class="text text-muted"> {{ dataPage.dataSalida.llanta.serie }}</span>
                             </div>
                             <div class="col-sm-12 col-lg-6">
-                                <label class="text-nowrap">Marca:</label><span class="text text-muted"> {{ dataPage.dataSalida.llanta.nombreMarca }}</span>
+                                <label class="text-nowrap">Marca: </label><span class="text text-muted"> {{ dataPage.dataSalida.llanta.nombremarca }}</span>
                             </div>
                             <div class="col-sm-12 col-lg-6">
-                                <label class="text-nowrap">Gravado:</label><span class="text text-muted"> {{ dataPage.dataSalida.llanta.nombreGravado }}</span>
+                                <label class="text-nowrap">Gravado: </label><span class="text text-muted"> {{ dataPage.dataSalida.llanta.nombregravado }}</span>
                             </div>
                             <div class="col-sm-12 col-lg-6">
-                                <label class="text-nowrap">Aplicacion original:</label><span class="text text-muted"> {{ dataPage.dataSalida.llanta.aplicacionOriginal[0].medidaCompleta }}</span>
+                                <label class="text-nowrap">Aplicacion original: </label><span class="text text-muted"> {{ dataPage.dataSalida.llanta.referenciaoriginal }}</span>
                             </div>
                             <div class="col-sm-12 col-lg-6">
-                                <label class="text-nowrap">Aplicacion solicitada:</label><span class="text text-muted"> {{ dataPage.dataSalida.llanta.aplicacionSolicitada[0].medidaCompleta }}</span>
+                                <label class="text-nowrap">Aplicacion solicitada: </label><span class="text text-muted"> {{ dataPage.dataSalida.llanta.referenciasolicitada }}</span>
                             </div>
                             <div class="col-sm-12 col-lg-6">
-                                <label class="text-nowrap">Aplicacion rencauche:</label><span class="text text-muted"> {{ dataPage.dataSalida.llanta.aplicacionEntregada[0].medidaCompleta }}</span>
+                                <label class="text-nowrap">Dimension: </label><span class="text text-muted"> {{ dataPage.dataSalida.llanta.dimension }}</span>
                             </div>
                             <div class="col-sm-12 col-lg-6">
-                                <label class="text-nowrap">Dimension:</label><span class="text text-muted"> {{ dataPage.dataSalida.llanta.dimension }}</span>
-                            </div>
-                            <div class="col-sm-12 col-lg-6">
-                                <label class="text-nowrap">Estado:</label><span class="text text-muted">{{ dataPage.dataSalida.llanta.nombreEstado }}</span>
-                            </div>
-                            <div class="col-sm-12 col-lg-6">
-                                <label class="text-nowrap">Urgente:</label><span class="text text-muted"> {{ dataPage.dataSalida.llanta.nombreUrgente }}</span>
+                                <label class="text-nowrap">Estado: </label><span class="text text-muted">{{ dataPage.dataSalida.llanta.nombreEstado }}</span>
                             </div>
                             <div class="col-sm-12 col-lg-12">
-                                <label class="text-nowrap">Observaciones:</label><span class="text text-muted"> {{ dataPage.dataSalida.llanta.observaciones }}</span>
+                                <label class="text-nowrap">Urgente: </label><span class="text text-muted"> {{ dataPage.dataSalida.llanta.nombreUrgente }}</span>
+                            </div>
+                            <div class="col-sm-12 col-lg-12">
+                                <label class="text-nowrap">Observaciones: </label><span class="text text-muted"> {{ dataPage.dataSalida.llanta.observaciones }}</span>
                             </div>
                         </div>
                         <div class="col-md-12 form-group" id="paddinTop10">

@@ -35,13 +35,13 @@ session_start();
                     <table class="text-uppercase" border="1">
                         <tbody style="background-color: #87bde8">
                             <tr>
-                                <th colspan="6" style="text-align: center;">Cliente: {{ page.data.object.servicio[0].cliente[0].nombreEmpresa }}</th>
+                                <th colspan="6" style="text-align: center;">Cliente: {{ page.data.object.nombreEmpresaCliente }}</th>
                                 <th rowspan="5" style="padding-top: 2px; padding-bottom: 2px;">
                                     <img class="img-responsive" ng-src="../../design/pics/imagenes/PanamLogoEmpresa.png" width="250px" height="150px">
                                 </th>
                             </tr>
                             <tr>
-                                <th colspan="6" style="text-align: center;">Vendedor: {{ page.data.object.servicio[0].empleado[0].nombresCompletosPersona }}</th>
+                                <th colspan="6" style="text-align: center;">Vendedor: {{ page.data.object.nombresvendedor }}</th>
                             </tr>
                             <tr>
                                 <th>RP:</th>
@@ -49,15 +49,15 @@ session_start();
                                 <th>Dimension</th>
                                 <th>{{ page.data.object.dimension }}</th>
                                 <th>Diseño:</th>
-                                <th>{{ page.data.object.referenciaSolicitada[0].referencia }}</th>
+                                <th>{{ page.data.object.referenciasolicitada }}</th>
                             </tr>
                             <tr>
                                 <th style="text-align: right;">OS:</th>
-                                <th>{{ page.data.object.servicio[0].os }}<span ng-if="page.data.object.consecutivo">-{{ page.data.object.consecutivo }}</span></th>
+                                <th>{{ page.data.object.os }}<span ng-if="page.data.object.consecutivo">-{{ page.data.object.consecutivo }}</span></th>
                                 <th colspan="" style="text-align: right;">Serie:</th>
                                 <th colspan="">{{ page.data.object.serie }}</th>
                                 <th colspan="" style="text-align: right;">Marca:</th>
-                                <th colspan="">{{ page.data.object.nombreMarca }}</th>
+                                <th colspan="">{{ page.data.object.nombremarca }}</th>
                             </tr>
                             <tr>
                                 <th colspan="6" style="padding-top: 5px; padding-bottom: 5px; text-align: center;">Fecha impresión: {{ page.data.fechaActual }}</th>

@@ -202,7 +202,8 @@ switch ($_GET['metodo']) {
         break;
 	case 'getLlantasOrdenServicio':
             //echo Llanta::getLlantasInformeBodegaSQL("ll.idServicio={$_GET['idServicio']}", null);
-            echo Llanta::getObjetosJSON("idServicio={$_GET['idServicio']}", 'order by consecutivo asc');
+            //echo Llanta::getObjetosJSON("idServicio={$_GET['idServicio']}", 'order by consecutivo asc');
+            echo Llanta::getLlantasOrdenServicio("ll.idServicio={$_GET['idServicio']}", 'order by ll.consecutivo asc', true);
             break;
 	case 'getLlantasOSImprimir':
             //echo Llanta::getLlantasInformeBodegaSQL("ll.idServicio={$_GET['idServicio']}", null);

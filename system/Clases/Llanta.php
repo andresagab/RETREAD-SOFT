@@ -454,13 +454,13 @@ class Llanta {
         $arreglo['servicio']= json_decode(Servicio::getObjetoJSON('id', $objeto->getIdServicio(), null, null));
         $arreglo['gravado']= json_decode(Gravado_Llanta::getObjetoJSON('id', $objeto->getIdGravado(), null, null));
         $arreglo['colorUrgente']= $objeto->getColorUrgente();
-        $arreglo['colorEstado']= $objeto->getColorEstado();
+        $arreglo['salida']=json_decode(Salida_Llanta::getDataJSON(0, 'idLlanta', $objeto->getId(), null, null, null));
+        $arreglo['colorEstado']= $objeto->getColorEstado($arreglo["nombreEstado"], $arreglo["salida"]->id);
         $arreglo['colorLetraEstado']= $objeto->getColorLetraEstado($arreglo["colorEstado"]);
         $arreglo['colorIcon']= $objeto->getBackgroudColorIcon($arreglo["colorEstado"]);
         $arreglo['btnRegistrarDisenoEntregado']= $objeto->getBtnRegistrarDisenoEntregado();
         if ($objeto->getEstadoInformeRencauche()==2 || $objeto->getEstadoInformeRencauche()==3) $arreglo['rencauchada_rechazada']= true;
         else $arreglo['rencauchada_rechazada']= false;
-        $arreglo['salida']=json_decode(Salida_Llanta::getDataJSON(0, 'idLlanta', $objeto->getId(), null, null, null));
         $arreglo['medidas']=json_decode($objeto->getMedidasProcesadas(true));
         array_push($JSON, $arreglo);
         return json_encode($JSON, JSON_UNESCAPED_UNICODE);
@@ -516,11 +516,11 @@ class Llanta {
             $arreglo['servicio']= json_decode(Servicio::getObjetoJSON('id', $objeto->getIdServicio(), null, null));
             $arreglo['gravado']= json_decode(Gravado_Llanta::getObjetoJSON('id', $objeto->getIdGravado(), null, null));
             $arreglo['colorUrgente']= $objeto->getColorUrgente();
-            $arreglo['colorEstado']= $objeto->getColorEstado();
+            $arreglo['salida']=json_decode(Salida_Llanta::getDataJSON(0, 'idLlanta', $objeto->getId(), null, null, null));
+            $arreglo['colorEstado']= $objeto->getColorEstado($arreglo["nombreEstado"], $arreglo["salida"]->id);
             $arreglo['colorLetraEstado']= $objeto->getColorLetraEstado($arreglo["colorEstado"]);
             $arreglo['colorIcon']= $objeto->getBackgroudColorIcon($arreglo["colorEstado"]);
             $arreglo['btnRegistrarDisenoEntregado']= $objeto->getBtnRegistrarDisenoEntregado();
-            $arreglo['salida']=json_decode(Salida_Llanta::getDataJSON(0, 'idLlanta', $objeto->getId(), null, null, null));
             //echo $arreglo['salida']->id;die();
             if ($objeto->getEstadoInformeRencauche()==2 && $arreglo['salida']->id==null || $objeto->getEstadoInformeRencauche()==3 && $arreglo['salida']->id==null) $arreglo['rencauchada_rechazada']= true;
             else $arreglo['rencauchada_rechazada']= false;
@@ -559,7 +559,7 @@ class Llanta {
         //True = Proceso de rencauche finalizado por rechazo de la llanta
         //Else = Proceso de rencauche sin finalizar (Procesos pendientes)
         if ($this->id!=null && $this->id!=''){
-            $rechazoLlanta=new Rechazo_Llanta('idLlanta', $this->id, null, null);
+            $rechazoLlanta = new Rechazo_Llanta('idLlanta', $this->id, null, null);
             if ($rechazoLlanta->getId()!=null && $rechazoLlanta->getId()!='') return true;
             else return false;
         } else return false;
@@ -681,17 +681,10 @@ class Llanta {
         return json_encode($tiempos, JSON_UNESCAPED_UNICODE);
     }
     
-    public function getColorEstado() {
+    public function getColorEstado($status, $idSalida) {
         $color='';
         if ($this->id!=null && $this->id!=''){
-            /*
-            if ($this->getFinRencaucheXProceso()) $color='#b1de96';
-            else {
-                $inspeccionInicial=new Inspeccion_Inicial('idLlanta', $this->id, null, null);
-                if ($inspeccionInicial->getId()!=null && $inspeccionInicial->getId()!='') $color='#d06060';
-            }
-            if ($this->getFinRencaucheXRechazo()) $color='#313030';*/
-            switch ($this->getEstadoInformeRencauche()){
+            switch ($this->getValueStatus($status)){
                 case 1:
                     $color="#d06060";
                     break;
@@ -702,8 +695,7 @@ class Llanta {
                     $color="#313030";
                     break;
             }
-            $salida=new Salida_Llanta('idLlanta', $this->id, null, null);
-            if ($salida->getId()!=null) $color="#efe16e";
+            if ($idSalida!=null) $color="#efe16e";
         }
         return $color;
     }
@@ -723,7 +715,7 @@ class Llanta {
 
     public function getBackgroudColorIcon($primaryColor){
         if ($primaryColor=='#313030') return '#fffcfc';
-        else return '#c577ce';
+        else return '#474048';
     }
     
     public function getColorUrgente() {
@@ -744,19 +736,26 @@ class Llanta {
     }
     
     public function getNombreEstadoRencauche() {
+        $status = "Desnococido";
+        $reencauchada = false;
         if ($this->id!=null && $this->id!=''){
-            if ($this->getFinRencaucheXProceso()) {
-                $servicioFin=new Servicio_Fin('idLlanta', $this->id, null, null);
-                if ($servicioFin->getId()!=null && $this->id!=''){
-                    if ($servicioFin->getEstado()=='t') return 'Procesada (Exitosamente)';
-                    else if ($servicioFin->getEstado()=='f') return 'Procesada (Rechazada)';
-                }
-            } else {
-                $inspeccionInicial=new Inspeccion_Inicial('idLlanta', $this->id, null, null);
-                if ($inspeccionInicial->getId()!=null && $inspeccionInicial->getId()!='') return 'Rencauchando';
-                else return 'Sin procesar';
+            $servicioFin=new Servicio_Fin('idLlanta', $this->id, null, null);
+            if ($servicioFin->getId()!=null && $servicioFin->getId()!='') {
+                $reencauchada = true;
+                if ($servicioFin->getEstado()=='t') $status = 'Procesada (Exitosamente)';
+                else if ($servicioFin->getEstado()=='f') $status = 'Procesada (Rechazada)';
             }
-        } else return 'Desconocido';
+        }
+        if (!$reencauchada) {
+            $status = "sin procesar";
+            $sql = "select id from inspeccion_inicial where idllanta={$this->id}";
+            if (is_array($result = Conector::ejecutarQuery($sql, null))) {
+                if (count($result)>0) {
+                    if ($result[0][0]!=null) $status = "reencauchando";
+                }
+            }
+        }
+        return $status;
     }
     
     public function getEstadoInformeRencauche() {
@@ -1232,5 +1231,78 @@ class Llanta {
         }
         return $value;
     }
+
+    //LINE INSERT SINCE 2019-02-27 15:26
+    public static function getLlantasOrdenServicio($filter, $order, $extras){
+        if ($filter!=null) $filter = "$filter and";
+        $JSON = array();
+        $sql = "select s.id as idOs, s.numerofactura, s.os, s.estado as estadoServicio, s.idCliente, s.idvendedor,
+                       pcl.identificacion as identificacionCliente, pcl.nombres || ' ' || pcl.apellidos as nombresCliente, cl.razonsocial,
+                       pv.identificacion as identificacionVendedor, pv.nombres || ' ' || pv.apellidos as nombresVendedor,
+                       ll.id as id, ll.rp, ll.serie, ll.consecutivo, ll.urgente as llantaUrgente, ll.procesado, ll.observaciones as observacionesllanta, ll.fecharegistro as fecharegistrollanta, ll.fechainicioproceso,
+                       mll.id as idMarca, mll.nombre as nombreMarca,
+                       gll.id as idGravado, gll.nombre as nombreGravado,
+                       dll.id as idDimension, dll.dimension,
+                       rtllo.id as idReferenciaTipoLlantaOriginal, rtllo.referencia as referenciaOriginal,
+                       tllo.id as idTipoLlantaOriginal, tllo.nombre as tipoLlantaOriginal,
+                       rtlls.id as idReferenciaTipoLlantaSolicitada, rtlls.referencia as referenciaSolicitada,
+                       tlls.id as idTipoLlantaSolicitada, tlls.nombre as tipoLlantaSolicitada
+                        from llanta as ll, servicio as s, cliente as cl, persona as pcl, empleado as v, persona as pv, marca_llanta as mll, gravado_llanta as gll, dimension_llanta as dll, referencia_tipo_llanta as rtllo, referencia_tipo_llanta as rtlls, tipo_llanta as tllo, tipo_llanta as tlls
+                        where $filter s.id=ll.idservicio
+                          and cl.id=s.idcliente
+                          and pcl.identificacion=cl.identificacion
+                          and v.id=s.idvendedor
+                          and pv.identificacion=v.identificacion
+                          and mll.id=ll.idmarca
+                          and gll.id=ll.idgravado
+                          and dll.id=ll.iddimension
+                          and rtllo.id=ll.idreferenciaoriginal
+                          and tllo.id=rtllo.idtipollanta
+                          and rtlls.id=ll.idreferenciasolicitada
+                          and tlls.id=rtlls.idtipollanta $order";
+        if (is_array($result = Conector::ejecutarQuery($sql, null))) {
+            for ($i=0; $i<count($result); $i++) {
+                $data = array();
+                foreach ($result[$i] as $item => $val) {
+                    $data["$item"] = $val;
+                    ${$item} = $val;
+                }
+                $llanta = new Llanta(null, null, null, null);
+                $llanta->setId(@$id);
+                $llanta->setIdServicio(@$idos);
+                $llanta->setUrgente(@$urgente);
+                $data["nombreUrgente"] = $llanta->getNombreUrgente();
+                $data["nombreEmpresaCliente"] = Cliente::getNameEnterprise(@$nombrescliente, @$razonsocial);
+                $data["colorUrgente"] = $llanta->getColorUrgente();
+                if ($extras) {
+                    $data['salida'] = json_decode(Salida_Llanta::getDataJSON(0, 'idLlanta', $llanta->getId(), null, null, null));
+                    $data["nombreEstado"] = $llanta->getNombreEstadoRencauche();
+                    $data["colorEstado"] = $llanta->getColorEstado($data["nombreEstado"], $data["salida"]->id);
+                    $data["colorLetraEstado"] = $llanta->getColorLetraEstado($data["colorEstado"]);
+                    $data["colorIcon"] = $llanta->getBackgroudColorIcon($data["colorEstado"]);
+                    if ($llanta->getEstadoInformeRencauche()==2 && $data['salida']->id==null || $llanta->getEstadoInformeRencauche()==3 && $data['salida']->id==null) $data['rencauchada_rechazada']= true;
+                    else $data['rencauchada_rechazada'] = false;
+                    if (strtolower($data["nombreEstado"])!="reencauchando" && strtolower($data["nombreEstado"])!="sin procesar") $data['medidas'] = json_decode($llanta->getMedidasProcesadas(true));
+                }
+                array_push($JSON, $data);
+            }
+        }
+        return json_encode($JSON, JSON_UNESCAPED_UNICODE);
+    }
+
+    public function getValueStatus($status){
+        /* SE RETORNA ($value) UN VALOR NUMERICO ASIGnADO AL ESTADO CAPTADO POR EL PARAMETRO $STATUS */
+        $value = 4;
+        switch (strtolower($status)) {
+            case "sin procesar": $value = 0; break;
+            case "reencauchando": $value = 1; break;
+            case "procesada (exitosamente)": $value = 2; break;
+            case "procesada (rechazada)": $value = 3; break;
+            default: $value = 4;
+        }
+        return $value;
+    }
+
+    //END LINE INSERT SINCE 2019-02-27 15:26
 
 }
