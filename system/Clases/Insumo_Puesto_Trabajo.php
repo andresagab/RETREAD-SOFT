@@ -276,10 +276,14 @@ class Insumo_Puesto_Trabajo {
          * True=Ya fue utilizado.
          * 
          */
-        $valid=false;
+        $valid = false;
         if ($this->id!=null && $this->id!=''){
-            $usoInsumoProceso=new Uso_Insumo_Proceso_Detalle('idInsumoPT', $this->id, null, null);
-            if ($usoInsumoProceso->getId()!=null && $usoInsumoProceso->getId()!='') $valid=true;
+            $sql = "select idinsumopt from uso_insumo_proceso_detalle where idinsumopt=$this->id limit 1";
+            if (is_array($result = Conector::ejecutarQuery($sql, null))) {
+                if (count($result)>0) {
+                    if ($result[0][0]!=null && $result[0][0]==$this->id) $valid = true;
+                }
+            }
         }
         return $valid;
     }
@@ -302,16 +306,15 @@ class Insumo_Puesto_Trabajo {
     }
 
     public function getRemainingStock(){
-        $remaining=$this->cantidad;
+        $remaining = $this->cantidad;
         if ($this->id!=null){
-            $data=Uso_Insumo_Proceso_Detalle::getListaEnObjetos("idInsumoPt={$this->id}", null);
-            for ($i=0; $i<count($data); $i++){
-                $remaining-=$data[$i]->getCantidad();
+            $sql = "select sum(cantidad) from uso_insumo_proceso_detalle where idinsumopt=$this->id";
+            if (is_array($result = Conector::ejecutarQuery($sql, null))){
+                if (count($result)>0) {
+                    if ($result[0][0]!=null) $remaining -= $result[0][0];
+                }
             }
         }
-        //if ($remaining==null || $remaining!=0) $remaining="Desconocido";
-        //echo $remaining;
-        //die();
         return $remaining;
     }
 
@@ -385,53 +388,41 @@ class Insumo_Puesto_Trabajo {
         return json_encode($JSON, JSON_UNESCAPED_UNICODE);
     }
 
-    public static function getInsumosPuestoTrabajoSQLJSON($idPt) {
-        $sql = "select ipt.id as id, ipt.idinsumo as idinsumo, ipt.idpuestotrabajo, ipt.cantidad, ipt.estado,
-               pr.id as idproducto, pr.stock, pc.nombre as nombrePuc, pr.foto, um.nombre as nombreUnidadMedida, pp.nombre as nombrePresentacion, percli.nombres || ' ' || percli.apellidos as nombresEmpresa, cl.razonsocial
-        from insumo_puestotrabajo as ipt, producto as pr, puc as pc, tercero as ter, puc as pcter, cliente as cl, persona as percli, unidad_medida as um, presentacion_producto as pp
-        where ipt.idpuestotrabajo=$idPt 
-        and pr.id=ipt.idinsumo
-        and pc.codigo=pr.codpuc
-        and ter.id=pr.idprovedor
-        and pcter.codigo=ter.codpuc
-        and cl.id=ter.idcliente
-        and percli.identificacion=cl.identificacion
-        and um.id=pr.idunidadmedida
-        and pp.id=pr.idpresentacion
-        and ipt.id not in (select idinsumopt from insumo_terminacion) order by ipt.id desc";
-        $data = Conector::ejecutarQuery($sql, null);
+    public static function getInsumosPuestoTrabajoSQLJSON($idPuestoTrabajo) {
         $JSON = array();
-        $insumo = array();
-        for ($i=0; $i<count($data);$i++) {
-
-            $object = array();
-            foreach ($data[$i] as $key => $val) ${$key} = $val;
-
-            $insumoPuestoTrabajo = new Insumo_Puesto_Trabajo(null, null, null, null);
-            @$insumoPuestoTrabajo->setId($id);
-            @$insumoPuestoTrabajo->setCantidad($cantidad);
-            @$insumoPuestoTrabajo->setId($estado);
-            @$object["id"] = $id;
-            @$object["cantidad"] = $cantidad;
-            @$object["estado"] = $estado;
-            @$object["nombreEstado"] = $insumoPuestoTrabajo->getNombreEstado();
-            @$object["chk"] = false;
-
-            $producto = new Producto(null, null, null, null);
-            @$producto->setId($idproducto);
-            @$producto->setFoto($foto);
-            @$insumo["nombrePuc"] = $nombrepuc;
-            if ($foto!=null ) @$insumo["notImage"] = false;
-            else @$insumo["notImage"] = true;
-            @$insumo["foto"] = $foto;
-            $insumo["nombrePresentacion"] = $nombrepresentacion;
-            $insumo["nombreUnidadMedida"] = $nombreunidadmedida;
-            if ($nombresempresa!=null && $razonsocial!=null) $insumo["nombreProveedor"] = "$nombresempresa ($razonsocial)";
-            elseif ($nombresempresa!=null && $razonsocial==null) $insumo["nombreProveedor"] = "$nombresempresa";
-            else $insumo["nombreProveedor"] = "$razonsocial";
-            $object["insumo"] = array();
-            array_push($object["insumo"], $insumo);
-            array_push($JSON, $object);
+        if ($idPuestoTrabajo!=null) {
+            $sql = "select ipt.id as id, ipt.idinsumo as idinsumo, ipt.idpuestotrabajo, ipt.cantidad as cantidadpuestotrabajo, ipt.estado as estadopuestotrabajo,
+                   pr.id as idproducto, pr.stock, pc.nombre as nombrePuc, pr.foto, um.nombre as nombreUnidadMedida, pp.nombre as nombrePresentacion, percli.nombres || ' ' || percli.apellidos as nombresEmpresa, cl.razonsocial
+            from insumo_puestotrabajo as ipt, producto as pr, puc as pc, tercero as ter, puc as pcter, cliente as cl, persona as percli, unidad_medida as um, presentacion_producto as pp
+            where ipt.idpuestotrabajo=$idPuestoTrabajo 
+            and pr.id=ipt.idinsumo
+            and pc.codigo=pr.codpuc
+            and ter.id=pr.idprovedor
+            and pcter.codigo=ter.codpuc
+            and cl.id=ter.idcliente
+            and percli.identificacion=cl.identificacion
+            and um.id=pr.idunidadmedida
+            and pp.id=pr.idpresentacion
+            and ipt.id not in (select idinsumopt from insumo_terminacion) order by ipt.id desc";
+            if (is_array($result = Conector::ejecutarQuery($sql, null))) {
+                for ($i=0; $i<count($result);$i++) {
+                    $data = array();
+                    foreach ($result[$i] as $key => $val) {
+                        ${$key} = $val;
+                        $data["$key"] = $val;
+                    }
+                    $object = new Insumo_Puesto_Trabajo(null, null, null, null);
+                    $object->setId(@$id);
+                    $object->setEstado(@$estadopuestotrabajo);
+                    $object->setCantidad(@$cantidadpuestotrabajo);
+                    $data["nombreEstado"] = $object->getNombreEstado();
+                    $data["remainingStock"] = $object->getRemainingStock();
+                    $data["btnUsar"] = $object->getUsado();
+                    if ($foto!=null ) @$data["notImage"] = false;
+                    else @$data["notImage"] = true;
+                    array_push($JSON, $data);
+                }
+            }
         }
         return json_encode($JSON, JSON_UNESCAPED_UNICODE);
     }

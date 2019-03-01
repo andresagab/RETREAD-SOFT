@@ -418,10 +418,11 @@ class Corte_Banda{
                         $JSON["$item"] = $val;
                         ${$item} = $val;
                     }
+                    $JSON['nombreEstado']=$object->getNameEstado();
                     if ($object->getFoto()==null || $object->getFoto()=='') {
                         $JSON['notImage']=true;
-                        $JSON['nombreEstado']=$object->getNameEstado();
                     }
+                    $JSON['usosRegistrados'] = $object->getStatusUsos();
                     if ($extras) {
                         $JSON['puestoTrabajo'] = json_decode(Puesto_Trabajo::getObjetoJSON('id', $object->getIdPuestoTrabajo(), null, null));
                         $JSON['empleado'] = json_decode(Empleado::getObjetoJSON('id', $object->getIdEmpleado(), null, null));
@@ -483,5 +484,16 @@ class Corte_Banda{
         return json_encode($JSON, JSON_UNESCAPED_UNICODE);
     }
     /*LINE INSERT SINCE 2019-02-27 23:34*/
+
+    public function getStatusUsos() {
+        $status = false;
+        $sql = "select id from uso_insumo_proceso where idproceso=$this->id and proceso=6";
+        if (is_array($result = Conector::ejecutarQuery($sql, null))) {
+            if (count($result)>0) {
+                if ($result[0][0]!=null) $status = true;
+            }
+        }
+        return $status;
+    }
 
 }

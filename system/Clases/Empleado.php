@@ -29,15 +29,15 @@ class Empleado {
 
     //Constructor
     function __construct($campo, $valor, $filtro, $orden){
-    	$BD='panam';
+    	//$BD='panam';
     	$P='';
     	if ($campo!=null) {
             if (is_array($campo)){
                 foreach ($campo as $key => $value) $this->$key=$value;
                 $this->cargarAtributos($campo);
             } else {
-                $sql="select id, identificacion, idCargo, fechaRegistro from {$P}empleado where $campo=$valor $filtro $orden";
-                $resultado=Conector::ejecutarQuery($sql, null);
+                $sql="select id, identificacion, idCargo, fechaRegistro from {$P}empleado where $campo=$valor $filtro $orden;";
+                $resultado = Conector::ejecutarQuery($sql, null);
                 if (count($resultado)>0) {
                     foreach ($resultado[0] as $key => $value) $this->$key=$value;
                     $this->cargarAtributos($resultado[0]);
@@ -216,7 +216,7 @@ class Empleado {
         switch ($type) {
             case 0:
                 if ($field!=null && $value!=null) {
-                    foreach (new Empleado($field, $value, $field, $order) as $key => $val) {
+                    foreach (new Empleado($field, $value, $filter, $order) as $key => $val) {
                         $JSON["$key"]=$value;
                         ${$key}=$value;
                     }

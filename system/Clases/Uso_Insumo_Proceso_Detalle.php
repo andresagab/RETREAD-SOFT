@@ -243,5 +243,70 @@ class Uso_Insumo_Proceso_Detalle {
         }
         return $valid;
     }
+
+    public static function getDataJSON($type, $field, $value, $filter, $order, $sql, $extras) {
+        $JSON = array();
+        switch ($type) {
+            case 0:
+                if ($field!=null && $value!=null) {
+                    foreach ($object = new Uso_Insumo_Proceso_Detalle($field, $value, $filter, $order) as $item => $val) {
+                        $JSON["$item"] = $val;
+                        ${$item} = $val;
+                    }
+                    $JSON['nombreTerminado']= $object->getNombreTerminado();
+                    $JSON['nombreUsado']= $object->getNombreUsado();
+                    if ($extras) {
+                        $JSON['usoInsumoProceso'] = json_decode(Uso_Insumo_Proceso::getObjetoJSON('id', $object->getIdUsoInsumoProceso(), null, null));
+                        $JSON['insumoPT']= json_decode(Insumo_Puesto_Trabajo::getObjetoJSON('id', $object->getIdInsumoPt(), null, null));
+                        $JSON['empleado']= json_decode(Empleado::getObjetoJSON('id', $object->getIdEmpleado(), null, null));
+                    }
+                }
+                break;
+            case 1:
+                $objects = Uso_Insumo_Proceso_Detalle::getListaEnObjetos($filter, $order);
+                for ($i=0; $i<count($objects); $i++) {
+                    $data = array();
+                    $object = $objects[$i];
+                    foreach ($objects[$i] as $item => $val) {
+                        $data["$item"] = $val;
+                        ${$item} = $val;
+                    }
+                    $data['nombreTerminado']= $object->getNombreTerminado();
+                    $data['nombreUsado']= $object->getNombreUsado();
+                    if ($extras) {
+                        $data['usoInsumoProceso'] = json_decode(Uso_Insumo_Proceso::getObjetoJSON('id', $object->getIdUsoInsumoProceso(), null, null));
+                        $data['insumoPT']= json_decode(Insumo_Puesto_Trabajo::getObjetoJSON('id', $object->getIdInsumoPt(), null, null));
+                        $data['empleado']= json_decode(Empleado::getObjetoJSON('id', $object->getIdEmpleado(), null, null));
+                    }
+                    array_push($JSON, $data);
+                }
+                break;
+            case 2:
+                if ($sql!=null) {
+                    $result = Conector::ejecutarQuery($sql, null);
+                    for ($i=0; $i<count($result); $i++) {
+                        $data = array();
+                        foreach ($result[$i] as $item => $val) {
+                            $data["$item"] = $val;
+                            ${$item} = $val;
+                        }
+                        $object = new Uso_Insumo_Proceso_Detalle(null, null, null, null);
+                        $object->setId(@$id);
+                        $object->setTerminado(@$terminado);
+                        $object->setUsado(@$usado);
+                        $data['nombreTerminado']= $object->getNombreTerminado();
+                        $data['nombreUsado']= $object->getNombreUsado();
+                        if ($extras) {
+                            $data['usoInsumoProceso'] = json_decode(Uso_Insumo_Proceso::getObjetoJSON('id', $object->getIdUsoInsumoProceso(), null, null));
+                            $data['insumoPT']= json_decode(Insumo_Puesto_Trabajo::getObjetoJSON('id', $object->getIdInsumoPt(), null, null));
+                            $data['empleado']= json_decode(Empleado::getObjetoJSON('id', $object->getIdEmpleado(), null, null));
+                        }
+                        array_push($JSON, $data);
+                    }
+                }
+                break;
+        }
+        return json_encode($JSON, JSON_UNESCAPED_UNICODE);
+    }
     
 }

@@ -313,5 +313,20 @@ where s.id=ll.idservicio
   and rtllo.id=ll.idreferenciaoriginal
   and tllo.id=rtllo.idtipollanta
   and rtlls.id=ll.idreferenciasolicitada
-  and tlls.id=rtlls.idtipollanta
+  and tlls.id=rtlls.idtipollanta;
 -- END 2019-02-27 14:42
+
+-- 2019-02-28 16:14
+select * from tabla where id=val;
+
+select uip.id as idusoinsumoproceso, uip.idempleado as idempleadousoinsumoproceso, uip.idproceso as idprocesousoinsumoproceso,
+       uipd.id as id, uipd.cantidad, uipd.terminado, uipd.usado, uipd.fecharegistro as fecharegistrousoinsumoprocesodetalle,
+       ipt.id as idinsumopuestotrabajo, ipt.cantidad as cantidadinsumopuestotrabajo, ipt.estado as estadoinsumopestotrabajo, ipt.usuario as usuarioinsumopuestotrabajo,
+       e.id as idempleadousoinsumoprocesodetalle, e.identificacion as identificacionempleadousoinsumoprocesodetalle
+from uso_insumo_proceso as uip, uso_insumo_proceso_detalle as uipd, insumo_puestotrabajo as ipt, empleado as e
+where uip.id=uipd.idusoinsumoproceso
+and ipt.id=uipd.idinsumopt
+and e.id=uipd.idempleado;
+
+select sum(cantidad) from uso_insumo_proceso_detalle;
+-- END 2019-02-28 16:14

@@ -274,4 +274,70 @@ class Puesto_Trabajo {
         return json_encode($JSON, JSON_UNESCAPED_UNICODE);
     }
 
+    /*LINE INSERT SINCE 2019-02-28 11:09*/
+    public static function getDataJSON($type, $field, $value, $filter, $order, $sql, $extras) {
+        $JSON = array();
+        switch ($type) {
+            case 0:
+                if ($field!=null && $value!=null) {
+                    foreach ($object = new Puesto_Trabajo($field, $value, $filter, $order) as $item => $val) {
+                        $JSON["$item"] = $val;
+                        ${$item} = $val;
+                    }
+                    $data['nombreProceso'] = $object->getNombreProceso();
+                    if ($extras) {
+                        $JSON['numberNovedades']=$object->getNumberNovedades('all');
+                        $JSON['numberNovedadesRevisadas']=$object->getNumberNovedades('ok');
+                        $JSON['numberNovedadesNoRevisadas']=$object->getNumberNovedades('notOk');
+                        $JSON['statusDelete']=getStatusDelete($object->getId(), ['raspado', 'preparacion', 'reparacion', 'cementado', 'relleno', 'corte_banda', 'embandado', 'vulcanizado', 'inspeccion_final'], 'idpuestotrabajo');
+                    }
+                }
+                break;
+            case 1:
+                $objects = Puesto_Trabajo::getListaEnObjetos($filter, $order);
+                for ($i=0; $i<count($objects); $i++) {
+                    $data = array();
+                    $object = $objects[$i];
+                    foreach ($objects[$i] as $item => $val) {
+                        $data["$item"] = $val;
+                        ${$item} = $val;
+                    }
+                    $data['nombreProceso'] = $object->getNombreProceso();
+                    if ($extras) {
+                        $data['numberNovedades']=$object->getNumberNovedades('all');
+                        $data['numberNovedadesRevisadas']=$object->getNumberNovedades('ok');
+                        $data['numberNovedadesNoRevisadas']=$object->getNumberNovedades('notOk');
+                        $data['statusDelete']=getStatusDelete($object->getId(), ['raspado', 'preparacion', 'reparacion', 'cementado', 'relleno', 'corte_banda', 'embandado', 'vulcanizado', 'inspeccion_final'], 'idpuestotrabajo');
+                    }
+                    array_push($JSON, $data);
+                }
+                break;
+            case 2:
+                if ($sql!=null) {
+                    $result = Conector::ejecutarQuery($sql, null);
+                    for ($i=0; $i<count($result); $i++) {
+                        $data = array();
+                        foreach ($result[$i] as $item => $val) {
+                            $data["$item"] = $val;
+                            ${$item} = $val;
+                        }
+                        $object = new Puesto_Trabajo(null, null, null, null);
+                        $object->setId(@$id);
+                        $object->setProceso(@$proceso);
+                        $data['nombreProceso'] = $object->getNombreProceso();
+                        if ($extras) {
+                            $data['numberNovedades']=$object->getNumberNovedades('all');
+                            $data['numberNovedadesRevisadas']=$object->getNumberNovedades('ok');
+                            $data['numberNovedadesNoRevisadas']=$object->getNumberNovedades('notOk');
+                            $data['statusDelete']=getStatusDelete($object->getId(), ['raspado', 'preparacion', 'reparacion', 'cementado', 'relleno', 'corte_banda', 'embandado', 'vulcanizado', 'inspeccion_final'], 'idpuestotrabajo');
+                        }
+                        array_push($JSON, $data);
+                    }
+                }
+                break;
+        }
+        return json_encode($JSON, JSON_UNESCAPED_UNICODE);
+    }
+    /*ENDLINE INSERT SINCE 2019-02-28 11:09*/
+
 }

@@ -423,5 +423,38 @@ class Uso_Insumo_Proceso {
             }
         } else return json_encode($JSON);
     }
-    
+
+    public static function getDataProcesoJSON($table, $field, $value, $filter, $order, $numeroProceso) {
+        $JSON = array();
+        $sql = "select * from $table where $field=$value $filter $order";
+        if (is_array($result = Conector::ejecutarQuery($sql, null))){
+            if (count($result)==0) {
+                foreach ($result[$i] as $item => $val) {
+                    $JSON["$item"] = $val;
+                    ${$item} = $val;
+                }
+                $sql = "select id from uso_insumo_proceso where idproceso=$value and proceso=$numeroProceso";
+                if (is_array($result = Conector::ejecutarQuery($sql, null))) {
+                    if ($result[0][0]!=null) $JSON["usosRegistrados"] = true;
+                    else $JSON["usosRegistrados"] = false;
+                }
+            } else {
+                for ($i=0; $i<count($result); $i++) {
+                    $data = array();
+                    foreach ($result[$i] as $item => $val) {
+                        $data["$item"] = $val;
+                        ${$item} = $val;
+                    }
+                    $sql = "select id from uso_insumo_proceso where idproceso={$result[$i]['id']} and proceso=$numeroProceso";
+                    if (is_array($result = Conector::ejecutarQuery($sql, null))) {
+                        if ($result[0][0]!=null) $data["usosRegistrados"] = true;
+                        else $data["usosRegistrados"] = false;
+                    }
+                    array_push($JSON, $data);
+                }
+            }
+        }
+        return json_encode($JSON, JSON_UNESCAPED_UNICODE);
+    }
+
 }
