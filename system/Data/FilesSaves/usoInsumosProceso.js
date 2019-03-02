@@ -52,12 +52,12 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
             },
             insumoUsarYTerminar: {}
         }
-    };
+    }
 
     $scope.setNumeroProceso=function (_numeroProceso){
         if (validarInput(_numeroProceso)) $scope.page.data.numeroProceso = _numeroProceso;
         else $scope.page.data.numeroProceso = null;
-    };
+    }
 
     $scope.loadEmpleado = function (_id){
         if (validarInput(_id)){
@@ -89,7 +89,7 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
             showToast(true, 'No se pudo cargar el usuario con el que inciaste sesion');
             incompleteData("principal.php?CON=system/pages/unknowData.php");
         }
-    };
+    }
 
     $scope.cargarProceso = function (_http, _object, _id, _metodo){
         if (_http) {
@@ -136,7 +136,7 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
                 incompleteData("principal.php?CON=system/pages/unknowData.php");
             }
         }
-    };
+    }
 
     $scope.cargarPuestoTrabajo = function (_http, _object, _id){
         if (_http) {
@@ -179,7 +179,7 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
                 incompleteData("principal.php?CON=system/pages/unknowData.php");
             }
         }
-    };
+    }
 
     $scope.cargarUsosInsumosProceso =function (){
         if (validarInput($scope.page.data.proceso.id) && validarInput($scope.page.data.numeroProceso)){
@@ -211,7 +211,7 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
                 });
             }
         }
-    };
+    }
     //REVIZAR
     $scope.validarUsosInsumosProceso = function (){
         /*var valid=false;
@@ -225,7 +225,7 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
             $("#puestoTrabajo").focus();
         }
         return valid;*/
-    };
+    }
 
     $scope.seleccionarPuestoTrabajo=function (){
         /*if ($scope.validarUsosInsumosProceso()) {
@@ -240,11 +240,11 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
             $scope.page.spnListaPuestosTrabajo=false;
             $scope.page.btnRegistrarProceso=true;
         }*/
-    };
+    }
 
     $scope.setPuestoTrabajoSelect=function (_idPT){
         // $("#puestoTrabajo").val(_idPT);
-    };
+    }
     //FIN REVIZAR
     $scope.cargarInsumosPuestoTrabajo = function (_IdPuestoTrabajo){
         $scope.page.data.insumos = [];
@@ -275,7 +275,7 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
                 $scope.page.data.insumos=[];
             })
         } else $scope.page.data.insumos=[];
-    };
+    }
 
     $scope.getUsado=function (object) {
         var valid=false;
@@ -288,7 +288,7 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
             }
         }
         return valid;
-    };
+    }
 
     $scope.seleccionarAllInsumos=function (){
         if ($scope.page.components.chksInsumos) {
@@ -326,7 +326,7 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
             } else showToastDialog(false, 'No hay registros para desmarcar', 'toast-content-dialog');
         }
         $scope.validarInsumos();
-    };
+    }
 
     $scope.separarIdInsumo=function (_chk, _IdInsumo){
         if (_chk){
@@ -339,7 +339,7 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
             //else $scope.page.data.insumosId.push(_IdInsumo);
         }
         $scope.validarInsumos();
-    };
+    }
 
     $scope.validarInsumos=function (){
         valido=false;
@@ -354,7 +354,7 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
             }
         } else $scope.page.components.btnUsarVariosInsumos = false;
         return valido;
-    };
+    }
 
     function cortarArray(_Array){
         var array="";
@@ -376,7 +376,7 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
             }
         }
         return array;
-    };
+    }
 
     $scope.validarDatosProceso = function (){
         var valid=false;
@@ -388,7 +388,7 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
             //$scope.page.btnRegistrarProceso=true;
         }
         return valid;
-    };
+    }
 
     $scope.validarDatosEmpleado = function (){
         var valid=false;
@@ -400,7 +400,7 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
             //$scope.page.btnRegistrarProceso=true;
         }
         return valid;
-    };
+    }
 
     $scope.validarDatosPuestoTrabajo=function (){
         var valid = false;
@@ -412,16 +412,37 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
             //$scope.page.btnRegistrarProceso=true;
         }
         return valid;
-    };
+    }
 
     $scope.showAlertDialog = function (status, color, message){
         $scope.page.components.alertDialog.status = status;
         $scope.page.components.alertDialog.color = color;
         $scope.page.components.alertDialog.mjs = message;
-    };
+    }
 
     //Registro de uso de insumo
-    $scope.usoInsumo = {};
+    $scope.usoInsumo={}
+
+    /*$scope.validStockUsed = function(id, _stockUsed){
+        var object = null;
+        var valid = false;
+        for (var i=0; i<$scope.page.data.insumos.length; i++){
+            if ($scope.page.data.insumos[i].id=id) {
+                object=$scope.page.data.insumos[i];
+                i=$scope.page.data.insumos.length;
+            }
+        }
+        if (object!=null){
+            if (_stockUsed!=null){
+                if (_stockUsed>0){
+                    if (_stockUsed<=object.remainingStock) valid=true;
+                }
+            }
+        }
+        if (valid) $scope.showAlertDialog(false, null, null);
+        else $scope.showAlertDialog(true, "La cantidad que vas a usar no puede ser superior a la disponible (" + _stockUsed + "/" + object.remainingStock + ")");
+        return valid;
+    }*/
 
     $scope.usarInsumo=function (_idInsumo, _stockUsed, _metodo){
         /*
@@ -501,6 +522,9 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
     //Fin Registro de uso de insumo
     //--------------------------------------------------------------------------
     //REGISTRO DE LA TERMINACION DE UN INSUMO
+    //$scope.insumoUsarYTerminar={};
+
+    //$scope.seleccionarInsumoUsarYTerminar = function (_insumo){
     $scope.seleccionarInsumoUsarYTerminar = function (_object){
         $scope.page.data.insumoUsarYTerminar = {};
         $scope.page.components.btnUsarTerminarInsumo = true;
@@ -510,7 +534,7 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
                 $scope.page.components.btnUsarTerminarInsumo = false;
             }
         } else showToastDialog(true, 'No se pudo cargar el insumo o la herramienta', 'toast-content-dialog');
-    };
+    }
 
     $scope.terminarInsumo = function (_idInsumo, usar){
         /*
@@ -574,14 +598,15 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
             $scope.limpiarUsarYTerminarInsumo();
             showToastDialog(true, 'Error 404: no se encontro el archivo y/o no se pudo conectar al servidor', 'toast-content-dialog');
         });
-    };
+    }
     
     $scope.limpiarUsarYTerminarInsumo=function (){
         $scope.deleteImg();
         $scope.page.data.terminacionInsumo.observaciones = null;
         $scope.showAlertDialog(false, null, null);
-    };
-
+    }
+    
+    //$scope.UsarYTerminarInsumo = function (_idInsumo, metodo){
     $scope.UsarYTerminarInsumo = function (metodo){
         /*
          * TRUE: registra el uso del insumo y la terminacion.
@@ -599,7 +624,7 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
                 } else $scope.showAlertDialog(true, 'warning', 'Debes subir una foto que evidencie la terminacion del insumo');
             } else showToastDialog(true, "No se pudo cargar el insumo o la herramienta, intentalo nuevamente", 'toast-content-dialog');
         } else showToastDialog(true, "No se pudo cargar el insumo o la herramienta, intentalo nuevamente", 'toast-content-dialog');
-    };
+    }
     //FIN REGISTRO DE LA TERMINACION DE UN INSUMO
     //--------------------------------------------------------------------------
     //FUNCIONES IMAGENES DIALOGO PUESTO TRABAJO
@@ -612,7 +637,7 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
             } else $scope.showAlertDialog(true, 'warning', 'Debes subir una foto que evidencie la terminación del insumo o la herramienta');
         } else $scope.showAlertDialog(true, 'warning', 'Debes subir una foto que evidencie la terminación del insumo o la herramienta');
         return valid;
-    };
+    }
 
     $scope.fileReaderSupported = window.FileReader!=null;
     
@@ -636,7 +661,7 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
                 } else $scope.deleteImg();
             } else $scope.deleteImg();
         }
-    };
+    }
     
     $scope.deleteImg = function (){
         $scope.page.components.fotoTerminacion = false;
@@ -645,7 +670,7 @@ panamApp.controller('usoInsumosProceso', function ($scope, configuracionGlobal, 
         $('#fotoTerminacion').val(null);
         $('#fotoUsarTerminar').val(null);
         $scope.validarFotoTerminacion();
-    };
+    }
     //FIN FUNCIONES IMAGENES DIALOGO PUESTO TRABAJO
     //------------------------------------------------------------------------------------------------------------------
     //Registro de novedad para puesto de trabajo

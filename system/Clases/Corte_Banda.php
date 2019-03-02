@@ -218,6 +218,13 @@ class Corte_Banda{
         else return false;
     }
 
+    public function updateOnlyEmpatesObs() {
+        $P='';
+        $sql="update {$P}corte_banda set empates=$this->empates, observaciones='$this->observaciones' where id=$this->id";
+        if (Conector::ejecutarQuery($sql, null)!=null) return true;
+        else return false;
+    }
+
     public function addIdRelleno(){
         $P='';
         $sql="update {$P}corte_banda set idRelleno=$this->idRelleno where id=$this->id";

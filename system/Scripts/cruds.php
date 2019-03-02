@@ -677,7 +677,6 @@ function registrarPosicionCamara($Datos) {
 }
 
 //REGISTRO DE USOS DE INSUMOS EN X PROCESO
-//
 function validarInsumo($id) {
     $valid=false;
     if ($id!=null && $id!=''){
@@ -790,11 +789,9 @@ function registrarUsosInsumosProceso($json) {
     }
     return $result;
 }
-//
 //FIN REGISTRO DE USOS DE INSUMOS EN X PROCESO
-//
+
 //REGISTRO TERMINACION INSUMO
-//
 function registrarTerminacionInsumo($Datos, $Archivos) {
     //--------------------------------------------------------------------------
     //Esta funcion realiza el proceso de registro de terminacion para un insumo 
@@ -828,7 +825,6 @@ function registrarTerminacionInsumo($Datos, $Archivos) {
         else echo 'SDE';
     } else echo 'SDE';
 }
-//
 //FIN REGISTRO TERMINACION INSUMO
 
 function addCorteBandaOP(){

@@ -297,23 +297,26 @@ switch ($_GET['metodo']) {
         break;
     case 'getSimpleUsosInsumosProcesoJSON':
         if (isset($_GET['idProceso']) && isset($_GET['proceso'])) {
-            $sql="select uip.id as idusoinsumoproceso, uip.idempleado as idempleadousoinsumoproceso, uip.idproceso as idprocesousoinsumoproceso,
-                       uipd.id as id, uipd.cantidad, uipd.terminado, uipd.usado, uipd.fecharegistro as fecharegistrousoinsumoprocesodetalle,
-                       ipt.id as idinsumopuestotrabajo, ipt.cantidad as cantidadinsumopuestotrabajo, ipt.estado as estadoinsumopestotrabajo, ipt.usuario as usuarioinsumopuestotrabajo, ipt.idpuestotrabajo as idpuestotrabajoInsumo, 
-                       e.id as idempleadousoinsumoprocesodetalle, e.identificacion as identificacionempleadousoinsumoprocesodetalle 
-                from uso_insumo_proceso as uip, uso_insumo_proceso_detalle as uipd, insumo_puestotrabajo as ipt, empleado as e
+            $sql="select uip.id as idusoinsumoproceso, uip.idempleado as idempleadousoinsumoproceso, uip.idproceso as idprocesousoinsumoproceso, 
+                    uipd.id as id, uipd.cantidad, uipd.terminado, uipd.usado, uipd.fecharegistro as fecharegistrousoinsumoprocesodetalle, 
+                    ipt.id as idinsumopuestotrabajo, ipt.cantidad as cantidadinsumopuestotrabajo, ipt.estado as estadoinsumopestotrabajo, ipt.usuario as usuarioinsumopuestotrabajo, ipt.idpuestotrabajo as idpuestotrabajoInsumo, 
+                    pc.nombre as nombrepuc, 
+                    e.id as idempleadousoinsumoprocesodetalle, e.identificacion as identificacionempleadousoinsumoprocesodetalle 
+                from uso_insumo_proceso as uip, uso_insumo_proceso_detalle as uipd, insumo_puestotrabajo as ipt, empleado as e, producto as pro, puc as pc 
                 where uip.idproceso={$_GET['idProceso']} 
                 and uip.proceso={$_GET['proceso']} 
                 and uipd.idusoinsumoproceso=uip.id
-                and ipt.id=uipd.idinsumopt
+                and ipt.id=uipd.idinsumopt 
+                and pro.id=ipt.idinsumo 
+                and pc.codigo=pro.codpuc
                 and e.id=uipd.idempleado;";
             //echo $sql;
             echo Uso_Insumo_Proceso_Detalle::getDataJSON(2, null, null, null, null, $sql, false);
         } else header('Location: principal.php?CON=system/pages/unknowData.php');
         break;
     case 'getSimpleInsumosPuestoTrabajoJSON':
-        if (isset($_GET['idPuestoTrabajo'])) {
-            echo Insumo_Puesto_Trabajo::getInsumosPuestoTrabajoSQLJSON($_GET['idPuestoTrabajo']);
+        if (isset($_GET['idPuestoTrabajo']) && isset($_GET['extras'])) {
+            echo Insumo_Puesto_Trabajo::getInsumosPuestoTrabajoSQLJSON($_GET['idPuestoTrabajo'], $_GET['extras']);
         } else header('Location: principal.php?CON=system/pages/unknowData.php');
         //echo Insumo_Puesto_Trabajo::getObjetosJSON("idPuestoTrabajo={$_GET['idPT']} and id not in (select idInsumoPt from insumo_terminacion)", "order by id asc");
         break;

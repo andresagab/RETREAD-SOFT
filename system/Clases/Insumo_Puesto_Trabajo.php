@@ -388,7 +388,7 @@ class Insumo_Puesto_Trabajo {
         return json_encode($JSON, JSON_UNESCAPED_UNICODE);
     }
 
-    public static function getInsumosPuestoTrabajoSQLJSON($idPuestoTrabajo) {
+    public static function getInsumosPuestoTrabajoSQLJSON($idPuestoTrabajo, $extras) {
         $JSON = array();
         if ($idPuestoTrabajo!=null) {
             $sql = "select ipt.id as id, ipt.idinsumo as idinsumo, ipt.idpuestotrabajo, ipt.cantidad as cantidadpuestotrabajo, ipt.estado as estadopuestotrabajo,
@@ -416,10 +416,12 @@ class Insumo_Puesto_Trabajo {
                     $object->setEstado(@$estadopuestotrabajo);
                     $object->setCantidad(@$cantidadpuestotrabajo);
                     $data["nombreEstado"] = $object->getNombreEstado();
-                    $data["remainingStock"] = $object->getRemainingStock();
                     $data["btnUsar"] = $object->getUsado();
                     if ($foto!=null ) @$data["notImage"] = false;
                     else @$data["notImage"] = true;
+                    if ($extras) {
+                        $data["remainingStock"] = $object->getRemainingStock();
+                    }
                     array_push($JSON, $data);
                 }
             }

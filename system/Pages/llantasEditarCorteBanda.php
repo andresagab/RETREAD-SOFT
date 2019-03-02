@@ -13,7 +13,6 @@ if (strtolower($USUARIO->getRol()->getNombre())!='operario' && strtolower($USUAR
     require_once dirname(__FILE__) . '/../Clases/Corte_Banda.php';
     if (isset($_GET['id']) && isset($_GET['idCorteBanda'])) {
         $object = new Corte_Banda("id", $_GET['idCorteBanda'], null, null);
-        //$llanta = new Llanta("id", $_GET['id'], null, null);
         if ($object->getIdPuestoTrabajo()!=null) {
             ?>
                     <input type="hidden" name="idEmpleado" value="<?= $USUARIO->getIdEmpleadoUsuario(); ?>">
@@ -28,10 +27,29 @@ if (strtolower($USUARIO->getRol()->getNombre())!='operario' && strtolower($USUAR
                         <div class="mdl-spinner mdl-js-spinner is-active"></div>
                     </div>
                     <!--FORM-->
-                    <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop30">
+                    <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20">
+                        <center>
+                            <table class="mdl-data-table table-responsive">
+                                <thead>
+                                <tr>
+                                    <td class="mdl-data-table__cell--non-numeric">INSUMO O HERRAMIENTA</td>
+                                    <td>CANTIDAD</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="object in page.data.usosInsumoProceso">
+                                    <td class="mdl-data-table__cell--non-numeric">{{ object.nombrepuc }}</td>
+                                    <td>{{ object.cantidad }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </center>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20">
+                        <div class="alert alert-{{ html.components.alert.color }}" ng-show="html.components.alert.status">{{ html.components.alert.mjs }}</div>
                         <div class="col-sm-12 col-md-3 col-lg-3"></div>
                         <div class="col-sm-12 col-md-6 col-lg-6">
-                            <form name="frmCorteBanda" ng-submit="" novalidate>
+                            <form name="frmCorteBanda" ng-submit="sendForm();" novalidate>
                                 <div class="form-group">
                                     <div class="input-group">
                                         <span class="input-group-addon">* Puesto de trabajo</span>
@@ -46,9 +64,18 @@ if (strtolower($USUARIO->getRol()->getNombre())!='operario' && strtolower($USUAR
                                 <div class="form-group">
                                     <div class="input-group">
                                         <span class="input-group-addon">* Empates:</span>
-                                        <input class="form-control has-success" id="txtEmpates" name="empates" ng-model="html.forms.dataFrmCorteBanda.empates" type="number" min="0" max="100" step="any">
+                                        <div class="input-group-addon">
+                                            <input class="form-control has-success" id="txtEmpates" name="empates" ng-model="html.forms.dataFrmCorteBanda.empates" type="number" min="0" max="100" step="any">
+                                        </div>
+                                        <div class="input-group-addon">
+<!--                                            <input class="form-control checkbox" id="chkEmpates" name="chkEmpates" ng-change="" ng-model="html.components.chkEmpates">-->
+                                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkEmpates">
+                                                <input type="checkbox" id="chkEmpates" class="mdl-checkbox__input" ng-model="html.components.chkEmpates" ng-change="validSoloEmpates();">
+                                                <span class="mdl-checkbox__label" ng-show="html.components.chkEmpates">Solo empates</span>
+                                            </label>
+                                        </div>
                                     </div>
-                                    <div class="alert alert-danger text-center" ng-show="html.forms.dataFrmCorteBanda.empates==null && frmCorteBanda.$submitted">Debes dijitar el numero de empates realizados en este corte</div>
+                                    <div class="alert alert-danger text-center" ng-show="html.forms.dataFrmCorteBanda.empates==null">Debes dijitar el numero de empates realizados en este corte</div>
                                 </div>
                                 <div class="form-group" ng-show="html.components.viewPhotoCorteBanda">
                                     <div class="row">
@@ -56,7 +83,7 @@ if (strtolower($USUARIO->getRol()->getNombre())!='operario' && strtolower($USUAR
                                             <div class="thumbnail">
                                                 <img class="card-img-top" id="imgVerTerminacion" style="height: 300px;" ng-src="{{ html.data.img.dataURL }}">
                                                 <div class="caption">
-                                                    <button class="btn btn-warning" id="btnEliminarImgTerminacion" type="button" ng-click="deletePhoto()">Borrar</button>
+                                                    <button class="btn btn-warning" id="btnEliminarImgCorteBanda" type="button" ng-click="deletePhoto()">Borrar</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -65,14 +92,14 @@ if (strtolower($USUARIO->getRol()->getNombre())!='operario' && strtolower($USUAR
                                 <div class="form-group">
                                     <div class="input-group">
                                         <span class="input-group-addon">* Foto:</span>
-                                        <input class="form-control btn btn-default" id="fotoCorteBanda" type="file" name="fotoCorteBanda" ng-model="html.forms.dataFrmCorteBanda.foto" required accept="image/*" onchange="angular.element(this).scope().setFotoCorteBanda(this.files)" uploader-model="file">
+                                        <input class="form-control btn btn-default" id="fotoCorteBanda" type="file" name="fotoCorteBanda" required accept="image/*" onchange="angular.element(this).scope().setFotoCorteBanda(this.files)" uploader-model="file">
                                     </div>
-                                    <div class="alert alert-danger text-center" ng-show="html.forms.dataFrmCorteBanda.foto==null && frmCorteBanda.$submitted">Debes subir una foto que evidencie el proceso de corte de banda</div>
+                                    <div class="alert alert-danger text-center" ng-show="html.data.img.dataURL==null">Debes subir una foto que evidencie el proceso de corte de banda</div>
                                 </div>
                                 <div class="form-group">
                                     <div class="input-group">
                                         <span class="input-group-addon">Observaciones: </span>
-                                        <textarea class="form-control form-control-sm" name="txtObservaciones" id="txtObservaciones" placeholder="Dijita algunas observaciones sobre el corte de la banda que se registrara" ng-model="html.forms.dataFrmCorteBanda.observaciones"></textarea>
+                                        <textarea class="form-control form-control-sm" name="txtObservacionesCorteBanda" id="txtObservacionesCorteBanda" placeholder="Dijita algunas observaciones sobre el corte de la banda que se registrara" ng-model="html.forms.dataFrmCorteBanda.observaciones"></textarea>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -90,7 +117,7 @@ if (strtolower($USUARIO->getRol()->getNombre())!='operario' && strtolower($USUAR
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <button class="close" id="btnCloseDlgAddCorte" data-dismiss="modal">&times;</button>
+                                    <button class="close" id="btnCloseDlgGestionInsumosProceso" data-dismiss="modal">&times;</button>
                                     <h3 class="text text-primary">REGISTRAR USOS DE INSUMOS Y/O HERRAMIENTAS</h3>
                                     <h4 class="text text-muted">{{ page.data.puestoTrabajo.nombre }}</h4>
                                     <div class="row col-md-12" id="paddinTop20" ng-show="page.components.loadSpinnerDialog">
@@ -273,42 +300,33 @@ if (strtolower($USUARIO->getRol()->getNombre())!='operario' && strtolower($USUAR
                                             <div role="tabpanel" class="tab-pane" id="UsarYTerminarInsumo">
                                                 <div class="col-sm-12 col-lg-12" id="paddinTop10">
                                                     <div class="col-md-12 col-sm-12 table-responsive" >
-                                                        <strong class="text text-success control-label"><h2>Usar y terminar insumo</h2></strong>
+                                                        <strong class="text text-success control-label"><h2>USAR Y TERMINAR EL INSUMO O LA HERRAMIENTA</h2></strong>
                                                     </div>
-                                                    <form name="frmUsarYTerminar" id="frmUsarYTerminar" ng-submit="UsarYTerminarInsumo(insumoUsarYTerminar.id, true)">
+                                                    <form name="frmUsarYTerminar" id="frmUsarYTerminar" ng-submit="UsarYTerminarInsumo(true)">
                                                         <div class="row col-md-12">
                                                             <div class="col-sm-12 col-lg-12 page-header" id="paddinTop-20">
                                                                 <div class="col-sm-12 col-lg-12 table-responsive">
                                                                     <div class="thumbnail">
-                                                                        <img ng-hide="insumoUsarYTerminar.insumo[0].notImage" class="img-responsive" style="width: 150px;" src="system/Uploads/Imgs/Productos/{{ insumoUsarYTerminar.insumo[0]['foto'] }}">
-                                                                        <img ng-show="insumoUsarYTerminar.insumo[0].notImage" class="img-responsive" style="width: 150px;" src="design/pics/imagenes/not_image.jpg" data-toggle="tooltip" title="Este producto no cuenta con una imagen">
+                                                                        <img ng-hide="page.data.insumoUsarYTerminar.notImage" class="img-responsive" style="width: 150px;" src="system/Uploads/Imgs/Productos/{{ page.data.insumoUsarYTerminar.foto }}">
+                                                                        <img ng-show="page.data.insumoUsarYTerminar.notImage" class="img-responsive" style="width: 150px;" src="design/pics/imagenes/not_image.jpg" data-toggle="tooltip" title="Este producto no cuenta con una imagen">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-sm-12 col-lg-6 text-justify">
-                                                                    <label class="text-nowrap text-uppercase">Insumo: </label><span class="text text-muted"> {{ insumoUsarYTerminar.insumo[0].nombrePuc }}</span>
-                                                                </div>
-                                                                <div class="col-sm-12 col-lg-6 text-justify">
-                                                                    <label class="text-nowrap text-uppercase">Presentacion: </label><span class="text text-muted"> {{ insumoUsarYTerminar.insumo[0].nombrePresentacion }}</span>
-                                                                </div>
-                                                                <div class="col-sm-12 col-lg-6 text-justify">
-                                                                    <label class="text-nowrap text-uppercase">Unidad medida: </label><span class="text text-muted"> {{ insumoUsarYTerminar.insumo[0].nombreUnidadMedida }}</span>
-                                                                </div>
-                                                                <div class="col-sm-12 col-lg-6 text-justify">
-                                                                    <label class="text-nowrap text-uppercase">Proveedor: </label><span class="text text-muted"> {{ insumoUsarYTerminar.insumo[0].nombreProveedor }}</span>
+                                                                    <label class="text-nowrap text-uppercase">Insumo o herramienta: </label><span class="text text-muted"> {{ page.data.insumoUsarYTerminar.nombrepuc }}</span>
                                                                 </div>
                                                                 <div class="col-sm-12 col-lg-12 text-justify">
-                                                                    <label class="text-nowrap text-uppercase">Cantidad a usar y terminar: </label><span class="text text-muted"> {{ insumoUsarYTerminar.cantidad }}</span>
+                                                                    <label class="text-nowrap text-uppercase">Cantidad: </label><span class="text text-muted"> {{ page.data.insumoUsarYTerminar.cantidadpuestotrabajo }}</span>
                                                                 </div>
                                                             </div>
                                                             <div class="col-sm-12 col-lg-12">
                                                                 <div class="col-sm-12 col-lg-12">
-                                                                    <div class="form-group" ng-show="html.fotoTerminacion">
+                                                                    <div class="form-group" ng-show="page.components.fotoTerminacion">
                                                                         <div class="row">
                                                                             <div class="col-sm-12 col-md-12">
                                                                                 <div class="thumbnail">
-                                                                                    <img class="card-img-top" id="imgVerTerminacion" style="height: 300px;" ng-src="{{ thumb.dataURL }}">
+                                                                                    <img class="card-img-top" id="imgVerTerminacion" style="height: 300px;" ng-src="{{ page.data.imgs.fotoTerminacionUrl }}">
                                                                                     <div class="caption">
-                                                                                        <button class="btn btn-warning" id="btnEliminarImgTerminacion" type="button" ng-click="deleteImg()">Borrar</button>
+                                                                                        <button class="btn btn-warning" type="button" ng-click="deleteImg()">Borrar</button>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -317,26 +335,25 @@ if (strtolower($USUARIO->getRol()->getNombre())!='operario' && strtolower($USUAR
                                                                     <div class="form-group">
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon">Foto:</span>
-                                                                            <input id="file" type="file" class="form-control btn btn-default" name="file" required="" accept="image/*" onchange="angular.element(this).scope().photoChanged(this.files)" uploader-model="file">
+                                                                            <input id="fotoUsarTerminar" type="file" class="form-control btn btn-default" name="fotoUsarTerminar" required accept="image/*" onchange="angular.element(this).scope().photoChanged(this.files)" uploader-model="file">
                                                                         </div>
                                                                     </div>
-                                                                    <div class="alert alert-danger text-center" id="paddinTop10" ng-show="html.imgTerminacion=='' && frmUsarYTerminar.$submitted && html.imgTerminacion==null">Debes subir una foto que evidencie la terminacion de la herramienta</div>
+                                                                    <div class="alert alert-danger text-center" id="paddinTop10" ng-show="page.data.imgs.fotoTerminacionUrl=='' && frmUsarYTerminar.$submitted && page.data.imgs.fotoTerminacionUrl==null">Debes subir una foto que evidencie la terminación del insumo o la herramienta</div>
                                                                     <div class="form-group">
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon">Observaciones:</span>
-                                                                            <!--<textarea class="form-control" id="txtObservacionesUsaryTerminarInsumo" name="txtUsarYTerminarInsumo" required="" ng-model="terminacionInsumo.observaciones" placeholder="Escribe algunas observaciones"></textarea>-->
-                                                                            <textarea class="form-control" id="txtObservacionesUsaryTerminarInsumo" name="txtUsarYTerminarInsumo" ng-model="terminacionInsumo.observaciones" placeholder="Escribe algunas observaciones"></textarea>
+                                                                            <textarea class="form-control" id="txtObservacionesUsaryTerminarInsumo" name="txtUsarYTerminarInsumo" ng-model="page.data.terminacionInsumo.observaciones" placeholder="Escribe algunas observaciones"></textarea>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div class="col-sm-12 col-lg-12 text-center" id="paddinTop10">
-                                                                <label class="text text-nowrap text-uppercase">Esta seguro de usar y terminar este insumo?</label>
+                                                                <label class="text text-nowrap text-uppercase">Esta seguro de usar y terminar este insumo o herramienta?</label>
                                                             </div>
                                                             <div class="col-sm-12 col-lg-12" id="paddinTop20">
                                                                 <div class="col-md-12">
-                                                                    <button id="btnRegresarLista_2" class="btn btn-default" type="button" href="/#lista" aria-control="" data-toggle="tab" role="tab" ng-click="limpiarUsarYTerminarInsumo()">Regresar</button>
-                                                                    <button ng-disabled="html.btnUsarYTerminarInsumo" class="btn btn-info" id="btnUsarYTerminarInsumo" type="submit" name="accion">Aceptar</button>
+                                                                    <button class="btn btn-default" type="button" href="/#lista" aria-control="" data-toggle="tab" role="tab" ng-click="limpiarUsarYTerminarInsumo()">Regresar</button>
+                                                                    <button ng-disabled="page.components.btnUsarTerminarInsumo" class="btn btn-info" type="submit" name="accion">Aceptar</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -351,23 +368,23 @@ if (strtolower($USUARIO->getRol()->getNombre())!='operario' && strtolower($USUAR
                                                     <div class="col-md-12 col-sm-12 table-responsive" >
                                                         <strong class="text text-success control-label"><h2>TERMINAR INSUMO O HERRAMIENTA</h2></strong>
                                                     </div>
-                                                    <form name="frmTerminar" id="frmTerminar" ng-submit="UsarYTerminarInsumo(insumoUsarYTerminar.id, false)">
+                                                    <form name="frmTerminar" id="frmTerminar" ng-submit="UsarYTerminarInsumo(false)">
                                                         <div class="row col-md-12">
                                                             <div class="col-sm-12 col-lg-12 page-header" id="paddinTop-20">
                                                                 <div class="col-sm-12 col-lg-12 table-responsive">
                                                                     <div class="thumbnail">
-                                                                        <img ng-hide="insumoUsarYTerminar.notImage" class="img-responsive" style="width: 150px;" src="system/Uploads/Imgs/Productos/{{ insumoUsarYTerminar.foto }}">
-                                                                        <img ng-show="insumoUsarYTerminar.notImage" class="img-responsive" style="width: 150px;" src="design/pics/imagenes/not_image.jpg" data-toggle="tooltip" title="Este producto no cuenta con una imagen">
+                                                                        <img ng-hide="page.data.insumoUsarYTerminar.notImage" class="img-responsive" style="width: 150px;" src="system/Uploads/Imgs/Productos/{{ page.data.insumoUsarYTerminar.foto }}">
+                                                                        <img ng-show="page.data.insumoUsarYTerminar.notImage" class="img-responsive" style="width: 150px;" src="design/pics/imagenes/not_image.jpg" data-toggle="tooltip" title="Este producto no cuenta con una imagen">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-sm-12 col-lg-12 text-justify">
-                                                                    <label class="text-nowrap text-uppercase">Insumo: </label><span class="text text-muted"> {{ insumoUsarYTerminar.nombrepuc }}</span>
+                                                                    <label class="text-nowrap text-uppercase">Insumo: </label><span class="text text-muted"> {{ page.data.insumoUsarYTerminar.nombrepuc }}</span>
                                                                 </div>
-                                                                <div class="col-sm-12 col-lg-12 text-justify" ng-show="insumoUsarYTerminar.remainingStock==null">
-                                                                    <label class="text-nowrap text-uppercase">Cantidad a terminar: </label><span class="text text-muted"> {{ insumoUsarYTerminar.cantidadpuestotrabajo }}</span>
+                                                                <div class="col-sm-12 col-lg-12 text-justify" ng-show="page.data.insumoUsarYTerminar.remainingStock==null">
+                                                                    <label class="text-nowrap text-uppercase">Cantidad a terminar: </label><span class="text text-muted"> {{ page.data.insumoUsarYTerminar.cantidadpuestotrabajo }}</span>
                                                                 </div>
-                                                                <div class="col-sm-12 col-lg-12 text-justify" ng-show="insumoUsarYTerminar.remainingStock!=null">
-                                                                    <label class="text-nowrap text-uppercase">Cantidad a terminar: </label><span class="text text-muted">{{ insumoUsarYTerminar.cantidadpuestotrabajo }}/{{ insumoUsarYTerminar.remainingStock }}</span>
+                                                                <div class="col-sm-12 col-lg-12 text-justify" ng-show="page.data.insumoUsarYTerminar.remainingStock!=null">
+                                                                    <label class="text-nowrap text-uppercase">Cantidad a terminar: </label><span class="text text-muted">{{ page.data.insumoUsarYTerminar.cantidadpuestotrabajo }}/{{ page.data.insumoUsarYTerminar.remainingStock }}</span>
                                                                 </div>
                                                             </div>
                                                             <div class="col-sm-12 col-lg-12">
@@ -387,14 +404,14 @@ if (strtolower($USUARIO->getRol()->getNombre())!='operario' && strtolower($USUAR
                                                                     <div class="form-group">
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon">* Foto:</span>
-                                                                            <input id="fotoTerminación" type="file" class="form-control btn btn-default" name="fotoTerminacion" required="" accept="image/*" onchange="angular.element(this).scope().photoChanged(this.files)" uploader-model="file">
+                                                                            <input class="form-control btn btn-default" id="fotoTerminacion" type="file" name="fotoTerminacion" required accept="image/*" onchange="angular.element(this).scope().photoChanged(this.files)" uploader-model="file">
                                                                         </div>
                                                                     </div>
-                                                                    <div class="alert alert-danger text-center" id="paddinTop10" ng-show="page.data.imgs.fotoTerminacion=='' && frmUsarYTerminar.$submitted && page.data.imgs.fotoTerminacino==null">Debes subir una foto que evidencie la terminación del insumo o la herramienta</div>
+                                                                    <div class="alert alert-danger text-center" id="paddinTop10" ng-show="page.data.imgs.fotoTerminacionUrl=='' && frmUsarYTerminar.$submitted && page.data.imgs.fotoTerminacionUrl==null">Debes subir una foto que evidencie la terminación del insumo o la herramienta</div>
                                                                     <div class="form-group">
                                                                         <div class="input-group">
-                                                                            <span class="input-group-addon">* Observaciones:</span>
-                                                                            <textarea class="form-control" id="txtObservacionesUsaryTerminarInsumo" name="txtUsarYTerminarInsumo" required="" ng-model="terminacionInsumo.observaciones" placeholder="Escribe algunas observaciones"></textarea>
+                                                                            <span class="input-group-addon">Observaciones:</span>
+                                                                            <textarea class="form-control" id="txtObservacionesUsaryTerminarInsumo" name="txtUsarYTerminarInsumo" ng-model="page.data.terminacionInsumo.observaciones" placeholder = "Escribe algunas observaciones"></textarea>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -405,7 +422,7 @@ if (strtolower($USUARIO->getRol()->getNombre())!='operario' && strtolower($USUAR
                                                             <div class="col-sm-12 col-lg-12" id="paddinTop20">
                                                                 <div class="col-md-12">
                                                                     <button id="btnRegresarLista_2" class="btn btn-default" type="button" href="/#lista" aria-control="" data-toggle="tab" role="tab" ng-click="limpiarUsarYTerminarInsumo()">Regresar</button>
-                                                                    <button ng-disabled="page.components.btnUsarTerminaInsumo" class="btn btn-info" id="btnUsarYTerminarInsumo" type="submit" name="accion">Aceptar</button>
+                                                                    <button ng-disabled="page.components.btnUsarTerminarInsumo" class="btn btn-info" id="btnUsarYTerminarInsumo" type="submit" name="accion">Aceptar</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -418,12 +435,13 @@ if (strtolower($USUARIO->getRol()->getNombre())!='operario' && strtolower($USUAR
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button data-toggle="tab" role="tab" href="/#form" class="btn btn-success">Regresar</button>
+                                    <button data-dismiss="modal" class="btn btn-success">Cerrar</button>
                                 </div>
                                 <!--END GESTION INSUMOS-->
                             </div>
                         </div>
                         <div class="mdl-tooltip" for="btnRecargarListaInsumos">Recargar listado</div>
+                        <div class="mdl-tooltip" for="btnCloseDlgGestionInsumosProceso">Cerrar</div>
                         <!--<div id="toast-content" class="mdl-js-snackbar mdl-snackbar">
                             <div class="mdl-snackbar__text"></div>
                             <button class="mdl-snackbar__action" type="button"></button>
@@ -434,6 +452,30 @@ if (strtolower($USUARIO->getRol()->getNombre())!='operario' && strtolower($USUAR
                         </div>
                     </div>
                     <!--END DLG USOS INSUMOS-->
+                    <!-- AYUDAS -->
+                    <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20">
+                        <div class="alert alert-warning">
+                            <h4 align="left">
+                                <span>PARA LLEVAR A CABO LA MODIFICACIÓN DE LA BANDA CORTADA USTED DEBE:</span>
+                                <h5>
+                                    <ul align="left">
+                                        <li>
+                                            <span>Abrir el puesto de trabajo y usar la banda por la cual va a remplazar el uso anterior, en la tabla podra observar los registros de insumos o herramientas utilizados, por lo tanto todos los registros a exepción del ultimo seran eliminados.</span>
+                                        </li>
+                                        <li>
+                                            <span>Cargar la foto para la nueva banda que se corto.</span>
+                                        </li>
+                                    </ul>
+                                </h5>
+                            </h4>
+                        </div>
+                        <div class="alert alert-warning">
+                            <h4 align="left">
+                                <span>NOTA: si solo desea cambiar el numero de empates, haga el cambio en el respectivo campo y marque la casilla como chequeada.</span>
+                            </h4>
+                        </div>
+                    </div>
+                    <!-- END AYUDAS -->
                 </div>
             </div>
             <?php
