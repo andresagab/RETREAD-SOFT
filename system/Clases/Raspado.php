@@ -352,4 +352,87 @@ class Raspado {
             else return 1;
         } else return 1;
     }
+
+    public static function getData($type, $field, $value, $filter, $order, $sql, $extras) {
+        $JSON = array();
+        switch ($type) {
+            case 0:
+                if ($field!=null && $value!=null) {
+                    foreach ($object = new Raspado($field, $value, $filter, $order) as $item => $val) {
+                        $JSON["$item"] = $val;
+                        ${$item} = $val;
+                    }
+                    $JSON['nombreEstado'] = $object->getNombreEstado();
+                    if ($object->getFoto()==null || $object->getFoto()=='') $JSON['notImage'] = true;
+                    $JSON['usosRegistrados'] = $object->getStatusUsos();
+                    if ($extras) {
+                        $JSON['puestoTrabajo'] = json_decode(Puesto_Trabajo::getObjetoJSON('id', $object->getIdPuestoTrabajo(), null, null));
+                        $JSON['empleado'] = json_decode(Empleado::getObjetoJSON('id', $object->getIdEmpleado(), null, null));
+                        $JSON['usosInsumos'] = json_decode(Uso_Insumo_Proceso::getUsosInforme($object->getId(), 1));
+                        $JSON['inspeccionInicial'] = json_decode(Inspeccion_Inicial::getObjetoJSON('id', $object->getIdRelleno(), null, null));
+                    }
+                }
+                break;
+            case 1:
+                $objects = Raspado::getListaEnObjetos($filter, $order);
+                for ($i=0; $i<count($objects); $i++) {
+                    $data = array();
+                    $object = $objects[$i];
+                    foreach ($objects[$i] as $item => $val) {
+                        $data["$item"] = $val;
+                        ${$item} = $val;
+                    }
+                    $data['nombreEstado']=$object->getNombreEstado();
+                    if ($object->getFoto()==null || $object->getFoto()=='') $data['notImage'] = true;
+                    $JSON['usosRegistrados'] = $object->getStatusUsos();
+                    if ($extras) {
+                        $data['puestoTrabajo'] = json_decode(Puesto_Trabajo::getObjetoJSON('id', $object->getIdPuestoTrabajo(), null, null));
+                        $data['empleado'] = json_decode(Empleado::getObjetoJSON('id', $object->getIdEmpleado(), null, null));
+                        $data['usosInsumos'] = json_decode(Uso_Insumo_Proceso::getUsosInforme($object->getId(), 6));
+                        $data['relleno'] = json_decode(Relleno::getObjetoJSON('id', $object->getIdRelleno(), null, null));
+                    }
+                    array_push($JSON, $data);
+                }
+                break;
+            case 2:
+                if ($sql!=null) {
+                    $result = Conector::ejecutarQuery($sql, null);
+                    for ($i=0; $i<count($result); $i++) {
+                        $data = array();
+                        foreach ($result[$i] as $item => $val) {
+                            $data["$item"] = $val;
+                            ${$item} = $val;
+                        }
+                        $object = new Raspado(null, null, null, null);
+                        $object->setId(@$id);
+                        $object->setFoto(@$foto);
+                        $object->setEstado(@$estado);
+                        $data['nombreEstado']=$object->getNombreEstado();
+                        if ($object->getFoto()==null || $object->getFoto()=='') $data['notImage']=true;
+                        $JSON['usosRegistrados'] = $object->getStatusUsos();
+                        if ($extras) {
+                            $data['puestoTrabajo'] = json_decode(Puesto_Trabajo::getObjetoJSON('id', $object->getIdPuestoTrabajo(), null, null));
+                            $data['empleado'] = json_decode(Empleado::getObjetoJSON('id', $object->getIdEmpleado(), null, null));
+                            $data['usosInsumos'] = json_decode(Uso_Insumo_Proceso::getUsosInforme($object->getId(), 6));
+                            $data['relleno'] = json_decode(Relleno::getObjetoJSON('id', $object->getIdRelleno(), null, null));
+                        }
+                        array_push($JSON, $data);
+                    }
+                }
+                break;
+        }
+        return json_encode($JSON, JSON_UNESCAPED_UNICODE);
+    }
+
+    public function getStatusUsos() {
+        $status = false;
+        $sql = "select id from uso_insumo_proceso where idproceso=$this->id and proceso=1";
+        if (is_array($result = Conector::ejecutarQuery($sql, null))) {
+            if (count($result)>0) {
+                if ($result[0][0]!=null) $status = true;
+            }
+        }
+        return $status;
+    }
+
 }

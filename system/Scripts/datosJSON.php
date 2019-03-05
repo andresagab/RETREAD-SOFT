@@ -248,13 +248,17 @@ switch ($_GET['metodo']) {
     case 'getCorteBandaEditar':
         if (isset($_GET['id'])) echo Corte_Banda::getData(0, 'id', $_GET['id'], null, null, null, false);
         else header('Location: principal.php?CON=system/pages/unknowData.php');
-        break;
     case 'getPuestoTrabajoSimpleJSON':
         if (isset($_GET['id'])) echo Puesto_Trabajo::getDataJSON(0, 'id', $_GET['id'], null, null, null, false);
         else header('Location: principal.php?CON=system/pages/unknowData.php');
         break;
     case 'getSimpleJSONEmpleado':
         if (isset($_GET['id'])) echo Empleado::getDataJSON(0, 'id', $_GET['id'], null, null, null, false);
+        else header('Location: principal.php?CON=system/pages/unknowData.php');
+        break;
+        break;
+    case 'getSimpleRaspadoJSON':
+        if (isset($_GET['id'])) echo Raspado::getData(0, 'id', $_GET['id'], null, null, null, false);
         else header('Location: principal.php?CON=system/pages/unknowData.php');
         break;
 }

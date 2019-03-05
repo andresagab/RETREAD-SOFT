@@ -257,6 +257,10 @@ class Llanta {
         else return "Sin registrar";
     }
 
+    public function getFechaInicioProcesoVal(){
+        return $this->fechaInicioProceso;
+    }
+
     /**
      * @param mixed $fechaInicioProceso
      */

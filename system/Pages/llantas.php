@@ -1,199 +1,176 @@
 <?php
-if (strtolower($USUARIO->getRol()->getNombre())=='operario') {
-    $botones='hide';//Hace referencia al boton de eliminacion directa
-    $btnEliminacionSolicitada='';
-}
-else {
-    $botones='';
-    $btnEliminacionSolicitada='hide';
-}
-?>
-<script src="lib/controladores/llantas.js"></script>
-<div class="col-md-12" ng-controller="llantas">
-	<div class="col-md-12" id="paddinTop30"></div>
-        <div class="col-md-12 hidden" id="btnCargarDatos" ng-click="cargarDatos();"></div>
-	<div class="col-md-4" ></div>
-	<div class="col-md-4" >
-            <strong class="text text-success control-label"><h2>Llantas</h2></strong>
-	</div>
-	<div class="col-md-4" ></div>
-        <div class="row col-md-12" id="paddinTop20" ng-hide="objetos">
+if (strtolower($USUARIO->getRol()->getNombre())!='asesor') {
+    ?>
+    <script src="lib/factorys/Llantas.js"></script>
+    <script src="lib/controladores/llantas.js"></script>
+    <div ng-controller="llantas">
+        <input type="hidden" id="txtNumberProcess" value="0">
+        <div class="col-sm-12 col-md-3 col-lg-3 text-center">
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab btn-info" id="btnAyuda" type="button" href="/#_helpDialog" data-toggle='modal'>
+                <i class="material-icons">help</i>
+            </button>
+            <div class="mdl-tooltip" for="btnAyuda">Ver Ayuda</div>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-6 text-center">
+            <h3 class="text-uppercase mdl-color-text--blue">{{ llantas.page.name }}</h3>
+        </div>
+        <div class="col-sm-12 col-md-3 col-lg-3 text-center">
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab btn-success" type="button" id="btnCargarListado" ng-click="loadData();">
+                <i class="material-icons">sync</i>
+            </button>
+            <div class="mdl-tooltip" data-mdl-for="btnCargarListado">Recargar listado</div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center" id="paddinTop20" ng-show="llantas.page.loadSpinner">
             <div class="mdl-spinner mdl-js-spinner is-active"></div>
         </div>
-        <div class="row col-md-12" id="paddinTop20"></div>
-        <div class="row col-md-12" ng-show="objetos">
-            <div class="col-md-1"></div>
-            <div class="col-md-2">
-                <div class="form-group-sm <?=$botones?>">
-                    <a href="principal.php?CON=system/Pages/llantasFormulario.php"><button class="btn btn-primary" type="button" id="btnAdicionar">Adicionar</button></a>
-                </div>
-            </div>
-            <div class="col-md-1"></div>
-            <div class="col-md-4">
-                <div class="col-md-12 form-group-sm">
-                    <input class="col-md-12 form-control" id="buscar" name="buscar" placeholder="Buscar por: Tipo, Marca, Proveedor, Serie, Rp, Dimension, FechaCreacion o Estado" ng-model="buscar">
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group-sm">
-                    <button class="btn btn-success" name="btnCargarDatos" type="button" ng-click="cargarDatos();">Actualizar lista</button>
+        <!--  BUSCADOR  -->
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+            <div class="form-group-sm">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" id="buscar" name="buscar" ng-model="buscar">
+                    <span class="mdl-textfield__label" for="buscar"><span class="fa fa-search"></span> Buscar entre el registro {{ elementsPaginator.initialRecord }} y {{ elementsPaginator.finalRecord }}</span>
                 </div>
             </div>
         </div>
-        <div class="row col-md-12" id="paddinTop20" ng-show="objetos">
-            <div class="col-md-0"></div>
-            <div class="col-md-0">
-                <div class="table-responsive">
-                    <table class="table table-hover table-responsive table-striped">
-                    <!--<table class="mdl-data-table mdl-js-data-table">-->
-                        <tr class="active">
-                            <th ng-click="ordenar='rp'">RP</th>
-                            <th ng-click="ordenar='nombreTipo'">Tipo</th>
-                            <th ng-click="ordenar='nombreMarca'">Marca</th>
-                            <th ng-click="ordenar='datoCliente'">Cliente</th>
-                            <th ng-click="ordenar='serie'">Serie</th>
-                            <th ng-click="ordenar='medidaCompleta'">Dimension</th>
-                            <th ng-click="ordenar='nombreAplicacionOriginal'">Aplicacion original</th>
-                            <th ng-click="ordenar='nombreAplicacionRencauche'">Aplicacion rencauche</th>
-                            <th ng-click="ordenar='referencia'">Referencia</th>
-                            <th ng-click="ordenar='nombreTamano'">Tama&ntilde;o</th>
-                            <th ng-click="ordenar='nombreProcesado'">Estado</th>
-                            <th ng-click="ordenar='observaciones'">Observaciones</th>
-                            <th ng-click="ordenar='fechaRegistro'">Fecha Registro</th>
-                            <th>Acciones</th>
-                        </tr>
-                        <tr ng-repeat='objeto in objetos | filter: buscar | orderBy: ordenar' style="background: {{ objeto.color }}" >
-                            <td>{{ objeto.rp }}</td>
-                            <td>{{ objeto.nombreTipo }}</td>
-                            <td>{{ objeto.idMarca[1] }}</td>
-                            <td>{{ objeto.datoCliente }}</td>
-                            <td>{{ objeto.serie }}</td>
-                            <td>{{ objeto.medidaCompleta }}</td>
-                            <td>{{ objeto.nombreAplicacionOriginal }}</td>
-                            <td>{{ objeto.nombreAplicacionRencauche }}</td>
-                            <td>{{ objeto.referencia }}</td>
-                            <td>{{ objeto.nombreTamano }}</td>
-                            <td>{{ objeto.nombreProcesado }}</td>
-                            <td>{{ objeto.observaciones }}</td>
-                            <td>{{ objeto.fechaRegistro }}</td>
-                            <td>
-                                <h4 data-toggle="tooltip">
-                                    <a class="<?=$botones?>" href="principal.php?CON=system/Pages/llantasFormulario.php&id={{ objeto.id }}"><strong class="text text-success"><span class="glyphicon glyphicon-refresh"></span></strong></a>
-                                    <a class="<?=$botones?>" id="btnEliminarAdmin" href='/#eliminar{{ objeto.id }}' title='Eliminar' data-toggle='modal'><strong class="text text-danger"><span class="glyphicon glyphicon-remove-circle"></span></strong></a>
-                                    <a class="<?=$btnEliminacionSolicitada?>" id="btnEliminarSolicitud" href='/#solicitudEliminar{{ objeto.id }}' title='Solicitar eliminacion' data-toggle='modal'><strong class="text text-danger"><span class="glyphicon glyphicon-remove-circle"></span></strong></a>
-                                    <!--<a data-toggle="tooltip" title="Iniciar servicio" href="principal.php?CON=system/Pages/serviciosLlanta.php&idLlanta={{ objeto.id }}"><span class="glyphicon glyphicon-road"></span></a>-->
-                                    <a data-toggle="tooltip" title="Servicio" href="principal.php?CON=system/Pages/servicioLlantaValidar.php&idLlanta={{ objeto.id }}"><span class="glyphicon glyphicon-road"></span></a>
-                                </h4>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <div ng-repeat="objeto in objetos | filter: buscar">
-                    <div class='modal fade' id='eliminar{{ objeto.id }}'>
-                        <div class='modal-dialog'>
-                            <div class='modal-content'>
-                                <div class='modal-header'>
-                                    <button type='button' class='close' data-dismiss='modal'>&times;</button>
-                                    ¿Est&aacute; seguro que desea eliminar la llanta con numero de serie {{ objeto.serie }}?
-                                </div>
-                                <div class='modal-footer'>
-                                    <button type='button' class='btn btn-danger' data-dismiss='modal' >Cancelar</button>
-                                    <a href='principal.php?CON=system/Pages/llantasActualizar.php&accion=Eliminar&id={{ objeto.id }}'><button type='button' class='btn btn-success' >Aceptar</button></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Formularion modal para enviar solicitud de eliminacion-->
-                    <div class='modal fade' id='solicitudEliminar{{ objeto.id }}'>
-                        <div class='modal-dialog'>
-                            <div class='modal-content'>
-                                <div class='modal-header'>
-                                    <button type='button' class='close' data-dismiss='modal'>&times;</button>
-                                    <h3 class="text text-primary">Enviar solicitud de eliminacion</h3>
-                                </div>
-                                <div class="modal-header">
-                                    <div class="col-lg-12">                                        
-                                        <h4 class="text text-capitalize">Informacion de la llanta</h4>
-                                        <div class="col-lg-6 col-sm-12">
-                                            <label>RP: </label><span class="text text-capitalize"> {{ objeto.rp }} </span>
-                                        </div>
-                                        <div class="col-lg-6 col-sm-12">
-                                            <label>Tipo: </label><span class="text text-capitalize"> {{ objeto.nombreTipo }} </span>
-                                        </div>
-                                        <div class="col-lg-6 col-sm-12">
-                                            <label>Marca: </label><span class="text text-capitalize"> {{ objeto.nombreMarca }} </span>
-                                        </div>
-                                        <div class="col-lg-6 col-sm-12">
-                                            <label>Cliente: </label><span class="text text-capitalize"> {{ objeto.datoCliente }} </span>
-                                        </div>
-                                        <div class="col-lg-6 col-sm-12">
-                                            <label>Serie: </label><span class="text text-capitalize"> {{ objeto.serie }} </span>
-                                        </div>
-                                        <div class="col-lg-6 col-sm-12">
-                                            <label>Dimension: </label><span class="text text-capitalize"> {{ objeto.medidaCompleta }} </span>
-                                        </div>
-                                        <div class="col-lg-6 col-sm-12">
-                                            <label>Aplicacion original: </label><span class="text text-capitalize"> {{ objeto.nombreAplicacionOriginal }} </span>
-                                        </div>
-                                        <div class="col-lg-6 col-sm-12">
-                                            <label>Aplicacion Rencauche: </label><span class="text text-capitalize"> {{ objeto.nombreAplicacionRencauche }} </span>
-                                        </div>
-                                        <div class="col-lg-12 col-sm-12">
-                                            <label>Tamaño: </label><span class="text text-capitalize"> {{ objeto.nombreTamano }} </span>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="form-group" id="paddinTop20">
-                                            <div class="input-group">
-                                                <label class="input-group-addon">Motivo:</label>
-                                                <textarea class="form-control" id="txtMotivo" name="motivo" placeholder="Escribe el motivo por el cual deberia ser eliminada esta llanta" maxlength="500" required="" ng-model="solicitudEliminar.motivo"></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="form-group hidden">
-                                            <input id="txtLlanta" type="hidden" name="idLlanta" value="{{ objeto.id }}" readonly="">
-                                            <input id="txtEmpleado" type="hidden" name="idEmpleado" value="<?= $USUARIO->getIdEmpleadoUsuario() ?>" readonly="" ng-model="solicitudEliminar.idEmpleado">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="alert alert-warning">
-                                    <span>Recuerda que la llanta solo puede eliminarse al no tener servicios de Rencauche registrados</span>
-                                </div>
-                                <div class='modal-footer'>
-                                    <button type='button' class='btn btn-danger' id="btnCancelarSolicitud" data-dismiss='modal' >Cancelar</button>
-                                    <a href="/#solicitudEnviada" data-toggle="modal">
-                                        <button type='button' class='btn btn-success {{ objeto.btnEnviarSolicitud }}' id="btnEnviarEliminacion" data-dismiss="modal"
-                                                ng-click="enviarSolicitudEliminar(objeto.id, <?= $USUARIO->getIdEmpleadoUsuario() ?>, solicitudEliminar.motivo, solicitudEliminar);cargarDatos();"
-                                                >Aceptar</button>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Fin Formularion modal para enviar solicitud de eliminacion-->
-                </div>
-            </div>
-            <div class="col-md-0"></div>
-	</div>
-</div>
-<div class='modal fade' id='solicitudEnviada'>
-    <div class='modal-dialog'>
-        <div class='modal-content'>
-            <div class='modal-header'>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
-                <h3 class="text text-success">Tu solicitud de eliminacion ha sido enviada correctamente</h3>
-                <h4 class="text text-info">El registro se borrara automaticamente, solo si tu solicitud fue aprobada</h4>
-            </div>
+        <!--  END BUSCADOR  -->
+        <!--  PAGINATOR  -->
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="paddinTop20"></div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+            <span class="text text-muted">{{ elementsPaginator.initialRecord }} - {{ elementsPaginator.finalRecord }} de {{ elementsPaginator.totalRecords }}</span>
         </div>
+        <div class="visible-xs col-xs-12" style="margin-top: 10px"></div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+            <button class="mdl-button mdl-js-button mdl-button--icon" id="paginaAnterior" ng-click="setCurrentPage(false)" ng-disabled="elementsPaginator.previousPage">
+                <i class="fa fa-angle-left"></i>
+            </button>
+            <button class="mdl-button mdl-js-button mdl-button--icon" id="paginaSiguiente" ng-click="setCurrentPage(true)" ng-disabled="elementsPaginator.nextPage">
+                <i class="fa fa-angle-right"></i>
+            </button>
+            <button id="btnLstCantidad" class="mdl-button mdl-js-button mdl-button--icon">
+                <i class="fa fa-angle-down"></i>
+            </button>
+            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="btnLstCantidad">
+                <li disabled class="mdl-menu__item mdl-menu__item--full-bleed-divider">
+                    Registros por pagina: <span class="mdl-badge" data-badge="{{ elementsPaginator.recordsForPage }}"></span>
+                </li>
+                <li class="mdl-menu__item" ng-repeat="x in elementsPaginator.availableRecordsForPage" ng-click="setRecordsPage(x)">
+                    {{ x }}
+                </li>
+            </ul>
+            <div class="mdl-tooltip" ng-hide="elementsPaginator.previousPage" for="paginaAnterior">Pagina anterior {{ elementsPaginator.currentPage-1 }}</div>
+            <div class="mdl-tooltip" ng-hide="elementsPaginator.nextPage" for="paginaSiguiente">Pagina siguiente {{ elementsPaginator.currentPage+1 }}</div>
+            <div class="mdl-tooltip" for="btnLstCantidad">Cambiar cantidad de registros por pagina</div>
+        </div>
+        <div class="visible-xs visible-sm col-xs-12 col-sm-12" style="margin-top: 10px"></div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <!--<span class="text text-muted mdl-badge" data-badge="{{ values.paginaActual }}">Pagina</span>-->
+            <span class="text text-muted">Pagina: {{ elementsPaginator.currentPage }}</span>
+        </div>
+        <!--  END PAGINATOR  -->
+        <!--  TABLE  -->
+        <div class="col-sm-12 col-md-12 col-lg-12 table-responsive">
+            <center class="" id="paddinTop10">
+                <table class="mdl-data-table mdl-js-data-table table-responsive">
+                    <thead>
+                    <tr class="text-uppercase">
+                        <th ng-click="ordenar='rp'">RP</th>
+                        <th ng-click="ordenar='os'">OS</th>
+                        <th ng-click="ordenar='serie'">Serie</th>
+                        <th class="mdl-data-table__cell--non-numeric" ng-click="ordenar='nombremarca'">Marca</th>
+                        <th class="mdl-data-table__cell--non-numeric" ng-click="ordenar='nombregravado'">Gravado</th>
+                        <th class="mdl-data-table__cell--non-numeric" ng-click="ordenar='referenciaoriginal'">Diseño original</th>
+                        <th class="mdl-data-table__cell--non-numeric" ng-click="ordenar='dimension'">Dimension</th>
+                        <th class="mdl-data-table__cell--non-numeric" ng-click="ordenar='referenciasolicitada'">Diseño solicitado</th>
+                        <th class="mdl-data-table__cell--non-numeric" ng-click="ordenar='procesoNameStatus'">Estado</th>
+    <!--                    <th class="mdl-data-table__cell--non-numeric" ng-click="ordenar='nombreUrgente'">Urgente</th>-->
+                        <th class="mdl-data-table__cell--non-numeric" ng-click="ordenar='fecharegistrollanta'">Fecha registro</th>
+                        <th class="mdl-data-table__cell--non-numeric">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="objeto in llantas.data.objects | filter: buscar | orderBy: ordenar | limitTo: elementsPaginator.recordsForPage : elementsPaginator.initialRecord-1 as result" ng-show="llantas" style="background: {{ objeto.colorStatus }};">
+                        <td>
+                            <h4>{{ objeto.rp }}</h4>
+                        </td>
+                        <td>{{ objeto.os }}</td>
+                        <td>{{ objeto.serie }}</td>
+                        <td class="mdl-data-table__cell--non-numeric">{{ objeto.nombremarca }}</td>
+                        <td class="mdl-data-table__cell--non-numeric">{{ objeto.nombregravado }}</td>
+                        <td class="mdl-data-table__cell--non-numeric">{{ objeto.referenciaoriginal }}</td>
+                        <td class="mdl-data-table__cell--non-numeric">{{ objeto.dimension }}</td>
+                        <td class="mdl-data-table__cell--non-numeric">{{ objeto.referenciasolicitada }}</td>
+                        <td class="mdl-data-table__cell--non-numeric">{{ objeto.procesoNameStatus }}</td>
+    <!--                    <td class="mdl-data-table__cell--non-numeric" style="background: {{ objeto.colorUrgente }}">{{ objeto.nombreUrgente }}</td>-->
+                        <td class="mdl-data-table__cell--non-numeric">{{ objeto.fecharegistrollanta }}</td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                            <span>
+                                <a href="principal.php?CON=system/Pages/inspeccionInicialFormulario.php&id={{ objeto.id }}" id="btnProcesoReencauche_{{ objeto.id }}" title="Registrar inspección inicial">
+                                    <span class="material-icons">airplay</span>
+                                </a>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="11" ng-show="result<=0">No se econtraron resultados</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </center>
+        </div>
+        <!--  END TABLE  -->
     </div>
-</div>
-<script>
-    $(document).ready(function(){
-        $("#btnCargarDatos").click();
-    });
-    
-    $("#btnEnviarEliminacion").click(function(){
-        //$("#btnCancelarSolicitud").click();
-        $("#btnCargarDatos").click();
-        $("#btnCargarDatos").click(true);
-    });
-</script>
+    <!-- HELP DIALOG -->
+    <div class='modal fade' id='_helpDialog'>
+        <div class='modal-dialog modal-lg'>
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <button type='button' class='close' id="btnCerrarDialogFormularioLlanta_A" data-dismiss='modal'>&times;</button>
+                    <h3 class="text text-primary">AYUDA</h3>
+                </div>
+                <div class="modal-header">
+                    <div class="col-sm-12 col-lg-12">
+                        <h3>SIGNIFICADO DE COLORES</h3>
+                    </div>
+                    <div class="text-justify">
+                        <div class="col-sm-12 col-lg-12">
+                            <div class="col-sm-12 col-lg-12">
+                                <span class="mdl-chip mdl-chip--contact">
+                                    <span class="mdl-chip__contact mdl-color--white mdl-color-text--black">1</span>
+                                    <span class="mdl-chip__text">La llanta no registra proceso de inspección inicial</span>
+                                </span>
+                            </div>
+                            <div class="col-sm-12 col-lg-12">
+                                <span class="mdl-chip mdl-chip--contact">
+                                    <span class="mdl-chip__contact mdl-color--orange-400 mdl-color-text--white">2</span>
+                                    <span class="mdl-chip__text">La llanta ya inicio proceso de inspección inicial, pero esta a la espera de la habilitación del formulario de registro</span>
+                                </span>
+                            </div>
+                            <div class="col-sm-12 col-lg-12">
+                                <span class="mdl-chip mdl-chip--contact">
+                                    <span class="mdl-chip__contact mdl-color--yellow-400 mdl-color-text--black">3</span>
+                                    <span class="mdl-chip__text">El formulario de registro correspondiente a la inspección inicial ya esta disponible.</span>
+                                </span>
+                            </div>
+                            <div class="col-sm-12 col-lg-12">
+                                <span class="mdl-chip mdl-chip--contact">
+                                    <span class="mdl-chip__contact mdl-color--green-500 mdl-color-text--white">4</span>
+                                    <span class="mdl-chip__text">El proceso de inspección inicial fue registrado con exito</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='modal-footer'>
+                    <button type='button' class='btn btn-danger' data-dismiss='modal'>Cerrar</button>
+                </div>
+            </div>
+        </div>
+        <!--TOOLTIPS-->
+        <div class="mdl-tooltip" data-mdl-for="btnCerrarDialogFormularioLlanta_A">Cerrar</div>
+        <!--FIN TOOLTIPS-->
+        <!--------------------------------------------------------------------->
+    </div>
+    <!-- END HELP DIALOG -->
+    <?php
+} else header("Location: principal.php?CON=system/pages/accesoDenegado.php");
+?>

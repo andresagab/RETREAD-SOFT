@@ -40,7 +40,12 @@ else {
     else $checked='';
 ?>
 <script src="lib/controladores/usosInsumosPuestoTrabajo.js"></script>
+<!--<script src="lib/controladores/usoInsumosProceso.js"></script>-->
 <div class="col-md-12" ng-controller="usosInsumosPuestoTrabajo">
+    <!--<input type="hidden" name="idEmpleado" value="<?= $USUARIO->getIdEmpleadoUsuario(); ?>">
+    <input type="hidden" name="idProceso" value="<?= $objeto->getId() ?>">
+    <input type="hidden" name="numeroProceso" value="1">
+    <input type="hidden" name="metodoProceso" value="getSimpleRaspadoJSON">-->
     <div class="hide" id="cargarDatos" ng-click="cargarProceso(<?= $objeto->getId() ?>, 'getRaspadoJSON');cargarEmpleado(<?= $USUARIO->getIdEmpleadoUsuario() ?>);setNumeroProceso(1)"></div>
     <div class="col-md-4" ></div>
     <div class="col-md-4" >

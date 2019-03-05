@@ -118,8 +118,7 @@ class Inspeccion_Inicial {
     }
 
     function setObservaciones($observaciones) {
-        if ($this->observaciones!=null && $this->observaciones!="" && $this->observaciones!='-' && $this->observaciones!='---' && $this->observaciones!=' - ') return $this->observaciones;
-        else return "Sin observaciones";
+        $this->observaciones = $observaciones;
     }
 
     function setEstado($estado) {
@@ -178,11 +177,17 @@ class Inspeccion_Inicial {
         Conector::ejecutarQuery($sql, null);
     }
 
+    public function finalizar() {
+        $P='';
+        $sql="update {$P}inspeccion_inicial set idEmpleado=$this->idEmpleado, numeroRencauche=$this->numeroRencauche, foto='$this->foto', observaciones='$this->observaciones', checked='$this->checked', estado='$this->estado', fecharegistro='$this->fechaRegistro' where id=$this->id";
+        Conector::ejecutarQuery($sql, null);
+    }
+    /*
     public function finalizar($observaciones) {
         $P='';
         $sql="update {$P}inspeccion_inicial set foto='$this->foto', observaciones='".rtrim($this->observaciones)." - $observaciones', checked='$this->checked', estado='$this->estado' where id=$this->id";
         Conector::ejecutarQuery($sql, null);
-    }
+    }*/
 
     public function eliminar() {
         $P='';
@@ -314,4 +319,20 @@ class Inspeccion_Inicial {
             else return false;
         } else return false;
     }
+
+    public function getColorStatus($initTime){
+        $color = '#ffffff';//Blanco
+        if ($initTime!=null) {
+            $diffTime = getDiffTimeInSeconds($initTime, date('Y-m-d H:i:s'));
+            $color = '#f1b154';//Naranja
+            if ($diffTime>=240) {
+                $color = '#f1d968';//Amarillo
+                if ($this->getEstado()==='prf') {
+                    $color = '#b8ef78';//Verde
+                }
+            }
+        }
+        return $color;
+    }
+
 }

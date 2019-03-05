@@ -45,9 +45,9 @@ if ($llanta->getFechaInicioProceso()!=null && strtolower($llanta->getFechaInicio
     $btnAddTiempoInicial="disabled";
     $panelProcesos="";
 } else {
-    $alertaTiempoInicial="";
-    $btnAddTiempoInicial="";
-    $panelProcesos="hide";
+    $alertaTiempoInicial="hide";
+    $btnAddTiempoInicial="hide";
+    $panelProcesos="";
 }
 //Validaciones de Inspeccion inicial
 //Validamos que se tenga la inspeccion inicial registrada, de cumplirse la condicion el mensaje de alerta (Este servicio no ha iniciado ningun proceso) se ocultara, en caso contrario se mostrara
@@ -901,8 +901,9 @@ if ($servicioFin->getId()==null){
                                 </div>
                                 <div id="inspeccionInicial1" class="panel-collapse collapse in">
                                     <div class="panel-body">
-                                        <div class="col-md-12 <?=$hideBtnRegistrarInspeccionInicial?>">
-                                            <button class="btn btn-success" id="btnRegistrarInspeccionInicial" type="button" name="accion" <?=$disabledbtnRegistrarInspeccionInicial?>>Registar</button>
+<!--                                        <div class="col-md-12 --><?//=$hideBtnRegistrarInspeccionInicial?><!--">-->
+                                        <div class="col-md-12">
+                                            <button class="btn btn-success" id="btnRegistrarInspeccionInicial" type="button" name="accion">GESTIONAR</button>
                                         </div>
                                         <div class="col-md-12 <?=$hideDatosInspeccionInicial?>">
                                             <button class="hidden" <?=$disabledBtnReloj?> id="iniciarReloj" ng-click="startTimer(<?=$inspeccionInicial->getId()?>)"></button>
@@ -924,9 +925,9 @@ if ($servicioFin->getId()==null){
                                             <div class="col-lg-4 col-md-12 col-sm-12 text-center">
                                                 <h5>Fecha/Hora inicio: <span class="text-muted"><?= rtrim($inspeccionInicial->getFechaRegistro())?></span></h5>
                                             </div>
-                                            <div class="col-lg-12 col-md-12 col-sm-12 text-center <?=$hideDivBtnFinalizarInspeccionInicial?>" id="paddinTop20">
+                                            <!--<div class="col-lg-12 col-md-12 col-sm-12 text-center <?=$hideDivBtnFinalizarInspeccionInicial?>" id="paddinTop20">
                                                 <button class="btn btn-warning" id="btnFinalizarInspeccionInicial" type="button" <?=$disabledbtnFinalizarInspeccionInicial?>>Finalizar proceso</button>
-                                            </div>
+                                            </div>-->
                                             <div class="col-lg-12 col-md-12 col-sm-12 text-center <?=$hideDivBtnFotoInspeccionInicial?>" id="paddinTop20">
                                                 <button class="btn btn-success" id="btnFinalizarInspeccionInicial" type="button" <?=$disabledBtnFotoInspeccionInicial?> data-toggle="modal" href="/#fotoInspeccionInicial">Ver foto</button>
                                             </div>
@@ -964,7 +965,7 @@ if ($servicioFin->getId()==null){
                                 <div id="raspado1" class="panel-collapse collapse in">
                                     <div class="panel-body">
                                         <div class="col-md-12 <?=$hideBtnRegistrarRaspado?>">
-                                            <button class="btn btn-success" id="btnRegistrarRaspado" type="button" name="accion" <?=$disabledbtnRegistrarRaspado?>>Registar</button>
+                                            <button class="btn btn-success" id="btnRegistrarRaspado" type="button" name="accion" <?=$disabledbtnRegistrarRaspado?>>Registrar</button>
                                         </div>
                                         <div class="col-md-12 <?=$hideDatosRaspado?>">
                                             <div class="col-lg-12 col-md-6 col-sm-12 text-center">
@@ -1810,10 +1811,7 @@ if ($servicioFin->getId()==null){
     });
     //Inspeccion inicial
     $("#btnRegistrarInspeccionInicial").click(function (){
-        document.location="principal.php?CON=system/Pages/inspeccionInicialFormulario.php&idLlanta=<?=$llanta->getId()?>";
-    });
-    $("#btnFinalizarInspeccionInicial").click(function (){
-        document.location="principal.php?CON=system/Pages/inspeccionInicialFormularioFinalizar.php&id=<?=$inspeccionInicial->getId()?>";
+        document.location="principal.php?CON=system/Pages/inspeccionInicialFormulario.php&id=<?=$llanta->getId()?>";
     });
     //Fin inspeccion inicial
     //--------------------------------------------------------------------------

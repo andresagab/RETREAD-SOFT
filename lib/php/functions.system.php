@@ -26,3 +26,8 @@ function getStatusDelete($id, $tables, $field) {
     }
     return $status;
 }
+
+function validVal($value){
+    if ($value!=null && $value!='' && $value!=" ") return true;
+    else return false;
+}
