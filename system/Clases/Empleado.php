@@ -216,9 +216,9 @@ class Empleado {
         switch ($type) {
             case 0:
                 if ($field!=null && $value!=null) {
-                    foreach (new Empleado($field, $value, $filter, $order) as $key => $val) {
-                        $JSON["$key"]=$value;
-                        ${$key}=$value;
+                    foreach ($ob = new Empleado($field, $value, $filter, $order) as $key => $val) {
+                        $JSON["$key"] = $val;
+                        ${$key} = $val;
                     }
                     if ($extras) {
                         @$JSON['objectPersona'] = json_decode(Persona::getObjetoJSON('identificacion', $identificacion, null, null));

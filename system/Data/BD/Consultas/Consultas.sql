@@ -330,3 +330,11 @@ and e.id=uipd.idempleado;
 
 select sum(cantidad) from uso_insumo_proceso_detalle;
 -- END 2019-02-28 16:14
+
+-- 2019-03-12 11:43
+select r.id, r.idempleado, r.idpuestotrabajo, r.anchobanda, r.largobanda, r.cinturon, r.cinturoncantidad, r.profundidad, r.radio, r.estado, r.checked, r.foto, r.observaciones, r.fecharegistro, r.fechainicioproceso,
+       ii.id as idinspeccioninicial, ll.id as idllanta
+from raspado as r, inspeccion_inicial as ii, llanta as ll
+where r.idinspeccion=ii.id
+and ll.id=ii.idllanta order by ll.fecharegistro desc;
+-- END 2019-03-12 11:43

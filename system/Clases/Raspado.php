@@ -11,7 +11,7 @@
  
  /** Descripcion de la clase Raspado:
  *
- * Define las propiedades id, idInspeccion, IdEmpleado, anchoBanda, largoBanda, observaciones, checked, estado y fechaRegistro las cuales permite identificar el raspado de una llanta.
+ * Define las propiedades id, idInspeccion, IdEmpleado, anchoBanda, largoBanda, observaciones, checked, estado y fechaRegistro, fechainicioproceso las cuales permite identificar el raspado de una llanta.
  *
  * El atributo idInspeccion ayudara a relacionar la inspeccion con el proceso de raspado de la llanta, Teniendo en cuenta que solo se dara la aprobacion para este raspado si la inspeccion fue aprobada.
  * El atributo idEmpleado nos permitira identificar al empleado de tipo operario el cual sera el responsable de realizar el proceso de raspado.
@@ -37,6 +37,7 @@ class Raspado {
     private $foto;
     private $observaciones;
     private $fechaRegistro;
+    private $fechaInicioProceso;
     //Fin propiedades
 
     //Constructor
@@ -48,7 +49,7 @@ class Raspado {
                 foreach ($campo as $key => $value) $this->$key=$value;
                 $this->cargarAtributos($campo);
             } else {
-                $sql="select id, idInspeccion, idEmpleado, idPuestoTrabajo, anchoBanda, largoBanda, cinturon, cinturonCantidad, profundidad, radio, estado, checked, foto, observaciones, fechaRegistro from {$P}raspado where $campo=$valor $filtro $orden";
+                $sql="select id, idInspeccion, idEmpleado, idPuestoTrabajo, anchoBanda, largoBanda, cinturon, cinturonCantidad, profundidad, radio, estado, checked, foto, observaciones, fechaRegistro, fechainicioproceso from {$P}raspado where $campo=$valor $filtro $orden";
                 $resultado=Conector::ejecutarQuery($sql, null);
                 if (count($resultado)>0) {
                     foreach ($resultado[0] as $key => $value) $this->$key=$value;
@@ -67,6 +68,7 @@ class Raspado {
     	$this->largoBanda=$arreglo['largobanda'];
     	$this->cinturonCantidad=$arreglo['cinturoncantidad'];
     	$this->fechaRegistro=$arreglo['fecharegistro'];
+    	$this->fechaInicioProceso=$arreglo['fechainicioproceso'];
     }
     
     function getId() {
@@ -233,9 +235,25 @@ class Raspado {
         $this->fechaRegistro = $fechaRegistro;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getFechaInicioProceso()
+    {
+        return $this->fechaInicioProceso;
+    }
+
+    /**
+     * @param mixed $fechaInicioProceso
+     */
+    public function setFechaInicioProceso($fechaInicioProceso)
+    {
+        $this->fechaInicioProceso = $fechaInicioProceso;
+    }
+
     public function grabar() {
         $P='';
-        $sql="insert into {$P}raspado (idInspeccion, idEmpleado, anchoBanda, largoBanda, cinturon, cinturonCantidad, profundidad, radio, estado, checked, foto, observaciones, fechaRegistro) values ($this->idInspeccion, $this->idEmpleado, $this->anchoBanda, $this->largoBanda, '$this->cinturon', $this->cinturonCantidad, $this->profundidad, $this->radio, '$this->estado', '$this->checked', '$this->foto', '$this->observaciones', '$this->fechaRegistro')";
+        $sql="insert into {$P}raspado (idInspeccion, idEmpleado, anchoBanda, largoBanda, cinturon, cinturonCantidad, profundidad, radio, estado, checked, foto, observaciones, fechaRegistro, fechainicioproceso) values ($this->idInspeccion, $this->idEmpleado, $this->anchoBanda, $this->largoBanda, '$this->cinturon', $this->cinturonCantidad, $this->profundidad, $this->radio, '$this->estado', '$this->checked', '$this->foto', '$this->observaciones', '$this->fechaRegistro', '$this->fechaInicioProceso')";
         Conector::ejecutarQuery($sql, null);
     }
 
@@ -251,9 +269,9 @@ class Raspado {
         Conector::ejecutarQuery($sql, null);
     }
     
-    public function finalizar($observaciones) {
+    public function finalizar() {
         $P='';
-        $sql="update {$P}raspado set observaciones='".rtrim($this->observaciones)." - $observaciones', checked='$this->checked', estado='$this->estado' where id=$this->id";
+        $sql="update {$P}raspado set idEmpleado=$this->idEmpleado, idPuestoTrabajo=$this->idPuestoTrabajo, anchoBanda=$this->anchoBanda, largoBanda=$this->largoBanda, cinturon='$this->cinturon', cinturonCantidad=$this->cinturonCantidad, profundidad=$this->profundidad, radio=$this->radio, estado='$this->estado', checked='$this->checked', foto='$this->foto', observaciones='$this->observaciones', fechaRegistro='$this->fechaRegistro' where id=$this->id";
         Conector::ejecutarQuery($sql, null);
     }
 
@@ -266,7 +284,7 @@ class Raspado {
     public static function getLista($filtro, $orden) {
         $P='';
         if ($filtro!=null) $filtro=" where $filtro";
-        $sql="select id, idInspeccion, idEmpleado, idPuestoTrabajo, anchoBanda, largoBanda, cinturon, cinturonCantidad, profundidad, radio, estado, checked, foto, observaciones, fechaRegistro from {$P}raspado $filtro $orden";
+        $sql="select id, idInspeccion, idEmpleado, idPuestoTrabajo, anchoBanda, largoBanda, cinturon, cinturonCantidad, profundidad, radio, estado, checked, foto, observaciones, fechaRegistro, fechainicioproceso from {$P}raspado $filtro $orden";
         return Conector::ejecutarQuery($sql, null);
     }
     
@@ -300,6 +318,7 @@ class Raspado {
         $arreglo['foto']=$objeto->getFoto();
         $arreglo['observaciones']=$objeto->getObservaciones();
         $arreglo['fechaRegistro']=$objeto->getFechaRegistro();
+        $arreglo['fechaInicioProceso']=$objeto->getFechaInicioProceso();
         $inspeccion=$objeto->getInspeccion();
         $arreglo['inspeccion']= json_decode(Inspeccion_Inicial::getObjetoJSON('id', $objeto->getIdInspeccion(), null, null));
         $arreglo['puestoTrabajo']= json_decode(Puesto_Trabajo::getObjetoJSON('id', $objeto->getIdPuestoTrabajo(), null, null));
@@ -332,6 +351,7 @@ class Raspado {
             $arreglo['foto']=$objeto->getFoto();
             $arreglo['observaciones']=$objeto->getObservaciones();
             $arreglo['fechaRegistro']=$objeto->getFechaRegistro();
+            $arreglo['fechaInicioProceso']=$objeto->getFechaInicioProceso();
             $inspeccion=$objeto->getInspeccion();
             $arreglo['inspeccion']= json_decode(Inspeccion_Inicial::getObjetoJSON('id', $objeto->getIdInspeccion(), null, null));
             $arreglo['puestoTrabajo']= json_decode(Puesto_Trabajo::getObjetoJSON('id', $objeto->getIdPuestoTrabajo(), null, null));

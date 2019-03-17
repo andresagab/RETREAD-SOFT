@@ -12,6 +12,7 @@ require_once dirname(__FILE__).'\..\Clases\Referencia_Tipo_Llanta.php';
 require_once dirname(__FILE__).'\..\Clases\Dimension_Referencia.php';
 require_once dirname(__FILE__).'\..\Clases\Llanta.php';
 require_once dirname(__FILE__).'\..\Clases\Servicio.php';
+require_once dirname(__FILE__).'\..\Clases\Puesto_Trabajo.php';
 require_once dirname(__FILE__).'\..\Clases\Inspeccion_Inicial.php';
 require_once dirname(__FILE__).'\..\Clases\Raspado.php';
 require_once dirname(__FILE__).'\..\Clases\Preparacion.php';
@@ -901,52 +902,43 @@ if ($servicioFin->getId()==null){
                                 </div>
                                 <div id="inspeccionInicial1" class="panel-collapse collapse in">
                                     <div class="panel-body">
-<!--                                        <div class="col-md-12 --><?//=$hideBtnRegistrarInspeccionInicial?><!--">-->
-                                        <div class="col-md-12">
-                                            <button class="btn btn-success" id="btnRegistrarInspeccionInicial" type="button" name="accion">GESTIONAR</button>
+                                        <div class="col-md-12 <?= $hideBtnRegistrarInspeccionInicial; ?>">
+                                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-400 mdl-color-text--white" id="btnRegistrarInspeccionInicial" type="button" name="accion">GESTIONAR</button>
                                         </div>
-                                        <div class="col-md-12 <?=$hideDatosInspeccionInicial?>">
-                                            <button class="hidden" <?=$disabledBtnReloj?> id="iniciarReloj" ng-click="startTimer(<?=$inspeccionInicial->getId()?>)"></button>
-                                            <div class="col-lg-6 col-md-6 col-sm-12 text-center">
-                                                <h5>Operario: <span class="text-muted"><?=$inspeccionInicial->getEmpleado()->getPersona()->getNombresCompletos()?></span></h5>
+                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                            <div class="col-sm-12 col-md-12 col-lg-12" align="left">
+                                                <h4 class="text-uppercase mdl-color-text--green-500">INFORMACIÓN REGISTRADA</h4>
                                             </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-12 text-center">
-                                                <h5>Numero de rencauche: <span class="text-muted"><?=$inspeccionInicial->getNumeroRencauche()?></span></h5>
-                                            </div>
-                                            <div class="col-lg-12 col-md-12 col-sm-12 text-center">
-                                                <h5>Observaciones: <span class="text-muted"><?= rtrim($inspeccionInicial->getObservaciones())?></span></h5>
-                                            </div>
-                                            <div class="col-lg-4 col-md-6 col-sm-12 text-center">
-                                                <h5>Estado: <span class="text-muted"><?= rtrim($inspeccionInicial->getNombreChecked())?></span></h5>
-                                            </div>
-                                            <div class="col-lg-4 col-md-6 col-sm-12 text-center">
-                                                <h5>Actualmente: <span class="text-muted"><?= rtrim($inspeccionInicial->getNombreEstado())?></span></h5>
-                                            </div>
-                                            <div class="col-lg-4 col-md-12 col-sm-12 text-center">
-                                                <h5>Fecha/Hora inicio: <span class="text-muted"><?= rtrim($inspeccionInicial->getFechaRegistro())?></span></h5>
-                                            </div>
-                                            <!--<div class="col-lg-12 col-md-12 col-sm-12 text-center <?=$hideDivBtnFinalizarInspeccionInicial?>" id="paddinTop20">
-                                                <button class="btn btn-warning" id="btnFinalizarInspeccionInicial" type="button" <?=$disabledbtnFinalizarInspeccionInicial?>>Finalizar proceso</button>
-                                            </div>-->
-                                            <div class="col-lg-12 col-md-12 col-sm-12 text-center <?=$hideDivBtnFotoInspeccionInicial?>" id="paddinTop20">
-                                                <button class="btn btn-success" id="btnFinalizarInspeccionInicial" type="button" <?=$disabledBtnFotoInspeccionInicial?> data-toggle="modal" href="/#fotoInspeccionInicial">Ver foto</button>
+                                            <div class="col-sm-12 col-md-12 col-lg-12 <?= $hideDatosInspeccionInicial; ?>" id="paddinTop20" align="left">
+                                                <p>
+                                                    <span class="text-uppercase">EMPLEADO: </span><span class="text-muted"><?= $inspeccionInicial->getEmpleado()->getPersona()->getNombresCompletos() ?></span>
+                                                </p>
+                                                <p>
+                                                    <span class="text-uppercase">NUMERO REENCAUCHE: </span><span class="text-muted"><?= $inspeccionInicial->getNumeroRencauche() ?></span>
+                                                </p>
+                                                <p>
+                                                    <span class="text-uppercase">ESTADO: </span><span class="text-muted"><?= $inspeccionInicial->getNombreChecked(); ?></span>
+                                                </p>
+                                                <p>
+                                                    <span class="text-uppercase">OBSERVACIONES: </span><span class="text-muted"><?= $inspeccionInicial->getObservaciones() ?></span>
+                                                </p>
+                                                <p>
+                                                    <span class="text-uppercase">TIEMPO DE EJECUCIÓN: </span><span class="text-muted"><?= getDiffTiempoString($llanta->getFechaInicioProceso(), $inspeccionInicial->getFechaRegistro()) ?></span>
+                                                </p>
+                                                <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="center">
+                                                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-400 mdl-color-text--white" id="btnRegistrarInspeccionInicial" type="button" name="accion" onclick="document.location='principal.php?CON=system/Pages/inspeccionInicialFormulario.php&id=<?= $llanta->getId(); ?>';">GESTIONAR</button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class='modal fade' id='fotoInspeccionInicial'>
-                                <div class='modal-dialog'>
-                                    <div class='modal-content'>
-                                        <div class='modal-header'>
-                                            <button type='button' class='close' data-dismiss='modal'>&times;</button>
-                                            <h3 class="text text-primary">Foto</h3>
-                                            <div class="thumbnail">
-                                                <img src="system/Uploads/Imgs/Inspeccion_Inicial/<?= $inspeccionInicial->getFoto() ?>">
+                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                            <div class="col-sm-12 col-md-12 col-lg-12" align="left">
+                                                <p>
+                                                    <span class="text-uppercase">EVIDENCIA FOTOGRÁFICA: </span><span class="text-muted">
+                                                </p>
+                                                <p align="center">
+                                                    <img class="img img-responsive" ng-src="system/Uploads/Imgs/Inspeccion_Inicial/<?= $inspeccionInicial->getFoto() ?>" width="350px">
+                                                </p>
                                             </div>
-                                        </div>
-                                        <div class='modal-footer'>
-                                            <button type='button' class='btn btn-danger' id="btnCancelarSolicitud" data-dismiss='modal'>Cerrar</button>
                                         </div>
                                     </div>
                                 </div>
@@ -964,68 +956,64 @@ if ($servicioFin->getId()==null){
                                 </div>
                                 <div id="raspado1" class="panel-collapse collapse in">
                                     <div class="panel-body">
-                                        <div class="col-md-12 <?=$hideBtnRegistrarRaspado?>">
-                                            <button class="btn btn-success" id="btnRegistrarRaspado" type="button" name="accion" <?=$disabledbtnRegistrarRaspado?>>Registrar</button>
+                                        <div class="col-md-12 <?= $hideBtnRegistrarRaspado; ?>">
+                                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-400 mdl-color-text--white" id="btnRegistrarRaspado" type="button" name="accion">GESTIONAR</button>
                                         </div>
                                         <div class="col-md-12 <?=$hideDatosRaspado?>">
-                                            <div class="col-lg-12 col-md-6 col-sm-12 text-center">
-                                                <h5>Operario: <span class="text-muted"><?=$raspado->getEmpleado()->getPersona()->getNombresCompletos()?></span></h5>
+                                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                                <div class="col-sm-12 col-md-12 col-lg-12" align="left">
+                                                    <h4 class="text-uppercase mdl-color-text--green-500">INFORMACIÓN REGISTRADA</h4>
+                                                </div>
+                                                <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="left">
+                                                    <p>
+                                                        <span class="text-uppercase">EMPLEADO: </span><span class="text-muted"><?= $raspado->getEmpleado()->getPersona()->getNombresCompletos() ?></span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="text-uppercase">PUESTO DE TRABAJO: </span><span class="text-muted"><?= $raspado->getPuestoTrabajo()->getNombre() ?></span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="text-uppercase">ANCHO DE BANDA: </span><span class="text-muted"><?= $raspado->getAnchoBanda(); ?></span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="text-uppercase">LARGO DE BANDA: </span><span class="text-muted"><?= $raspado->getLargoBanda(); ?></span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="text-uppercase">RETIRO DE CINTURÓN: </span><span class="text-muted"><?= $raspado->getNombreCinturon(); ?></span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="text-uppercase">CANTIDAD: </span><span class="text-muted"><?= $raspado->getCinturonCantidad(); ?></span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="text-uppercase">PROFUNDIDAD: </span><span class="text-muted"><?= $raspado->getProfundidad(); ?></span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="text-uppercase">RADIO: </span><span class="text-muted"><?= $raspado->getRadio(); ?></span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="text-uppercase">OBSERVACIONES: </span><span class="text-muted"><?= $raspado->getObservaciones(); ?></span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="text-uppercase">ESTADO: </span><span class="text-muted"><?= $raspado->getNombreChecked(); ?></span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="text-uppercase">TIEMPO DE EJECUCIÓN: </span><span class="text-muted"><?= getDiffTiempoString($raspado->getFechaInicioProceso(), $raspado->getFechaRegistro()); ?></span>
+                                                    </p>
+                                                </div>
+                                                <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="center">
+                                                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-400 mdl-color-text--white" id="btnRegistrarRaspado" type="button" name="accion" onclick="document.location='principal.php?CON=system/Pages/raspadoFormulario.php&id=<?= $llanta->getId(); ?>';">GESTIONAR</button>
+                                                    <button ng-click="cargarInfoUsosInsumos(<?= $raspado->getId() ?>, 1);" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btnFotoRaspado" type="button" <?=$disabledBtnPuestoTrabajoRaspado?> data-toggle="modal" href="/#_puestoTrabajo">Informacion puesto trabajo</button>
+                                                </div>
                                             </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-12 text-center">
-                                                <h5>Ancho banda: <span class="text-muted"><?= rtrim($raspado->getAnchoBanda())?></span></h5>
+                                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                                <div class="col-sm-12 col-md-12 col-lg-12" align="left">
+                                                    <p>
+                                                        <span class="text-uppercase">EVIDENCIA FOTOGRÁFICA: </span><span class="text-muted">
+                                                    </p>
+                                                    <p align="center">
+                                                        <img class="img img-responsive" ng-src="system/Uploads/Imgs/Raspado/<?= $raspado->getFoto(); ?>" width="350px">
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-12 text-center">
-                                                <h5>Largo banda: <span class="text-muted"><?= rtrim($raspado->getLargoBanda())?></span></h5>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-12 text-center">
-                                                <h5>Retiro cinturon: <span class="text-muted"><?= rtrim($raspado->getNombreCinturon())?></span></h5>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-12 text-center">
-                                                <h5>Cantidad: <span class="text-muted"><?= rtrim($raspado->getCinturonCantidad())?></span></h5>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-12 text-center">
-                                                <h5>Profundidad: <span class="text-muted"><?= rtrim($raspado->getProfundidad())?></span></h5>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-12 text-center">
-                                                <h5>Radio: <span class="text-muted"><?= rtrim($raspado->getRadio())?></span></h5>
-                                            </div>
-                                            <div class="col-lg-12 col-md-12 col-sm-12 text-center">
-                                                <h5>Observaciones: <span class="text-muted"><?= rtrim($raspado->getObservaciones())?></span></h5>
-                                            </div>
-                                            <div class="col-lg-4 col-md-6 col-sm-12 text-center">
-                                                <h5>Estado: <span class="text-muted"><?= rtrim($raspado->getNombreChecked())?></span></h5>
-                                            </div>
-                                            <div class="col-lg-4 col-md-6 col-sm-12 text-center">
-                                                <h5>Actualmente: <span class="text-muted"><?= rtrim($raspado->getNombreEstado())?></span></h5>
-                                            </div>
-                                            <div class="col-lg-4 col-md-12 col-sm-12 text-center">
-                                                <h5>Fecha/Hora inicio: <span class="text-muted"><?= rtrim($raspado->getFechaRegistro())?></span></h5>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-12 text-center <?=$hideDivBtnFinalizarRaspado?>" id="paddinTop20">
-                                                <button class="btn btn-warning" id="btnFinalizarRaspado" type="button" <?=$disabledbtnFinalizarRaspado?>>Finalizar proceso</button>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-12 text-center <?=$hideDivBtnFotoRaspado?>" id="paddinTop20">
-                                                <button class="btn btn-success" id="btnFotoRaspado" type="button" <?=$disabledBtnFotoRaspado?> data-toggle="modal" href="/#fotoRaspado">Ver foto</button>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-12 text-center <?=$hideDivBtnPuestoTrabajoRaspado?>" id="paddinTop20">
-                                                <button ng-click="cargarInfoUsosInsumos(<?= $raspado->getId() ?>, 1)" class="btn btn-default" id="btnFotoRaspado" type="button" <?=$disabledBtnPuestoTrabajoRaspado?> data-toggle="modal" href="/#_puestoTrabajo">Informacion puesto trabajo</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class='modal fade' id='fotoRaspado'>
-                                <div class='modal-dialog'>
-                                    <div class='modal-content'>
-                                        <div class='modal-header'>
-                                            <button type='button' class='close' data-dismiss='modal'>&times;</button>
-                                            <h3 class="text text-primary">Foto</h3>
-                                            <div class="thumbnail">
-                                                <img src="system/Uploads/Imgs/Raspado/<?= $raspado->getFoto() ?>">
-                                            </div>
-                                        </div>
-                                        <div class='modal-footer'>
-                                            <button type='button' class='btn btn-danger' id="btnCancelarSolicitud" data-dismiss='modal'>Cerrar</button>
                                         </div>
                                     </div>
                                 </div>
@@ -1797,13 +1785,7 @@ if ($servicioFin->getId()==null){
         $("#accionInspeccionFinal").click();
         $("#accionTerminacion").click();
     });
-    
-    //Click en headers de los paneles
-    //
-    //Fin click en headers de los paneles
-    
-    //Funciones de click para acciones de acordion de cada panel
-    //
+
     //Fin funciones de click para acciones de acordion de cada panel
     //--------------------------------------------------------------------------
     $("#btnRegresar").click(function (){
@@ -1817,10 +1799,7 @@ if ($servicioFin->getId()==null){
     //--------------------------------------------------------------------------
     //Raspado
     $("#btnRegistrarRaspado").click(function (){
-        document.location="principal.php?CON=system/Pages/raspadoFormulario.php&idInspeccion=<?=$inspeccionInicial->getId()?>";
-    });
-    $("#btnFinalizarRaspado").click(function (){
-        document.location="principal.php?CON=system/Pages/raspadoFormularioFinalizar.php&id=<?=$raspado->getId()?>";
+        document.location="principal.php?CON=system/Pages/raspadoFormulario.php&id=<?= $llanta->getId(); ?>";
     });
     //Fin raspado
     //--------------------------------------------------------------------------

@@ -37,6 +37,7 @@ if (!isset($_GET['CON'])) $_GET['CON']='system/Pages/comodin.php';
         <link rel="stylesheet" href="lib/frameworks/JQueryUi/jquery-ui-1.12.1/jquery-ui.min.css"/>
         <link rel="stylesheet" href="lib/frameworks/AngularJS/iconfont/material-icons.css"/>
         <link type="text/css" rel="stylesheet" href="design/estilos/estilos.css"/>
+        <link rel="stylesheet" href="lib/frameworks/mdl/googleRobotoFont.css"/>
         <script src="lib/frameworks/AngularJS/1.5.0/angular.min.js"></script>
         <script src="lib/frameworks/JQuery/jquery-3.2.1.min.js"></script>
         <script src="lib/frameworks/JQueryUi/jquery-ui-1.12.1/jquery-ui.min.js"></script>
