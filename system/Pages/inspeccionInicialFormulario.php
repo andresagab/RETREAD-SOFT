@@ -235,7 +235,7 @@ if (isset($_GET['id'])) {
                                 <div class="col-sm-6 col-md-6 col-lg-6">
                                     <div class="col-sm-12 col-md-12 col-lg-12" align="left">
                                         <p>
-                                            <span class="text-uppercase">EVIDENCIA FOTOGRÁFICA: </span><span class="text-muted">
+                                            <span class="text-uppercase">EVIDENCIA FOTOGRÁFICA: </span>
                                         </p>
                                     </div>
                                     <img class="img img-responsive" ng-src="system/Uploads/Imgs/Inspeccion_Inicial/<?= $object->getFoto() ?>">

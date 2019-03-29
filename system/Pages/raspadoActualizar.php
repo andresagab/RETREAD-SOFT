@@ -38,10 +38,31 @@ switch ($accion){
             $objeto->setEstado('prs');
             $objeto->setChecked('f');
             $objeto->setFoto(null);
+            $objeto->setFotoSerial(null);
             $objeto->setObservaciones(null);
             $objeto->setFechaRegistro(date("Y-m-d H:i:s"));
             $objeto->setFechaInicioProceso(date("Y-m-d H:i:s"));
             $objeto->grabar();
+            $ok = true;
+        }
+        break;
+    case 'resetProcess':
+        if (isset($id) && isset($idPastProcess)) {
+            $objeto = new Raspado('id', $id, null, 'limit 1');
+            $objeto->setIdInspeccion($idPastProcess);
+            $objeto->setIdEmpleado('null');
+            $objeto->setAnchoBanda(0);
+            $objeto->setLargoBanda(0);
+            $objeto->setCinturon('f');
+            $objeto->setCinturonCantidad(0);
+            $objeto->setProfundidad('null');
+            $objeto->setRadio('null');
+            $objeto->setEstado('prs');
+            $objeto->setChecked('f');
+            $objeto->setFoto(null);
+            $objeto->setFotoSerial(null);
+            $objeto->setObservaciones(null);
+            $objeto->modificar();
             $ok = true;
         }
         break;
@@ -78,7 +99,8 @@ switch ($accion){
                 }
             }
         }
-        $objeto->setFoto(uploadFile($_FILES, '/../../system/Uploads/Imgs/Raspado/', $objeto->getId()));
+        $objeto->setFotoSerial(uploadFile($_FILES, 'fotoSerial', '/../../system/Uploads/Imgs/Raspado/', "{$objeto->getId()}_S"));
+        $objeto->setFoto(uploadFile($_FILES, 'foto', '/../../system/Uploads/Imgs/Raspado/', $objeto->getId()));
         $objeto->setObservaciones($observaciones);
         $objeto->setFechaRegistro(date("Y-m-d H:i:s"));
         $objeto->finalizar();

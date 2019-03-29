@@ -35,6 +35,7 @@ class Raspado {
     private $estado;
     private $checked;
     private $foto;
+    private $fotoSerial;
     private $observaciones;
     private $fechaRegistro;
     private $fechaInicioProceso;
@@ -49,7 +50,7 @@ class Raspado {
                 foreach ($campo as $key => $value) $this->$key=$value;
                 $this->cargarAtributos($campo);
             } else {
-                $sql="select id, idInspeccion, idEmpleado, idPuestoTrabajo, anchoBanda, largoBanda, cinturon, cinturonCantidad, profundidad, radio, estado, checked, foto, observaciones, fechaRegistro, fechainicioproceso from {$P}raspado where $campo=$valor $filtro $orden";
+                $sql="select id, idInspeccion, idEmpleado, idPuestoTrabajo, anchoBanda, largoBanda, cinturon, cinturonCantidad, profundidad, radio, estado, checked, foto, fotoSerial, observaciones, fechaRegistro, fechainicioproceso from {$P}raspado where $campo=$valor $filtro $orden";
                 $resultado=Conector::ejecutarQuery($sql, null);
                 if (count($resultado)>0) {
                     foreach ($resultado[0] as $key => $value) $this->$key=$value;
@@ -67,6 +68,7 @@ class Raspado {
     	$this->anchoBanda=$arreglo['anchobanda'];
     	$this->largoBanda=$arreglo['largobanda'];
     	$this->cinturonCantidad=$arreglo['cinturoncantidad'];
+    	$this->fotoSerial = $arreglo['fotoserial'];
     	$this->fechaRegistro=$arreglo['fecharegistro'];
     	$this->fechaInicioProceso=$arreglo['fechainicioproceso'];
     }
@@ -251,15 +253,31 @@ class Raspado {
         $this->fechaInicioProceso = $fechaInicioProceso;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getFotoSerial()
+    {
+        return $this->fotoSerial;
+    }
+
+    /**
+     * @param mixed $fotoSerial
+     */
+    public function setFotoSerial($fotoSerial)
+    {
+        $this->fotoSerial = $fotoSerial;
+    }
+
     public function grabar() {
         $P='';
-        $sql="insert into {$P}raspado (idInspeccion, idEmpleado, anchoBanda, largoBanda, cinturon, cinturonCantidad, profundidad, radio, estado, checked, foto, observaciones, fechaRegistro, fechainicioproceso) values ($this->idInspeccion, $this->idEmpleado, $this->anchoBanda, $this->largoBanda, '$this->cinturon', $this->cinturonCantidad, $this->profundidad, $this->radio, '$this->estado', '$this->checked', '$this->foto', '$this->observaciones', '$this->fechaRegistro', '$this->fechaInicioProceso')";
+        $sql="insert into {$P}raspado (idInspeccion, idEmpleado, anchoBanda, largoBanda, cinturon, cinturonCantidad, profundidad, radio, estado, checked, foto, fotoSerial, observaciones, fechaRegistro, fechainicioproceso) values ($this->idInspeccion, $this->idEmpleado, $this->anchoBanda, $this->largoBanda, '$this->cinturon', $this->cinturonCantidad, $this->profundidad, $this->radio, '$this->estado', '$this->checked', '$this->foto', '$this->fotoSerial', '$this->observaciones', '$this->fechaRegistro', '$this->fechaInicioProceso')";
         Conector::ejecutarQuery($sql, null);
     }
 
     public function modificar() {
         $P='';
-        $sql="update {$P}raspado set idInspeccion=$this->idInspeccion, idEmpleado=$this->idEmpleado, anchoBanda=$this->anchoBanda, largoBanda=$this->largoBanda, cinturon='$this->cinturon', cinturonCantidad=$this->cinturonCantidad, profundidad=$this->profundidad, radio=$this->radio, observaciones='$this->observaciones', checked='$this->checked', estado='$this->estado', foto='$this->foto' where id=$this->id";
+        $sql="update {$P}raspado set idInspeccion=$this->idInspeccion, idEmpleado=$this->idEmpleado, anchoBanda=$this->anchoBanda, largoBanda=$this->largoBanda, cinturon='$this->cinturon', cinturonCantidad=$this->cinturonCantidad, profundidad=$this->profundidad, radio=$this->radio, estado='$this->estado', checked='$this->checked', foto='$this->foto', fotoSerial='$this->fotoSerial', observaciones='$this->observaciones' where id=$this->id";
         Conector::ejecutarQuery($sql, null);
     }
 
@@ -271,7 +289,7 @@ class Raspado {
     
     public function finalizar() {
         $P='';
-        $sql="update {$P}raspado set idEmpleado=$this->idEmpleado, idPuestoTrabajo=$this->idPuestoTrabajo, anchoBanda=$this->anchoBanda, largoBanda=$this->largoBanda, cinturon='$this->cinturon', cinturonCantidad=$this->cinturonCantidad, profundidad=$this->profundidad, radio=$this->radio, estado='$this->estado', checked='$this->checked', foto='$this->foto', observaciones='$this->observaciones', fechaRegistro='$this->fechaRegistro' where id=$this->id";
+        $sql="update {$P}raspado set idEmpleado=$this->idEmpleado, idPuestoTrabajo=$this->idPuestoTrabajo, anchoBanda=$this->anchoBanda, largoBanda=$this->largoBanda, cinturon='$this->cinturon', cinturonCantidad=$this->cinturonCantidad, profundidad=$this->profundidad, radio=$this->radio, estado='$this->estado', checked='$this->checked', foto='$this->foto', fotoSerial='$this->fotoSerial', observaciones='$this->observaciones', fechaRegistro='$this->fechaRegistro' where id=$this->id";
         Conector::ejecutarQuery($sql, null);
     }
 
@@ -284,7 +302,7 @@ class Raspado {
     public static function getLista($filtro, $orden) {
         $P='';
         if ($filtro!=null) $filtro=" where $filtro";
-        $sql="select id, idInspeccion, idEmpleado, idPuestoTrabajo, anchoBanda, largoBanda, cinturon, cinturonCantidad, profundidad, radio, estado, checked, foto, observaciones, fechaRegistro, fechainicioproceso from {$P}raspado $filtro $orden";
+        $sql="select id, idInspeccion, idEmpleado, idPuestoTrabajo, anchoBanda, largoBanda, cinturon, cinturonCantidad, profundidad, radio, estado, checked, foto, fotoserial, observaciones, fechaRegistro, fechainicioproceso from {$P}raspado $filtro $orden";
         return Conector::ejecutarQuery($sql, null);
     }
     
@@ -316,6 +334,7 @@ class Raspado {
         $arreglo['estado']=$objeto->getEstado();
         $arreglo['checked']=$objeto->getChecked();
         $arreglo['foto']=$objeto->getFoto();
+        $arreglo['fotoSerial'] = $objeto->getFotoSerial();
         $arreglo['observaciones']=$objeto->getObservaciones();
         $arreglo['fechaRegistro']=$objeto->getFechaRegistro();
         $arreglo['fechaInicioProceso']=$objeto->getFechaInicioProceso();
@@ -349,6 +368,7 @@ class Raspado {
             $arreglo['estado']=$objeto->getEstado();
             $arreglo['checked']=$objeto->getChecked();
             $arreglo['foto']=$objeto->getFoto();
+            $arreglo['fotoSerial'] = $objeto->getFotoSerial();
             $arreglo['observaciones']=$objeto->getObservaciones();
             $arreglo['fechaRegistro']=$objeto->getFechaRegistro();
             $arreglo['fechaInicioProceso']=$objeto->getFechaInicioProceso();

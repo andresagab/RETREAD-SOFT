@@ -460,7 +460,7 @@ if (strtolower($USUARIO->getRol()->getNombre())!='operario' && strtolower($USUAR
                                 <h5>
                                     <ul align="left">
                                         <li>
-                                            <span>Abrir el puesto de trabajo y usar la banda por la cual va a remplazar el uso anterior, en la tabla podra observar los registros de insumos o herramientas utilizados, por lo tanto todos los registros a exepción del ultimo seran eliminados.</span>
+                                            <span>Abrir el puesto de trabajo y usar la banda por la cual va a remplazar el uso anterior, en la tabla podrá observar los registros de insumos o herramientas utilizados, por lo tanto todos los registros a excepción del ultimo serán eliminados.</span>
                                         </li>
                                         <li>
                                             <span>Cargar la foto para la nueva banda que se corto.</span>

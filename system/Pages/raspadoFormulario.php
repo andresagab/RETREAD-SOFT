@@ -132,6 +132,26 @@
                                                             </div>
                                                         </div>
                                                         <div ng-controller="images">
+                                                            <div class="form-group" ng-show="data.statusFoto">
+                                                                <div class="row">
+                                                                    <div class="col-sm-12 col-md-12">
+                                                                        <div class="thumbnail">
+                                                                            <img class="card-img-top" id="imgSerial" style="height: 300px;" ng-src="{{ thumbnail.dataURL }}">
+                                                                            <div class="caption">
+                                                                                <button class="btn btn-warning" id="btnEliminarImgSerial" type="button" ng-click="deleteSpecificImage('#fotoSerial');">Borrar</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon">* Foto serial:</span>
+                                                                    <input type="file" class="form-control btn btn-default" name="fotoSerial" id="fotoSerial" required accept="image/*" onchange="angular.element(this).scope().loadPhoto(this.files);" ng-click="setIdInput('#' + this.id)">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div ng-controller="images">
                                                             <div class="form-group" ng-show="foto">
                                                                 <div class="row">
                                                                     <div class="col-sm-12 col-md-12">
@@ -180,7 +200,7 @@
                                                         </div>
                                                         <div class="form-group" id="paddinTop30">
                                                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--red-400 mdl-color-text--white" type="button" ng-click="backPage();">CANCELAR</button>
-                                                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary" type="reset" onclick="document.getElementById('btnEliminarImg').click();">REINICIAR</button>
+                                                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary" type="reset" onclick="document.getElementById('btnEliminarImg').click();document.getElementById('btnEliminarImgSerial').click();">REINICIAR</button>
                                                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-400 mdl-color-text--white" type="submit" ng-disabled="page.components.btnSendForm">ENVIAR</button>
                                                         </div>
                                                     </div>
@@ -303,7 +323,7 @@
                                                                             </div>-->
                                                                             <!--END BUSCADOR-->
                                                                             <!--TABLE-->
-                                                                            <div class="col-lg-12" ng-show="page.data.insumos.length>0" id="paddinTop20">
+                                                                            <div class="col-sm-12 col-md-12 col-lg-12" ng-show="page.data.insumos.length>0" id="paddinTop20">
                                                                                 <center>
                                                                                     <div class="table-responsive">
                                                                                         <table class="mdl-data-table mdl-js-data-table">
@@ -565,8 +585,8 @@
                                                                         <!--------------------------------------------->
                                                                         <!--Usar varios insumos-->
                                                                         <div role="tabpanel" class="tab-pane" id="_UsarVariosInsumos">
-                                                                            <div class="col-sm-12 col-lg-12" id="paddinTop10">
-                                                                                <div class="col-md-12 col-sm-12 table-responsive" >
+                                                                            <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop10">
+                                                                                <div class="col-md-12">
                                                                                     <strong class="text text-success control-label"><h2>Insumos o herramientas seleccionadas</h2></strong>
                                                                                 </div>
                                                                                 <div class="row col-md-12">
@@ -679,12 +699,34 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    <div class="col-sm-12 col-md-12 col-lg-12" align="left" style="padding-bottom: 10px;">
+                                                        <p>
+                                                            <span class="text-uppercase">SERIAL: </span>
+                                                        </p>
+                                                        <?php
+                                                        if (validVal($object->getFotoSerial())) {
+                                                            ?>
+                                                            <img class="img img-responsive" ng-src="system/Uploads/Imgs/Raspado/<?= $object->getFotoSerial() ?>">
+                                                            <?php
+                                                        } else {
+                                                            ?>
+                                                            <p align="left">
+                                                                <span class="text-muted">La imagén no esta registrada o fué borrada</span>
+                                                            </p>
+                                                            <img class="img img-responsive" ng-src="design/pics/imagenes/not_image.jpg">
+                                                            <?php
+                                                        }
+                                                        ?>
+                                                    </div>
                                                     <div class="col-sm-12 col-md-12 col-lg-12" align="left">
                                                         <p>
-                                                            <span class="text-uppercase">EVIDENCIA FOTOGRÁFICA: </span><span class="text-muted">
+                                                            <span class="text-uppercase">EVIDENCIA FOTOGRÁFICA: </span>
                                                         </p>
+                                                        <p align="left">
+                                                            <span class="text-muted">Resultado del proceso</span>
+                                                        </p>
+                                                        <img class="img img-responsive" ng-src="system/Uploads/Imgs/Raspado/<?= $object->getFoto() ?>">
                                                     </div>
-                                                    <img class="img img-responsive" ng-src="system/Uploads/Imgs/Raspado/<?= $object->getFoto() ?>">
                                                 </div>
                                             </div>
                                         </div>
@@ -742,6 +784,19 @@
                                     </div>
                                     <!-- END PANEL RESULT PROCESS -->
                                     <?php
+                                } else {
+                                    ?>
+                                    <!-- ERROR AL REGISTRAR LOS DATOS -->
+                                    <input type="hidden" id="txtPastProcess" value="<?= $inspeccionInicial->getId(); ?>">
+                                    <div class="row col-sm-12 col-md-12 col-lg-12" id="paddinTop20">
+                                        <div class="alert alert-danger">
+                                            <h3>OCURRIÓ UN ERROR AL REGISTRAR LOS DATOS, HAZ CLIC EN EL BOTÓN DE ABAJO PARA HACER EL REGISTRO NUEVAMENTE</h3>
+                                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-500 mdl-color-text--white" ng-click="resetProcces(<?= $object->getId(); ?>);">Reintentar</button>
+                                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-500 mdl-color-text--white" ng-click="backPage();">Regresar</button>
+                                        </div>
+                                    </div>
+                                    <!-- END ERROR AL REGISTRAR LOS DATOS -->
+                                    <?php
                                 }
                             } else header('Location: principal.php?CON=system/pages/unknowData.php');
                         } else {
@@ -768,13 +823,14 @@
                             }
                             ?>
                             <!-- PANEL RESULT PROCESS REGISTRO QUE FUE REALIZADO ANTES DE IMPLEMENTAR LA MEDIDA DE TIEMPO-->
+                            <script src="lib/controladores/informacionUsosPuestoTrabajo.js"></script>
                             <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20">
                                 <div class="alert alert-<?= $colorAlert ?>">
                                     <h4>EL PROCESO FUE REGISTRADO EXITOSAMENTE</h4>
                                     <span style="font-size: 20px;"><?= $mjs ?></span>
                                 </div>
                             </div>
-                            <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20">
+                            <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" ng-controller="infoUsosPuestoTrabajo">
                                 <div class="panel panel-default">
                                     <div class="panel-body">
                                         <div class="col-sm-6 col-md-6 col-lg-6">
@@ -818,6 +874,7 @@
                                             </div>
                                             <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="center">
                                                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--red-400 mdl-color-text--white" type="button" ng-click="backPage();">REGRESAR</button>
+                                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--yellow-500 mdl-color-text--black" type="button" ng-click="loadInfoUsosPuestoTrabajo(<?= $object->getId(); ?>, 1)" data-toggle="modal" href="/#_infoUsosPT">INFORMACIÓN PUESTO TRABAJO</button>
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6 col-lg-6">
@@ -825,11 +882,60 @@
                                                 <p>
                                                     <span class="text-uppercase">EVIDENCIA FOTOGRÁFICA: </span><span class="text-muted">
                                                 </p>
-                                                <p align="center">
-                                                    <img class="img img-responsive" ng-src="system/Uploads/Imgs/Raspado/<?= $object->getFoto() ?>">
-                                                </p>
+                                            </div>
+                                            <img class="img img-responsive" ng-src="system/Uploads/Imgs/Raspado/<?= $object->getFoto() ?>">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='modal fade' id='_infoUsosPT'>
+                                    <div class='modal-dialog modal-lg'>
+                                        <div class='modal-content'>
+                                            <div class='modal-header'>
+                                                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                                                <h3 class="text text-primary">{{ usosInsumos[0].puestoTrabajo }}</h3>
+                                                <div class="mdl-spinner mdl-js-spinner is-active" ng-show="infoUsosPuestoTrabajo.components.loadSpinner"></div>
+                                            </div>
+                                            <div class='modal-header'>
+                                                <div class="col-sm-12 col-lg-12 text-center">
+                                                    <div class="col-sm-12 col-lg-12">
+                                                        <h4 class="text-uppercase">Insumos o Herramientas usadas ({{ infoUsosPuestoTrabajo.data.objects.length }}):</h4>
+                                                    </div>
+                                                    <center>
+                                                        <div class="col-sm-12 col-lg-12 table-responsive container" id="paddinTop10">
+                                                            <table class="mdl-data-table mdl-js-data-table">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th ng-click="orden='insumo'">Insumo</th>
+                                                                    <th ng-click="orden='cantidad'">Cantidad</th>
+                                                                    <th ng-click="orden='nombreUsado'">Usado</th>
+                                                                    <th ng-click="orden='nombreTerminado'">Terminado</th>
+                                                                    <th ng-click="orden='empleadoUso'">Empleado (uso)</th>
+                                                                    <th ng-click="orden='empleadoEnvio'">Empleado (envio)</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr ng-repeat="objeto in infoUsosPuestoTrabajo.data.objects | orderBy: orden" ng-show="infoUsosPuestoTrabajo.data.objects.length>0">
+                                                                    <td class="mdl-data-table__cell--non-numeric">{{ objeto.insumo }}</td>
+                                                                    <td>{{ objeto.cantidad }}</td>
+                                                                    <td>{{ objeto.nombreUsado }} <span class="text-muted" ng-show="objeto.cantidadUsada!=null">({{ objeto.cantidadUsada }})</span></td>
+                                                                    <td>{{ objeto.nombreTerminado }}</td>
+                                                                    <td>{{ objeto.empleadoUso }}</td>
+                                                                    <td>{{ objeto.empleadoEnvio }}</td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </center>
+                                                </div>
+                                            </div>
+                                            <div class='modal-footer'>
+                                                <button type='button' class='mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-500 mdl-color-text--white' data-dismiss='modal'>Cerrar</button>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div id="toast-content-dialogPT" class="mdl-js-snackbar mdl-snackbar">
+                                        <div class="mdl-snackbar__text"></div>
+                                        <button class="mdl-snackbar__action" type="button"></button>
                                     </div>
                                 </div>
                             </div>

@@ -22,7 +22,7 @@ $JSON = array();
 $JSON['status'] = false;
 $JSON['data'] = [];
 //$allData = json_decode(Llanta::getLlantasOrdenServicio(null, 'order by ll.fecharegistro desc', false));
-$allData = json_decode(Llanta::getLlantasOrdenServicio("ll.id in (select idllanta from inspeccion_inicial where estado='prf')", 'order by ll.fecharegistro desc', false));
+$allData = json_decode(Llanta::getLlantasOrdenServicio("ll.id in (select idllanta from inspeccion_inicial where estado='prf' and checked='t')", 'order by ll.fecharegistro desc', false));
 $processData = json_decode(Llanta::getLlantasOrdenServicio(null, 'order by ll.fecharegistro desc', false));
 $sql= "select r.id, r.idempleado, r.idpuestotrabajo, r.anchobanda, r.largobanda, r.cinturon, r.cinturoncantidad, r.profundidad, r.radio, r.estado, r.checked, r.foto, r.observaciones, r.fecharegistro, r.fechainicioproceso, 
         ii.id as idpastprocess, ll.id as idllanta

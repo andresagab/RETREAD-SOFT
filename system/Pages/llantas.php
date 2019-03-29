@@ -157,6 +157,11 @@ if (strtolower($USUARIO->getRol()->getNombre())!='asesor') {
                                     <span class="mdl-chip__text">El proceso de inspección inicial fue registrado con exito</span>
                                 </span>
                             </div>
+                            <div class="col-sm-12 col-lg-12" id="paddinTop20">
+                                <div class="alert alert-info">
+                                    <span class="text-uppercase">NOTA: </span><span class="text-muted">Los registros se actualizan cada 30 minutos.</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

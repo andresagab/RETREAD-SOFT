@@ -47,13 +47,13 @@ function getColorStatusProcess($initTime, $status, $limit){
     return $color;
 }
 
-function uploadFile($dataFile, $route, $id) {
+function uploadFile($dataFile, $nameArray, $route, $id) {
     $namePhoto = '';
-    if (isset($dataFile['foto'])){
+    if (isset($dataFile["$nameArray"])){
         if (!is_dir(dirname(__FILE__) . $route)) {
             if (mkdir(dirname(__FILE__) . $route, 0777)) echo 'ok';
         }
-        $foto = $dataFile['foto']['name'];
+        $foto = $dataFile["$nameArray"]['name'];
         $cutExt = substr($foto, strpos($foto, "."));
         $namePhoto = $id . "_" . date("Y-m-d") . $cutExt;
         if (file_exists(dirname(__FILE__) . $route . "$namePhoto")) {
@@ -61,7 +61,7 @@ function uploadFile($dataFile, $route, $id) {
                 unlink(dirname(__FILE__) . $route . "$namePhoto");
             } catch (Exception $e) {echo $e->getMessage();}
         }
-        move_uploaded_file($dataFile['foto']['tmp_name'], dirname(__FILE__) . $route . "$namePhoto");
+        move_uploaded_file($dataFile["$nameArray"]['tmp_name'], dirname(__FILE__) . $route . "$namePhoto");
     }
     return $namePhoto;
 }
