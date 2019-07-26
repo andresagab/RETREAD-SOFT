@@ -905,39 +905,41 @@ if ($servicioFin->getId()==null){
                                         <div class="col-md-12 <?= $hideBtnRegistrarInspeccionInicial; ?>">
                                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-400 mdl-color-text--white" id="btnRegistrarInspeccionInicial" type="button" name="accion">GESTIONAR</button>
                                         </div>
-                                        <div class="col-sm-6 col-md-6 col-lg-6">
-                                            <div class="col-sm-12 col-md-12 col-lg-12" align="left">
-                                                <h4 class="text-uppercase mdl-color-text--green-500">INFORMACIÓN REGISTRADA</h4>
-                                            </div>
-                                            <div class="col-sm-12 col-md-12 col-lg-12 <?= $hideDatosInspeccionInicial; ?>" id="paddinTop20" align="left">
-                                                <p>
-                                                    <span class="text-uppercase">EMPLEADO: </span><span class="text-muted"><?= $inspeccionInicial->getEmpleado()->getPersona()->getNombresCompletos() ?></span>
-                                                </p>
-                                                <p>
-                                                    <span class="text-uppercase">NUMERO REENCAUCHE: </span><span class="text-muted"><?= $inspeccionInicial->getNumeroRencauche() ?></span>
-                                                </p>
-                                                <p>
-                                                    <span class="text-uppercase">ESTADO: </span><span class="text-muted"><?= $inspeccionInicial->getNombreChecked(); ?></span>
-                                                </p>
-                                                <p>
-                                                    <span class="text-uppercase">OBSERVACIONES: </span><span class="text-muted"><?= $inspeccionInicial->getObservaciones() ?></span>
-                                                </p>
-                                                <p>
-                                                    <span class="text-uppercase">TIEMPO DE EJECUCIÓN: </span><span class="text-muted"><?= getDiffTiempoString($llanta->getFechaInicioProceso(), $inspeccionInicial->getFechaRegistro()) ?></span>
-                                                </p>
-                                                <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="center">
-                                                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-400 mdl-color-text--white" id="btnRegistrarInspeccionInicial" type="button" name="accion" onclick="document.location='principal.php?CON=system/Pages/inspeccionInicialFormulario.php&id=<?= $llanta->getId(); ?>';">GESTIONAR</button>
+                                        <div class="<?= $hideDatosInspeccionInicial; ?>">
+                                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                                <div class="col-sm-12 col-md-12 col-lg-12" align="left">
+                                                    <h4 class="text-uppercase mdl-color-text--green-500">INFORMACIÓN REGISTRADA</h4>
+                                                </div>
+                                                <div class="col-sm-12 col-md-12 col-lg-12 <?= $hideDatosInspeccionInicial; ?>" id="paddinTop20" align="left">
+                                                    <p>
+                                                        <span class="text-uppercase">EMPLEADO: </span><span class="text-muted"><?= $inspeccionInicial->getEmpleado()->getPersona()->getNombresCompletos() ?></span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="text-uppercase">NUMERO REENCAUCHE: </span><span class="text-muted"><?= $inspeccionInicial->getNumeroRencauche() ?></span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="text-uppercase">ESTADO: </span><span class="text-muted"><?= $inspeccionInicial->getNombreChecked(); ?></span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="text-uppercase">OBSERVACIONES: </span><span class="text-muted"><?= $inspeccionInicial->getObservaciones() ?></span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="text-uppercase">TIEMPO DE EJECUCIÓN: </span><span class="text-muted"><?= getDiffTiempoString($llanta->getFechaInicioProceso(), $inspeccionInicial->getFechaRegistro()) ?></span>
+                                                    </p>
+                                                    <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="center">
+                                                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-400 mdl-color-text--white" id="btnRegistrarInspeccionInicial" type="button" name="accion" onclick="document.location='principal.php?CON=system/Pages/inspeccionInicialFormulario.php&id=<?= $llanta->getId(); ?>';">GESTIONAR</button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 col-lg-6">
-                                            <div class="col-sm-12 col-md-12 col-lg-12" align="left">
-                                                <p>
-                                                    <span class="text-uppercase">EVIDENCIA FOTOGRÁFICA: </span><span class="text-muted">
-                                                </p>
-                                                <p align="center">
-                                                    <img class="img img-responsive" ng-src="system/Uploads/Imgs/Inspeccion_Inicial/<?= $inspeccionInicial->getFoto() ?>" width="350px">
-                                                </p>
+                                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                                <div class="col-sm-12 col-md-12 col-lg-12" align="left">
+                                                    <p>
+                                                        <span class="text-uppercase">EVIDENCIA FOTOGRÁFICA: </span><span class="text-muted">
+                                                    </p>
+                                                    <p align="center">
+                                                        <img class="img img-responsive" ng-src="system/Uploads/Imgs/Inspeccion_Inicial/<?= $inspeccionInicial->getFoto() ?>" width="350px">
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

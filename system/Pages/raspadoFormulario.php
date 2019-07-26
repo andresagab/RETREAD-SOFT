@@ -38,12 +38,14 @@
         require_once dirname(__FILE__).'\..\Clases\Servicio.php';
         require_once dirname(__FILE__).'\..\Clases\Inspeccion_Inicial.php';
         require_once dirname(__FILE__).'\..\Clases\Raspado.php';
+        require_once dirname(__FILE__).'\..\Clases\Rechazo_Llanta.php';
         if (isset($_GET['id'])) {
             $llanta = new Llanta('id', $_GET['id'], null, null);
             $servicio = $llanta->getServicio();
             $inspeccionInicial = new Inspeccion_Inicial('idllanta', $llanta->getId(), null, 'limit 1');
             ?>
             <input type="hidden" id="txtIdLlanta" value="<?= $_GET['id'] ?>">
+            <input type="hidden" id="idOs" value="<?= $servicio->getId() ?>">
             <div class="col-sm-12 col-md-12 col-lg-12 text-uppercase text-center mdl-typography--headline">
                 <span>RP: </span><span><?= $llanta->getRp(); ?></span>
             </div>
@@ -199,6 +201,7 @@
                                                             <div class="col-md-12"><input type="hidden" name="accion" value="Registrar"></div>
                                                         </div>
                                                         <div class="form-group" id="paddinTop30">
+                                                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-400 mdl-color-text--white" id="btnFrmToOS" type="button" ng-click="backToOs();">OS</button>
                                                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--red-400 mdl-color-text--white" type="button" ng-click="backPage();">CANCELAR</button>
                                                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary" type="reset" onclick="document.getElementById('btnEliminarImg').click();document.getElementById('btnEliminarImgSerial').click();">REINICIAR</button>
                                                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-400 mdl-color-text--white" type="submit" ng-disabled="page.components.btnSendForm">ENVIAR</button>
@@ -652,12 +655,15 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" ng-controller="infoUsosPuestoTrabajo">
+                                        <!--DATA PANEL-->
                                         <div class="panel panel-default">
                                             <div class="panel-body">
+                                                <!--DATA SECTION-->
                                                 <div class="col-sm-6 col-md-6 col-lg-6">
                                                     <div class="col-sm-12 col-md-12 col-lg-12" align="left">
                                                         <h4 class="text-uppercase mdl-color-text--green-500">INFORMACIÓN REGISTRADA</h4>
                                                     </div>
+                                                    <!--DATA REGISTERED-->
                                                     <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="left">
                                                         <p>
                                                             <span class="text-uppercase">EMPLEADO: </span><span class="text-muted"><?= $object->getEmpleado()->getPersona()->getNombresCompletos() ?></span>
@@ -693,11 +699,32 @@
                                                             <span class="text-uppercase">TIEMPO DE EJECUCIÓN: </span><span class="text-muted"><?= getDiffTiempoString($object->getFechaInicioProceso(), $object->getFechaRegistro()) ?></span>
                                                         </p>
                                                     </div>
-                                                    <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="center">
-                                                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--red-400 mdl-color-text--white" type="button" ng-click="backPage();">REGRESAR</button>
-                                                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--yellow-500 mdl-color-text--black" type="button" ng-click="loadInfoUsosPuestoTrabajo(<?= $object->getId(); ?>, 1)" data-toggle="modal" href="/#_infoUsosPT">INFORMACIÓN PUESTO TRABAJO</button>
+                                                    <!--END DATA REGISTERED-->
+                                                    <!--ACCESS BUTTONS: List, OS, Info and Rechazos-->
+                                                    <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="left">
+                                                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-400 mdl-color-text--white" type="button" ng-click="backPage();">REGRESAR AL LISTADO DE LLANTAS</button>
                                                     </div>
+                                                    <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="left">
+                                                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-500 mdl-color-text--white" ng-click="backToOs();">Regresar a la orden de servicio</button>
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="left">
+                                                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--blue-500 mdl-color-text--white" type="button" ng-click="loadInfoUsosPuestoTrabajo(<?= $object->getId(); ?>, 1)" data-toggle="modal" href="/#_infoUsosPT">INFORMACIÓN PUESTO TRABAJO</button>
+                                                    </div>
+                                                    <?php
+                                                    if (Rechazo_Llanta::getValidRechazo($llanta->getId())){
+                                                    ?>
+                                                        <!--BUTTON-->
+                                                        <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="left">
+                                                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--red-400 mdl-color-text--white" type="button" ng-click="loadRechazosLlanta(<?= $llanta->getId(); ?>)" data-toggle="modal" href="/#_infoRechazos">CAUSAS DE RECHAZO</button>
+                                                        </div>
+                                                        <!--END BUTTON-->
+                                                    <?php
+                                                    }
+                                                    ?>
+                                                    <!--END ACCESS BUTTONS: List, OS, Info and Rechazos-->
                                                 </div>
+                                                <!--END DATA SECTION-->
+                                                <!--IMAGES SECTION-->
                                                 <div class="col-sm-6 col-md-6 col-lg-6">
                                                     <div class="col-sm-12 col-md-12 col-lg-12" align="left" style="padding-bottom: 10px;">
                                                         <p>
@@ -728,8 +755,11 @@
                                                         <img class="img img-responsive" ng-src="system/Uploads/Imgs/Raspado/<?= $object->getFoto() ?>">
                                                     </div>
                                                 </div>
+                                                <!--END IMAGES SECTION-->
                                             </div>
                                         </div>
+                                        <!--END DATA PANEL-->
+                                        <!--DIALOG INFO INSUMOS-->
                                         <div class='modal fade' id='_infoUsosPT'>
                                             <div class='modal-dialog modal-lg'>
                                                 <div class='modal-content'>
@@ -781,6 +811,41 @@
                                                 <button class="mdl-snackbar__action" type="button"></button>
                                             </div>
                                         </div>
+                                        <!--END DIALOG INFO INSUMOS-->
+                                        <!--DIALOG INFO RECHAZOS-->
+                                        <div class='modal fade' id='_infoRechazos'>
+                                            <div class='modal-dialog modal-lg'>
+                                                <div class='modal-content'>
+                                                    <div class='modal-header'>
+                                                        <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                                                        <h3 class="text text-primary">CAUSAS DEL RECHAZO</h3>
+                                                        <div class="mdl-spinner mdl-js-spinner is-active" ng-show="html.basicDialog.spinnerLoad"></div>
+                                                    </div>
+                                                    <div class='modal-header'>
+                                                        <div class="col-sm-12 col-lg-12 text-left" ng-show="html.basicDialog.data.register && html.basicDialog.data.observaciones!=''">
+                                                            <h4>OBSERVACIONES GENERALES</h4>
+                                                            <br>
+                                                            <p class="text-uppercase">{{ html.basicDialog.data.observaciones }}</p>
+                                                        </div>
+                                                        <div class="col-sm-12 col-lg-12 text-left">
+                                                            <h4>CAUSAS</h4>
+                                                            <br>
+                                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-left" ng-repeat="object in html.basicDialog.data.rechazos" ng-show="html.basicDialog.data.subRegisters">
+                                                                <li>{{ object.nombre }}</li>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class='modal-footer'>
+                                                        <button type='button' class='mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-500 mdl-color-text--white' data-dismiss='modal'>Cerrar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="toast-content-dialogPT" class="mdl-js-snackbar mdl-snackbar">
+                                                <div class="mdl-snackbar__text"></div>
+                                                <button class="mdl-snackbar__action" type="button"></button>
+                                            </div>
+                                        </div>
+                                        <!--END DIALOG INFO RECHAZOS-->
                                     </div>
                                     <!-- END PANEL RESULT PROCESS -->
                                     <?php
@@ -792,7 +857,8 @@
                                         <div class="alert alert-danger">
                                             <h3>OCURRIÓ UN ERROR AL REGISTRAR LOS DATOS, HAZ CLIC EN EL BOTÓN DE ABAJO PARA HACER EL REGISTRO NUEVAMENTE</h3>
                                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-500 mdl-color-text--white" ng-click="resetProcces(<?= $object->getId(); ?>);">Reintentar</button>
-                                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-500 mdl-color-text--white" ng-click="backPage();">Regresar</button>
+                                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-500 mdl-color-text--white" ng-click="backPage();">Regresar al listado de llantas</button>
+                                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-500 mdl-color-text--white" ng-click="backToOs();">Regresar a la orden de servicio</button>
                                         </div>
                                     </div>
                                     <!-- END ERROR AL REGISTRAR LOS DATOS -->
@@ -806,7 +872,8 @@
                             <div class="row col-sm-12 col-md-12 col-lg-12" id="paddinTop20">
                                 <div class="alert alert-warning">
                                     <h3>El formulario de registro se habilitara cuando el cronometro llegue a 6 minutos: {{ retreadProcess.data.timeToGo }}/06:00</h3>
-                                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-500 mdl-color-text--white" ng-click="backPage();">Regresar</button>
+                                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-500 mdl-color-text--white" ng-click="backPage();">Regresar al listado de llantas</button>
+                                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-500 mdl-color-text--white" ng-click="backToOs();">Regresar a la orden de servicio</button>
                                 </div>
                             </div>
                             <!-- END TIME TO ENABLED FRM PROCESS -->
@@ -822,7 +889,7 @@
                                 $mjs = 'llanta rechazada';
                             }
                             ?>
-                            <!-- PANEL RESULT PROCESS REGISTRO QUE FUE REALIZADO ANTES DE IMPLEMENTAR LA MEDIDA DE TIEMPO-->
+                            <!-- PANEL RESULT PROCESS = REGISTRO QUE FUE REALIZADO ANTES DE IMPLEMENTAR LA MEDIDA DE TIEMPO-->
                             <script src="lib/controladores/informacionUsosPuestoTrabajo.js"></script>
                             <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20">
                                 <div class="alert alert-<?= $colorAlert ?>">
@@ -830,13 +897,16 @@
                                     <span style="font-size: 20px;"><?= $mjs ?></span>
                                 </div>
                             </div>
+                            <!--DATA PANEL-->
                             <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" ng-controller="infoUsosPuestoTrabajo">
                                 <div class="panel panel-default">
                                     <div class="panel-body">
+                                        <!--DATA SECTION-->
                                         <div class="col-sm-6 col-md-6 col-lg-6">
                                             <div class="col-sm-12 col-md-12 col-lg-12" align="left">
                                                 <h4 class="text-uppercase mdl-color-text--green-500">INFORMACIÓN REGISTRADA</h4>
                                             </div>
+                                            <!--DATA REGISTERED-->
                                             <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="left">
                                                 <p>
                                                     <span class="text-uppercase">EMPLEADO: </span><span class="text-muted"><?= $object->getEmpleado()->getPersona()->getNombresCompletos() ?></span>
@@ -872,11 +942,32 @@
                                                     <span class="text-uppercase">TIEMPO DE EJECUCIÓN: </span><span class="text-muted"><?= getDiffTiempoString($object->getFechaInicioProceso(), $object->getFechaRegistro()) ?></span>
                                                 </p>
                                             </div>
-                                            <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="center">
-                                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--red-400 mdl-color-text--white" type="button" ng-click="backPage();">REGRESAR</button>
-                                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--yellow-500 mdl-color-text--black" type="button" ng-click="loadInfoUsosPuestoTrabajo(<?= $object->getId(); ?>, 1)" data-toggle="modal" href="/#_infoUsosPT">INFORMACIÓN PUESTO TRABAJO</button>
+                                            <!--END DATA REGISTERED-->
+                                            <!--ACCESS BUTTONS: List, OS, Info and Rechazos-->
+                                            <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="left">
+                                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-400 mdl-color-text--white" type="button" ng-click="backPage();">REGRESAR AL LISTADO DE LLANTAS</button>
                                             </div>
+                                            <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="left">
+                                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-500 mdl-color-text--white" ng-click="backToOs();">Regresar a la orden de servicio</button>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="left">
+                                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--blue-500 mdl-color-text--white" type="button" ng-click="loadInfoUsosPuestoTrabajo(<?= $object->getId(); ?>, 1)" data-toggle="modal" href="/#_infoUsosPT">INFORMACIÓN PUESTO TRABAJO</button>
+                                            </div>
+                                            <?php
+                                            if (Rechazo_Llanta::getValidRechazo($llanta->getId())){
+                                                ?>
+                                                <!--BUTTON-->
+                                                <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="left">
+                                                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--red-400 mdl-color-text--white" type="button" ng-click="loadRechazosLlanta(<?= $llanta->getId(); ?>)" data-toggle="modal" href="/#_infoRechazos">CAUSAS DE RECHAZO</button>
+                                                </div>
+                                                <!--END BUTTON-->
+                                                <?php
+                                            }
+                                            ?>
+                                            <!--END ACCESS BUTTONS: List, OS, Info and Rechazos-->
                                         </div>
+                                        <!--END DATA SECTION-->
+                                        <!--IMAGES SECTION-->
                                         <div class="col-sm-6 col-md-6 col-lg-6">
                                             <div class="col-sm-12 col-md-12 col-lg-12" align="left">
                                                 <p>
@@ -885,8 +976,10 @@
                                             </div>
                                             <img class="img img-responsive" ng-src="system/Uploads/Imgs/Raspado/<?= $object->getFoto() ?>">
                                         </div>
+                                        <!--END IMAGES SECTION-->
                                     </div>
                                 </div>
+                                <!--DIALOG INFO INSUMOS-->
                                 <div class='modal fade' id='_infoUsosPT'>
                                     <div class='modal-dialog modal-lg'>
                                         <div class='modal-content'>
@@ -938,7 +1031,43 @@
                                         <button class="mdl-snackbar__action" type="button"></button>
                                     </div>
                                 </div>
+                                <!--END DIALOG INFO INSUMOS-->
+                                <!--DIALOG INFO RECHAZOS-->
+                                <div class='modal fade' id='_infoRechazos'>
+                                    <div class='modal-dialog modal-lg'>
+                                        <div class='modal-content'>
+                                            <div class='modal-header'>
+                                                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                                                <h3 class="text text-primary">CAUSAS DEL RECHAZO</h3>
+                                                <div class="mdl-spinner mdl-js-spinner is-active" ng-show="html.basicDialog.spinnerLoad"></div>
+                                            </div>
+                                            <div class='modal-header'>
+                                                <div class="col-sm-12 col-lg-12 text-left" ng-show="html.basicDialog.data.register && html.basicDialog.data.observaciones!=''">
+                                                    <h4>OBSERVACIONES GENERALES</h4>
+                                                    <br>
+                                                    <p class="text-uppercase">{{ html.basicDialog.data.observaciones }}</p>
+                                                </div>
+                                                <div class="col-sm-12 col-lg-12 text-left">
+                                                    <h4>CAUSAS</h4>
+                                                    <br>
+                                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-left" ng-repeat="object in html.basicDialog.data.rechazos" ng-show="html.basicDialog.data.subRegisters">
+                                                        <li>{{ object.nombre }}</li>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class='modal-footer'>
+                                                <button type='button' class='mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-500 mdl-color-text--white' data-dismiss='modal'>Cerrar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="toast-content-dialogPT" class="mdl-js-snackbar mdl-snackbar">
+                                        <div class="mdl-snackbar__text"></div>
+                                        <button class="mdl-snackbar__action" type="button"></button>
+                                    </div>
+                                </div>
+                                <!--END DIALOG INFO RECHAZOS-->
                             </div>
+                            <!--END DATA PANEL-->
                             <!-- END PANEL RESULT PROCESS -->
                             <?php
                         } else {
@@ -947,9 +1076,10 @@
                             <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20">
                                 <input type="hidden" id="txtPastProcess" value="<?= $inspeccionInicial->getId(); ?>">
                                 <div class="alert alert-info">
-                                    <h4>Para habilitar el formulario de registro clique sobre el botón de abajo. Debe tener en cuenta que una vez presionado el botón, el formulario de registro se habilitara después de 8 minutos.</h4>
+                                    <h4>Para habilitar el formulario de registro clique sobre el botón de abajo. Debe tener en cuenta que una vez presionado el botón, el formulario de registro se habilitara después de 6 minutos.</h4>
                                     <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary" ng-click="initProcess();">Iniciar proceso</button>
-                                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-500 mdl-color-text--white" ng-click="backPage();">Regresar</button>
+                                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-500 mdl-color-text--white" ng-click="backPage();">Regresar al listado de llantas</button>
+                                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-500 mdl-color-text--white" ng-click="backToOs();">Regresar a la orden de servicio</button>
                                 </div>
                             </div>
                             <!-- END ENABLED FRM PROCESS -->
@@ -959,12 +1089,13 @@
 
                 } else {
                     ?>
-                    <!-- LLANTA RECHAZADA EN  EL PROCESO ANTERIOR -->
+                    <!-- LLANTA RECHAZADA EN EL PROCESO ANTERIOR -->
                     <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20">
                         <div class="alert alert-danger">
                             <h4>La llanta fue rechazada en el proceso anterior, el reencauche ha terminado.</h4>
                             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary" ng-click="toProcess();">Ir al proceso anterior</button>
-                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-500 mdl-color-text--white" ng-click="backPage();">Regresar</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-500 mdl-color-text--white" ng-click="backPage();">Regresar al listado de llantas</button>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-500 mdl-color-text--white" ng-click="backToOs();">Regresar a la orden de servicio</button>
                         </div>
                     </div>
                     <!-- END LLANTA RECHAZADA EN  EL PROCESO ANTERIOR -->
@@ -977,7 +1108,8 @@
                     <div class="alert alert-warning">
                         <h4>Para habilitar el formulario de registro, primero debe registrar el proceso de inspección inicial</h4>
                         <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary" ng-click="toProcess();">Ir al proceso</button>
-                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-500 mdl-color-text--white" ng-click="backPage();">Regresar</button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-500 mdl-color-text--white" ng-click="backPage();">Regresar al listado de llantas</button>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-500 mdl-color-text--white" ng-click="backToOs();">Regresar a la orden de servicio</button>
                     </div>
                 </div>
                 <!-- END PAST PROCESS PENDING -->
@@ -991,7 +1123,7 @@
                 <div class='modal-content'>
                     <div class='modal-header'>
                         <button type='button' class='close' id="btnCerrarDialogFormularioLlanta_A" data-dismiss='modal'>&times;</button>
-                        <h3 class="text text-primary">INFORMACION<br><small>(Llanta y OS)</small></h3>
+                        <h3 class="text text-primary">INFORMACIÓN</h3>
                     </div>
                     <div class="modal-header">
                         <div class="text-justify">

@@ -600,7 +600,7 @@ function registrarLlantaOS($json) {
     $objeto->setObservaciones($json->observaciones);
     $objeto->setFechaRegistro(date("Y-m-d H:i:s"));
     if ($objeto->grabar()){
-        $llanta=new Llanta('serie', $json->serie, null, null);
+        $llanta=new Llanta('serie', "'$json->serie'", null, null);
         if ($llanta->getId()!=null && $llanta->getId()!=''){
             echo 'OK';
         } else {

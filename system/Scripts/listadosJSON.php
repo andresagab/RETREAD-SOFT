@@ -277,6 +277,7 @@ switch ($_GET['metodo']) {
         break;
     case 'getBitacorasJSON':
         echo Bitacora::getDataJSON(1, null, null, null, 'order by fecharegistro desc', null, true);
+        //echo Bitacora::getDataJSON(1, null, null, null, 'order by fecharegistro desc limit 100000', null, true); VERIFICAR, PORQUE AL REDEDOR DE 200.000 DATOS NO PUEDEN SER CARGADOS DE GOLPE
         break;
 
     case 'getDataInformeInsumosJSON':

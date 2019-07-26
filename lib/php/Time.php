@@ -39,17 +39,20 @@ function getDiffTiempo($timeStar, $timeEnd) {
 
 
 function getDiffTiempoString($timeStar, $timeEnd) {
-    $timepoInicial = new DateTime($timeStar, null);
-    $timepoActual = new DateTime($timeEnd, null);
-    $diff = date_diff($timepoInicial, $timepoActual, null);
-    foreach ($diff as $key => $value) ${$key}=$value;
     $diferencia = '';
-    if ($y!=0 && $y!='0') $diferencia = "$y años ";
-    if ($m!=0 && $m!='0') $diferencia .= "$m meses ";
-    if ($d!=0 && $d!='0') $diferencia .= "$d dias ";
-    if ($h!=0 && $h!='0') $diferencia .= "$h horas ";
-    if ($i!=0 && $i!='0') $diferencia .= "$i minutos ";
-    if ($s!=0 && $s!='0') $diferencia .= "$s segundos ";
+    if (strtolower($timeStar) == 'sin registrar' || strtolower($timeEnd == 'sin registrar')) $diferencia = $timeStar;
+    else {
+        $timepoInicial = new DateTime($timeStar, null);
+        $timepoActual = new DateTime($timeEnd, null);
+        $diff = date_diff($timepoInicial, $timepoActual, null);
+        foreach ($diff as $key => $value) ${$key}=$value;
+        if ($y!=0 && $y!='0') $diferencia = "$y años ";
+        if ($m!=0 && $m!='0') $diferencia .= "$m meses ";
+        if ($d!=0 && $d!='0') $diferencia .= "$d dias ";
+        if ($h!=0 && $h!='0') $diferencia .= "$h horas ";
+        if ($i!=0 && $i!='0') $diferencia .= "$i minutos ";
+        if ($s!=0 && $s!='0') $diferencia .= "$s segundos ";
+    }
     return $diferencia;
 }
 

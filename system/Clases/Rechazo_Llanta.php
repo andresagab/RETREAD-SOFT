@@ -309,4 +309,67 @@ class Rechazo_Llanta {
         return json_encode($JSON, JSON_UNESCAPED_UNICODE);
     }
 
+    public static function getValidRechazo($idLlanta) {
+        /*
+         * SE VALIDARA SI UNA LLANTA DETERMINADA POR $idLlanta YA FUE RECHAZADA
+         * TRUE = LLANTA RECHAZADA
+         * FALSE = LLANTA NO RECHAZADA
+        */
+        $status = false;
+        if (validVal($idLlanta)) {
+            $rechazo = new Rechazo_Llanta('idLlanta', $idLlanta, null, null);
+            if (validVal($rechazo->getId())) $status = true;
+        }
+        return $status;
+    }
+
+    private function validSubRegistros() {
+        /*
+         * SE VALIDA LA EXISTENCIA DE REGISTROS EN "RLLANTA_DETALLE" ASOCIOADOS A LA TABLA "RECHAZO_LLANTA"
+         * TRUE = EXISTEN REGISTROS ASOCIADOS
+         * FALSE = NO EXISTEN REGISTROS ASOCIADOS
+         * */
+        $valid = false;
+        $sql = "select count(idrechazollanta) from rllanta_detalle where idrechazollanta=$this->id";
+        $result = Conector::ejecutarQuery($sql, null);
+        if (is_array($result)){
+            if ($result[0]['count'] > 0) $valid = true;
+        }
+        return $valid;
+    }
+
+    public static function getDataRechazo($idLlanta){
+        /*
+         * SE CARGA TODA LA INFORMACIÓN CORRESPONDIENTE AL RECHAZO DE UNA LLANTA APARTID DEL $idLlanta
+         * EL VALOR RETONARNADO CORRESPONDE A UN OBJETO JSON QUE CONTIENE CADA UNO DE LOS VALORES ASOCIADOS A LA TABLA RECHAZO_LLANTA, ESTE TAMBIÉN INCLUTE TODOS LOS OBJETOS RELACIONADOS A RLLANTA_DETALLE
+         * PUEDE USAR LOS CAMPOS "REGISTER" y "SUBREGISTERS" PARA VALIDAR LA CARGA DE DATOS, ESTE SE ASIGNA EN FALSE AL INICIO DEL METODO Y EN TRUE CUANDO LOS DATOS SON CARGADOS
+         * */
+        $JSON = array();
+        $JSON['register'] = false;
+        $JSON['subRegisters'] = false;
+        $JSON["rechazos"] = array();
+        if (validVal($idLlanta)) {
+            $rechazo = new Rechazo_Llanta('idLlanta', $idLlanta, null, null);
+            if (validVal($rechazo->getId())){
+                $JSON['register'] = true;
+                foreach ($rechazo as $item => $val) $JSON["$item"] = $val;
+                $JSON['subRegisters'] = $rechazo->validSubRegistros();
+                if ($JSON['subRegisters']){
+                    $rechazos = RLlanta_Detalle::getListaEnObjetos("idrechazollanta={$rechazo->getId()}", null);
+                    for ($i = 0; $i < count($rechazos); $i++) {
+                        $array = array();
+                        $array["id"] = $rechazos[$i]->getId();
+                        $array["fechaRegistro"] = $rechazos[$i]->getFechaRegistro();
+                        $rechazoOriginal = $rechazos[$i]->getRechazo();
+                        $array["idRechazo"] = $rechazoOriginal->getId();
+                        $array["nombre"] = $rechazoOriginal->getNombre();
+                        $array["observaciones"] = $rechazoOriginal->getObservaciones();
+                        array_push($JSON["rechazos"], $array);
+                    }
+                }
+            }
+        }
+        return json_encode($JSON, JSON_UNESCAPED_UNICODE);
+    }
+
 }

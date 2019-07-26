@@ -1,0 +1,1 @@
+ALTER TABLE llanta ALTER COLUMN serie SET DATA TYPE text;

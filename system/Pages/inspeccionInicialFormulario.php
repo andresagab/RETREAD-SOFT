@@ -36,6 +36,7 @@ require_once dirname(__FILE__).'\..\Clases\Dimension_Referencia.php';
 require_once dirname(__FILE__).'\..\Clases\Llanta.php';
 require_once dirname(__FILE__).'\..\Clases\Servicio.php';
 require_once dirname(__FILE__).'\..\Clases\Inspeccion_Inicial.php';
+require_once dirname(__FILE__).'\..\Clases\Rechazo_Llanta.php';
 if (isset($_GET['id'])) {
     ?>
         <input type="hidden" id="txtIdLlanta" value="<?= $_GET['id'] ?>">
@@ -43,12 +44,14 @@ if (isset($_GET['id'])) {
     $llanta = new Llanta('id', $_GET['id'], null, null);
     $servicio = $llanta->getServicio();
     ?>
+    <input type="hidden" id="idOs" value="<?= $llanta->getIdServicio(); ?>">
     <div class="col-sm-12 col-md-12 col-lg-12 text-uppercase text-center mdl-typography--headline">
         <span>RP: </span><span><?= $llanta->getRp(); ?></span>
     </div>
     <?php
     if (validVal($llanta->getFechaInicioProcesoVal())) {
-        if (getDiffTimeInSeconds($llanta->getFechaInicioProcesoVal(), date('Y-m-d H:i:s'))>=240) {
+        if (getDiffTimeInSeconds($llanta->getFechaInicioProcesoVal(), date('Y-m-d H:i:s'))>=30) {
+            //El tiempo de espera se redujo por solicitud de los operarios de la planta, pasa de 240 a 30 segundos
             $object = new Inspeccion_Inicial('idLlanta', $llanta->getId(), null, null);
             if (validVal($object->getId())) {
                 if (!validVal($object->getIdEmpleado()) && $object->getEstado()==='prs') {
@@ -119,6 +122,7 @@ if (isset($_GET['id'])) {
                                         <div class="col-md-12"><input type="hidden" name="accion" value="Registrar"></div>
                                     </div>
                                     <div class="form-group" id="paddinTop30">
+                                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-400 mdl-color-text--white" id="btnFrmToOS" type="button" ng-click="backToOs();">OS</button>
                                         <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--red-400 mdl-color-text--white" type="button" ng-click="backPage();">CANCELAR</button>
                                         <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary" type="reset" onclick="document.getElementById('btnEliminarImg').click();">REINICIAR</button>
                                         <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-400 mdl-color-text--white" type="submit">ENVIAR</button>
@@ -126,6 +130,7 @@ if (isset($_GET['id'])) {
                                 </div>
                                 <div class="col-sm-12 col-md-4"></div>
                             </form>
+                            <div class="mdl-tooltip" data-mdl-for="btnFrmToOS">CANCELAR Y VOLVER A LA ORDEN DE SERVICIO</div>
                         </div>
                         <!-- END FORM -->
                         <!-- RECHAZOS -->
@@ -211,6 +216,7 @@ if (isset($_GET['id'])) {
                                     <div class="col-sm-12 col-md-12 col-lg-12" align="left">
                                         <h4 class="text-uppercase mdl-color-text--green-500">INFORMACIÓN REGISTRADA</h4>
                                     </div>
+                                    <!--DATA REGISTERED-->
                                     <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="left">
                                         <p>
                                             <span class="text-uppercase">EMPLEADO: </span><span class="text-muted"><?= $object->getEmpleado()->getPersona()->getNombresCompletos() ?></span>
@@ -228,9 +234,29 @@ if (isset($_GET['id'])) {
                                             <span class="text-uppercase">TIEMPO DE EJECUCIÓN: </span><span class="text-muted"><?= getDiffTiempoString($llanta->getFechaInicioProceso(), $object->getFechaRegistro()) ?></span>
                                         </p>
                                     </div>
-                                    <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="center">
-                                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--red-400 mdl-color-text--white" type="button" ng-click="backPage();">REGRESAR</button>
+                                    <!--END DATA REGISTERED-->
+                                    <!--ACCESS BUTTONS: List, OS, Info and Rechazos-->
+                                    <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="left">
+                                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-400 mdl-color-text--white" type="button" ng-click="backPage();">REGRESAR AL LISTADO DE LLANTAS</button>
                                     </div>
+                                    <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="left">
+                                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-500 mdl-color-text--white" ng-click="backToOs();">Regresar a la orden de servicio</button>
+                                    </div>
+                                    <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="left">
+                                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--blue-500 mdl-color-text--white" type="button" ng-click="loadInfoUsosPuestoTrabajo(<?= $object->getId(); ?>, 1)" data-toggle="modal" href="/#_infoUsosPT">INFORMACIÓN PUESTO TRABAJO</button>
+                                    </div>
+                                    <?php
+                                    if (Rechazo_Llanta::getValidRechazo($llanta->getId())){
+                                        ?>
+                                        <!--BUTTON-->
+                                        <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="left">
+                                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--red-400 mdl-color-text--white" type="button" ng-click="loadRechazosLlanta(<?= $llanta->getId(); ?>)" data-toggle="modal" href="/#_infoRechazos">CAUSAS DE RECHAZO</button>
+                                        </div>
+                                        <!--END BUTTON-->
+                                        <?php
+                                    }
+                                    ?>
+                                    <!--END ACCESS BUTTONS: List, OS, Info and Rechazos-->
                                 </div>
                                 <div class="col-sm-6 col-md-6 col-lg-6">
                                     <div class="col-sm-12 col-md-12 col-lg-12" align="left">
@@ -242,6 +268,40 @@ if (isset($_GET['id'])) {
                                 </div>
                             </div>
                         </div>
+                        <!--DIALOG INFO RECHAZOS-->
+                        <div class='modal fade' id='_infoRechazos'>
+                            <div class='modal-dialog modal-lg'>
+                                <div class='modal-content'>
+                                    <div class='modal-header'>
+                                        <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                                        <h3 class="text text-primary">CAUSAS DEL RECHAZO</h3>
+                                        <div class="mdl-spinner mdl-js-spinner is-active" ng-show="html.basicDialog.spinnerLoad"></div>
+                                    </div>
+                                    <div class='modal-header'>
+                                        <div class="col-sm-12 col-lg-12 text-left" ng-show="html.basicDialog.data.register && html.basicDialog.data.observaciones!=''">
+                                            <h4>OBSERVACIONES GENERALES</h4>
+                                            <br>
+                                            <p class="text-uppercase">{{ html.basicDialog.data.observaciones }}</p>
+                                        </div>
+                                        <div class="col-sm-12 col-lg-12 text-left">
+                                            <h4>CAUSAS</h4>
+                                            <br>
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-left" ng-repeat="object in html.basicDialog.data.rechazos" ng-show="html.basicDialog.data.subRegisters">
+                                                <li>{{ object.nombre }}</li>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class='modal-footer'>
+                                        <button type='button' class='mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-500 mdl-color-text--white' data-dismiss='modal'>Cerrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="toast-content-dialogPT" class="mdl-js-snackbar mdl-snackbar">
+                                <div class="mdl-snackbar__text"></div>
+                                <button class="mdl-snackbar__action" type="button"></button>
+                            </div>
+                        </div>
+                        <!--END DIALOG INFO RECHAZOS-->
                     </div>
                     <!-- END PANEL RESULT PROCESS -->
                     <?php
@@ -253,8 +313,9 @@ if (isset($_GET['id'])) {
             <input type="hidden" id="diffTime" value="<?= getDiffTimeInSeconds($llanta->getFechaInicioProcesoVal(), date('Y-m-d H:i:s')); ?>">
             <div class="row col-sm-12 col-md-12 col-lg-12" id="paddinTop20">
                 <div class="alert alert-warning">
-                    <h3>El formulario de registro se habilitara cuando el cronometro llegue a 4 minutos: {{ inspeccionInicial.data.timeToGo }}/04:00</h3>
-                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-500 mdl-color-text--white" ng-click="backPage();">Regresar</button>
+                    <h3>El formulario de registro se habilitara cuando el cronometro llegue a 1 minuto con 30 segundos: {{ inspeccionInicial.data.timeToGo }}/00:30</h3>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-500 mdl-color-text--white" ng-click="backPage();">Regresar al listado de llantas</button>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-500 mdl-color-text--white" ng-click="backToOs();">Regresar a la orden de servicio</button>
                 </div>
             </div>
             <!-- END TIME TO ENABLED FRM PROCESS -->
@@ -265,9 +326,10 @@ if (isset($_GET['id'])) {
         <!-- ENABLED FRM PROCESS -->
         <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20">
             <div class="alert alert-info">
-                <h4>Para habilitar el formulario de registro clique sobre el botón de abajo. Debe tener en cuenta que una vez presinado el botón, el formulario de registro se habilitara después de 4 minutos.</h4>
+                <h4>Para habilitar el formulario de registro clique sobre el botón de abajo. Debe tener en cuenta que una vez presinado el botón, el formulario de registro se habilitara después de 30 segundos.</h4>
                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary" ng-click="initProcess();">Iniciar proceso</button>
-                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-500 mdl-color-text--white" ng-click="backPage();">Regresar</button>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-500 mdl-color-text--white" ng-click="backPage();">Regresar al listado de llantas</button>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-500 mdl-color-text--white" ng-click="backToOs();">Regresar a la orden de servicio</button>
             </div>
         </div>
         <!-- END ENABLED FRM PROCESS -->
@@ -330,7 +392,7 @@ if (isset($_GET['id'])) {
                                     <label class="text-nowrap">Urgente:</label><span class="text text-muted"> <?= $llanta->getNombreUrgente()?></span>
                                 </div>
                                 <div class="col-sm-12 col-lg-12">
-                                    <label class="text-nowrap">Observaciones:</label><span class="text text-muted"> <?= $object->getObservaciones() ?></span>
+                                    <label class="text-nowrap">Observaciones:</label><span class="text text-muted"> <?= $llanta->getObservaciones() ?></span>
                                 </div>
                             </div>
                         </div>

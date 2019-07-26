@@ -329,7 +329,7 @@ class Llanta {
     public function grabar() {
         $P='';
         //$sql="insert into {$P}llanta (idServicio, idGravado, idMarca, serie, idAplicacionOriginal, idAplicacionSolicitada, idAplicacionEntregada, urgente, procesado, observaciones, fechaRegistro) values ($this->idServicio, $this->idGravado, $this->idMarca , $this->serie, $this->idAplicacionOriginal, $this->idAplicacionSolicitada, $this->idAplicacionEntregada, '$this->urgente', '$this->procesado', '$this->observaciones', '$this->fechaRegistro')";
-        $sql="insert into {$P}llanta (consecutivo, idServicio, idGravado, idMarca, idDimension, rp, serie, idreferenciaoriginal, idreferenciasolicitada, urgente, procesado, observaciones, fechaRegistro) values ($this->consecutivo, $this->idServicio, $this->idGravado, $this->idMarca, $this->idDimension, $this->rp, $this->serie, $this->idReferenciaOriginal, $this->idReferenciaSolicitada, '$this->urgente', '$this->procesado', '$this->observaciones', '$this->fechaRegistro')";
+        $sql="insert into {$P}llanta (consecutivo, idServicio, idGravado, idMarca, idDimension, rp, serie, idreferenciaoriginal, idreferenciasolicitada, urgente, procesado, observaciones, fechaRegistro) values ($this->consecutivo, $this->idServicio, $this->idGravado, $this->idMarca, $this->idDimension, $this->rp, '$this->serie', $this->idReferenciaOriginal, $this->idReferenciaSolicitada, '$this->urgente', '$this->procesado', '$this->observaciones', '$this->fechaRegistro')";
         $r=Conector::ejecutarQuery($sql, null);
         if ($r!=null) return true;
         else return false;
@@ -358,7 +358,7 @@ class Llanta {
     public function modificar() {
         $P='';
         //$sql="update {$P}llanta set idServicio=$this->idServicio, idGravado=$this->idGravado, idMarca=$this->idMarca, serie=$this->serie, idAplicacionOriginal=$this->idAplicacionOriginal, idAplicacionSolicitada=$this->idAplicacionSolicitada, idAplicacionEntregada=$this->idAplicacionEntregada, urgente='$this->urgente', procesado='$this->procesado', observaciones='$this->observaciones' where id=$this->id";
-        $sql="update {$P}llanta set idMarca=$this->idMarca, idGravado=$this->idGravado, serie=$this->serie, idReferenciaOriginal=$this->idReferenciaOriginal, idReferenciaSolicitada=$this->idReferenciaSolicitada, idDimension=$this->idDimension, urgente='$this->urgente', observaciones='$this->observaciones' where id=$this->id";
+        $sql="update {$P}llanta set idMarca=$this->idMarca, idGravado=$this->idGravado, serie='$this->serie', idReferenciaOriginal=$this->idReferenciaOriginal, idReferenciaSolicitada=$this->idReferenciaSolicitada, idDimension=$this->idDimension, urgente='$this->urgente', observaciones='$this->observaciones' where id=$this->id";
         Conector::ejecutarQuery($sql, null);
     }
 
@@ -547,7 +547,7 @@ class Llanta {
     }
     
     public function getSolicitudEliminacion() {
-        global $P, $BD;
+        /*global $P, $BD;
         if ($this->id!=null){
             $sql="select s.id from {$P}solicitud_eliminar_llanta s, {$P}llanta ll where s.idllanta=ll.id and s.estado='f' and ll.id=$this->id";
             //echo $sql;
@@ -556,7 +556,8 @@ class Llanta {
                 if ($result[0]['id']!=null) return true;
                 else return false;
             } else return false;
-        } else return false;
+        } else return false;*/
+        return true;//REVISAR Y ELIMINAR TODO LO RELACIONDO CON ESTE METODO Y CON LA TABLA SOLICITUD_ELIMINAR_LLANTA = 2019-07-25
     }
     
     public function getFinRencaucheXRechazo(){
@@ -1299,7 +1300,7 @@ class Llanta {
     }
 
     public function getValueStatus($status){
-        /* SE RETORNA ($value) UN VALOR NUMERICO ASIGnADO AL ESTADO CAPTADO POR EL PARAMETRO $STATUS */
+        /* SE RETORNA ($value) UN VALOR NUMERICO ASIGNADO AL ESTADO CAPTADO POR EL PARAMETRO $STATUS */
         $value = 4;
         switch (strtolower($status)) {
             case "sin procesar": $value = 0; break;
