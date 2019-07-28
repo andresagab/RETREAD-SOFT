@@ -428,4 +428,51 @@ class Insumo_Puesto_Trabajo {
         }
         return json_encode($JSON, JSON_UNESCAPED_UNICODE);
     }
+
+    /**
+     * $where DETERMINA EL TIPO DE BUSQUEDA QUE SE REALIZARA:
+     *
+     * 0 = BUSQUEDA EN 'uso_insumo_proceso_detalle' DONDE el 'idInsumoPT' ESTA LIMITADO al 'id' DE 'insumo_puestotrabajo',
+     *     SOLO SE CARGAN EL NUMERO DE USOS CORRESPONDIENTES AL INSUMO REGISTRADO EN EL PUESTO DE TRABAJO X.
+     *
+     * 1 = BUSQUEDA EN 'uso_insumo_proceso_detalle' DONDE el 'idInsumoPT' ESTA LIMITADO al 'idPuestoTrabajo' DE 'insumo_puestotrabajo'
+     *             Y el 'idusoinsumoproceso' ESTA LIMITADO AL '$proceso' DE 'uso_insumo_proceso'.
+     *     SOLO SE CARGAN EL NUMERO DE USOS CORRESPONDIENTES AL INSUMO REGISTRADO EN UN DETERMINADO PUESTO DE TRABAJO
+     *     Y PROCESO.
+     *
+     * 2 = BUSQUEDA EN 'uso_insumo_proceso_detalle' DONDE el 'idusoinsumoproceso' ESTA LIMITADO AL '$proceso' DE 'uso_insumo_proceso'.
+     *     SOLO SE CARGAN EL NUMERO DE USOS CORRESPONDIENTES AL INSUMO REGISTRADO EN TODOS LOS PUESTOS DE TRABAJO
+     *     ASOCIADOS A UN DETERMINADO PROCESO
+     *
+     * 3 = SE CARGAN EL NUMERO DE USOS CORRESPONDIENTES AL INSUMO REGISTRADO EN TODOS LOS PUESTOS DE TRABAJO Y PROCESOS
+     *
+     * @param $where
+     * @param $numberProcess
+     * @return TOTAL INT = CONTIENE LA CANTIDAD DE USOS CORRESPONDIENTES AL INSUMO DEL PUESTO DE TRABAJO
+     */
+    public function getNumberUsages($where, $numberProcess){
+        $total = 0;
+        if (validVal($this->id)) {
+            $filter = "";
+            switch ($where){
+                case 0:
+                    $filter = "idinsumopt={$this->id}";
+                    break;
+                case 1:
+                    $filter = "idusoinsumoproceso in (select id from uso_insumo_proceso where proceso=$numberProcess) and idinsumopt={$this->id}";
+                    break;
+                case 2:
+                    $filter = "idinsumopt in (select id from insumo_puestotrabajo where idinsumo={$this->idInsumo}) and idusoinsumoproceso in (select id from uso_insumo_proceso where proceso=$numberProcess)";
+                    break;
+                case 3:
+                    $filter = "idinsumopt in (select id from insumo_puestotrabajo where idinsumo={$this->idInsumo})";
+                    break;
+            }
+            $sql = "SELECT count(idinsumopt) from uso_insumo_proceso_detalle where $filter";
+            $result = Conector::ejecutarQuery($sql, null);
+            if (is_array($result)) $total = $result[0]['count'];
+        }
+        return $total;
+    }
+
 }

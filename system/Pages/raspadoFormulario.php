@@ -1,7 +1,9 @@
 <script src="lib/controladores/rechazoLlanta.js"></script>
 <script src="lib/controladores/raspado.js"></script>
+<!--CONTENT-->
 <div ng-controller="rechazoLlanta">
     <div ng-controller="raspado">
+        <!--ZONE HEAD-->
         <div class="col-md-4"></div>
         <div class="col-md-4">
             <strong class="text text-primary text-uppercase mdl-color-text--blue"><h2>raspado</h2></strong>
@@ -12,19 +14,24 @@
             </button>
             <div class="mdl-tooltip" for="btnDetalles">Detalles de la llanta</div>
         </div>
+        <!--END ZONE HEAD-->
+        <!--TOP ALERT MESSAGE-->
         <div class="row col-md-12" id="paddinTop20" ng-show="html.alerta">
             <div class="alert alert-{{ html.colorAlerta }}">{{ html.mjsAlerta }} <b>{{ html.mjsAlertaResaltado }}</b></div>
         </div>
+        <!--END TOP ALERT MESSAGE-->
+        <!--LOAD SPINNER-->
         <div class="row col-md-12" id="paddinTop20" ng-show="components.loadSpinner">
             <center>
                 <div class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
             </center>
         </div>
+        <!--END LOAD SPINNER-->
         <?php
+        /*END RESOURCES*/
         include_once dirname(__FILE__).'/../../lib/php/Time.php';
         include_once dirname(__FILE__).'/../../lib/php/functions.system.php';
         require_once dirname(__FILE__).'\..\Clases\Persona.php';
-//        require_once dirname(__FILE__).'\..\Clases\Cargo_Empleado.php';
         require_once dirname(__FILE__).'\..\Clases\Empleado.php';
         require_once dirname(__FILE__).'\..\Clases\Cliente.php';
         require_once dirname(__FILE__).'\..\Clases\Tipo_Llanta.php';
@@ -39,33 +46,67 @@
         require_once dirname(__FILE__).'\..\Clases\Inspeccion_Inicial.php';
         require_once dirname(__FILE__).'\..\Clases\Raspado.php';
         require_once dirname(__FILE__).'\..\Clases\Rechazo_Llanta.php';
+        /*END RESOURCES*/
         if (isset($_GET['id'])) {
+            /*INICIALIZACIÓN DE LAS VARIABLES NECESARIAS PARA EL DESARROLLO DEL MODULO*/
             $llanta = new Llanta('id', $_GET['id'], null, null);
             $servicio = $llanta->getServicio();
             $inspeccionInicial = new Inspeccion_Inicial('idllanta', $llanta->getId(), null, 'limit 1');
             ?>
+            <!--LOAD DATA-->
             <input type="hidden" id="txtIdLlanta" value="<?= $_GET['id'] ?>">
             <input type="hidden" id="idOs" value="<?= $servicio->getId() ?>">
+            <!--END LOAD DATA-->
+            <!--RP-->
             <div class="col-sm-12 col-md-12 col-lg-12 text-uppercase text-center mdl-typography--headline">
                 <span>RP: </span><span><?= $llanta->getRp(); ?></span>
             </div>
+            <!--END RP-->
             <?php
+            /*
+             * SE VALIDA SI EL PROCESO ANTERIOR YA FUE REGISTRADO Y FINALIZADO;
+             * "prf" = Proceso Finalizado
+            */
             if (validVal($inspeccionInicial->getId()) && $inspeccionInicial->getEstado()==='prf') {
+                /*
+                 * SE VALIDA SI EL PROCESO ANTERIOR FUE APROBADO
+                 * TRUE = APROBADO
+                 * FALSE = RECHAZADO
+                 * */
                 if ($inspeccionInicial->getChecked()) {
+                    /*INICIALIZACIÓN DE LA VARIABLE CORREPONDIENTE AL PROCESO ACTUAL*/
                     $object = new Raspado('idinspeccion', $inspeccionInicial->getId(), null, 'limit 1');
+                    /*
+                     * SE VALIDA SI LA FECHA DE INICIO DEL PROCESO YA FUE REGISTRADA
+                     * TRUE = REGISTRADO
+                     * FALSE = NO REGISTRADO
+                     * */
                     if (validVal($object->getFechaInicioProceso())) {
+                        /*
+                         * COMPROBAMOS QUE EL TIEMPO REQUERIDO PARA HABILITAR EL FORMULARIO DE REGISTRO SE HAYA CUMPLIDO
+                         * */
                         if (getDiffTimeInSeconds($object->getFechaInicioProceso(), date('Y-m-d H:i:s'))>=360) {
+                            /*VERIFICAMOS QUE EL OBJETO CORRESPONDIENTE AL PROCESO ACTUAL ESTE REGISTRADO Y CARGADO CORRECTAMENTE*/
                             if (validVal($object->getId())) {
+                                /*
+                                 * VERIFICAMOS QUE SE HAYA REGISTRADO AL EMPLEADO QUE VA HA LLEVAR ACABO LA EJECUCIÓN DEL FORMULARIO ACTUAL,
+                                 * TAMBIÉN CORROBORAMOS QUE EL PROCESO NO HAYA SIDO FINALIZADO
+                                */
                                 if (!validVal($object->getIdEmpleado()) && $object->getEstado()==='prs') {
                                     ?>
                                     <!-- PANEL FRM PROCESS -->
+                                    <!--FORM SCRIPTS-->
                                     <script src="lib/controladores/usoInsumosProceso.js"></script>
+                                    <!--END FORM SCRIPTS-->
+                                    <!--CONTAINER-->
                                     <div ng-controller="usoInsumosProceso">
+                                            <!--LOAD DATA FORM-->
                                             <input type="hidden" id="timeElapsed" value="<?= getDiffTiempo($object->getFechaInicioProceso(), date('Y-m-d H:i:s')) ?>">
                                             <input type="hidden" name="idEmpleado" value="<?= $USUARIO->getIdEmpleadoUsuario(); ?>">
                                             <input type="hidden" name="numeroProceso" value="1">
                                             <input type="hidden" name="idProceso" value="<?= $object->getId(); ?>">
                                             <input type="hidden" name="metodoProceso" value="getSimpleRaspadoJSON">
+                                            <!--END LOAD DATA FORM-->
                                             <!-- TIME ELAPSED -->
                                             <div class="col-sm-12 col-md-12">
                                                 <h2 class="mdl-color-text--red-800">{{ retreadProcess.data.timeElapsed }}</h2>
@@ -635,6 +676,7 @@
                                             </div>
                                             <!--Fin Puesto Trabajo-->
                                         </div>
+                                    <!--END CONTAINER-->
                                     <!-- END PANEL FRM PROCESS -->
                                     <?php
                                 } elseif (validVal($object->getIdEmpleado()) && validVal($object->getFoto()) && validVal($object->getAnchoBanda()) && $object->getEstado()==='prf') {
@@ -880,7 +922,14 @@
                             <?php
                         }
                     } else {
+                        /*
+                         * VALIDAMOS SI EL PROCESO YA FUE FINALIZADO
+                         * TRUE = 'prf' y 'idPuestoTrabajo != null'
+                         * */
                         if ($object->getEstado()==='prf' && validVal($object->getIdPuestoTrabajo())) {
+                            /*
+                             * INICIALIZAMOS LAS VARIABLES $colorAlert Y $mjs, DEPENDIENDO DEL ESTADO REGISTRADO EN EL PROCESO ACTUAL
+                             * */
                             if ($object->getChecked()) {
                                 $colorAlert = 'success';
                                 $mjs = 'llanta aprobada';
@@ -891,12 +940,14 @@
                             ?>
                             <!-- PANEL RESULT PROCESS = REGISTRO QUE FUE REALIZADO ANTES DE IMPLEMENTAR LA MEDIDA DE TIEMPO-->
                             <script src="lib/controladores/informacionUsosPuestoTrabajo.js"></script>
+                            <!--RESULT ALERT MESSAGE-->
                             <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20">
                                 <div class="alert alert-<?= $colorAlert ?>">
                                     <h4>EL PROCESO FUE REGISTRADO EXITOSAMENTE</h4>
                                     <span style="font-size: 20px;"><?= $mjs ?></span>
                                 </div>
                             </div>
+                            <!--END RESULT ALERT MESSAGE-->
                             <!--DATA PANEL-->
                             <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" ng-controller="infoUsosPuestoTrabajo">
                                 <div class="panel panel-default">
@@ -1188,7 +1239,10 @@
         <!-- END DLG DETAILLS-->
     </div>
 </div>
+<!--CONTENT-->
+<!--PAGE TOAST-->
 <div id="toast-content" class="mdl-js-snackbar mdl-snackbar">
     <div class="mdl-snackbar__text"></div>
     <button class="mdl-snackbar__action" type="button"></button>
 </div>
+<!--END PAGE TOAST-->

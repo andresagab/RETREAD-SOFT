@@ -78,3 +78,54 @@ function getIdPuestoTrabajoProceso($idProcess, $numberProcess) {
     }
     return $id;
 }
+
+function validResourcesVal($resources){
+    /*
+     * SE EVALUA CADA ELEMENTO DEL $resources, TENIENDO EN CUENTA QUE ESTE ES UN VECTOR, SI TODO LOS ELEMENTOS DEL VECTOR
+     * SON DIFERENTES DE NULL SE RETORNARA TRUE EN CASO CONTRARIO FALSE
+     * TRUE = ELEMENTOS NO NULOS
+     * FALSE = ALGUNOS ELEMENTOS SON NULOS
+     */
+    $status = true;
+    if (is_array($resources)){
+        foreach ($resources as $resource => $val) {
+            ${$resource} = $val;
+            if (!validVal($resource)) {
+                $status = false;
+                break;
+            }
+        }
+    } else $status = false;
+    return $status;
+}
+
+/**
+ * @param $asc -> TRUE = orden ascendente : FASSE = Orden descendente
+ * @param $data -> VECTOR DE DATOS
+ * @param $field -> CAMPO POR EL QUE SE VA A ORDENAR
+ * @return $data -> ARREGLO ORDENADO
+ */
+function sortArray($asc, $data, $field){
+    if (is_array($data) && validVal($field)){
+        for ($i = 0; $i < count($data); $i++){
+            for ($j = 0; $j < count($data); $j++){
+                if (isset($data[$j+1])){
+                    if ($asc){
+                        if ($data[$j]["$field"] < $data[$j+1]["$field"]){
+                            $aux = $data[$j];
+                            $data[$j] = $data[$j+1];
+                            $data[$j+1] = $aux;
+                        }
+                    } else {
+                        if ($data[$j]["$field"] > $data[$j+1]["$field"]){
+                            $aux = $data[$j];
+                            $data[$j] = $data[$j+1];
+                            $data[$j+1] = $aux;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return $data;
+}
