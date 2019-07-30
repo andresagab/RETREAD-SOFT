@@ -242,9 +242,6 @@ if (isset($_GET['id'])) {
                                     <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="left">
                                         <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--orange-500 mdl-color-text--white" ng-click="backToOs();">Regresar a la orden de servicio</button>
                                     </div>
-                                    <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="left">
-                                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--blue-500 mdl-color-text--white" type="button" ng-click="loadInfoUsosPuestoTrabajo(<?= $object->getId(); ?>, 1)" data-toggle="modal" href="/#_infoUsosPT">INFORMACIÓN PUESTO TRABAJO</button>
-                                    </div>
                                     <?php
                                     if (Rechazo_Llanta::getValidRechazo($llanta->getId())){
                                         ?>
