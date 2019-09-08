@@ -237,4 +237,18 @@ class Opcion {
         $sql="select count(id) as cantidad from opcion where ruta<>null";
         $resultado= Conector::ejecutarQuery($sql, null);
     }
+
+    /**
+     * CARGA LOS IDS DE LA TABLA "rol" ASOCIADOS A UNA OPCIÓN DETERMINADA
+     * @return array => CONTIENE TODOS LOS ROLES ASOCIADOS A LA OPCIÓN CARGADA COMO OBJETO
+     */
+    public function getRolesAsociados() {
+        $roles = array();
+        if ($this->id != null) {
+            $objetos = Rol_Accesos::getListaEnObjetos("idopcion={$this->id}", null);
+            for ($i = 0; $i < count($objetos); $i++) $roles[$i] = $objetos[$i]->getIdRol();
+        }
+        return $roles;
+    }
+
 }

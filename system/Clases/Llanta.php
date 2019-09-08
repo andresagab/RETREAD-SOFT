@@ -1314,4 +1314,35 @@ class Llanta {
 
     //END LINE INSERT SINCE 2019-02-27 15:26
 
+    /**
+     * Se encarga de buscar el valor del id asociado a un proceso de acuerdo a la llanta que ya esta cargada en un id
+     * @param $numberProcces = Corresponde al valor del proceso que se va obtener el id
+     * @return $idProcces = Valor del id correspondiente al proceso solicitado
+     */
+    public function getIdProcesoReencauche($numberProcces){
+        $idProcces = null;
+        if ($this->id != null) {
+            switch ($numberProcces){
+                case 0:
+                    $filter = "inspeccion_inicial where idllanta={$this->id}";
+                    break;
+                case 1:
+                    $filter = "raspado where idinspeccion in (select id from inspeccion_inicial where idllanta={$this->id})";
+                    break;
+                case 2:
+                    $filter = "preparacion where idraspado in (select id from raspado where idinspeccion in (select id from inspeccion_inicial where idllanta={$this->id}))";
+                    break;
+                default:
+                    $filter = null;
+                    break;
+            }
+            if ($filter != null) {
+                $result = Conector::ejecutarQuery("select id from $filter limit 1", null);
+                if (is_array($result))
+                    if ($result[0][0] != null) $idProcces = $result[0][0];
+            }
+        }
+        return $idProcces;
+    }
+
 }

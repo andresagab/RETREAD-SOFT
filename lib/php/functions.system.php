@@ -32,6 +32,12 @@ function validVal($value){
     else return false;
 }
 
+/**
+ * @param $initTime = Fecha en formato AAAA-MM-DD HH:II:SS correspondiente a la fecha y hora de inicio
+ * @param $status = Estado correspondiente al processo de reencauche (prf = Proceso Finalizado)
+ * @param $limit = Limite de tiempo para que la diferencia entre el tiempo de inicio y el tiempo actual sea mayor al ingresado por este parametro
+ * @return $color = Corresponde al color del resultado de cada validación.
+ */
 function getColorStatusProcess($initTime, $status, $limit){
     $color = '#ffffff';//Blanco
     if ($initTime!=null) {
@@ -66,6 +72,13 @@ function uploadFile($dataFile, $nameArray, $route, $id) {
     return $namePhoto;
 }
 
+/**
+ * Se carga el id correspondiente a un puesto de trabajo asociado al registro de insumos del proceso determinado como
+ * parametro
+ * @param $idProcess = Llave foranea que hace referencia al id de cualquier proceso de reencauche
+ * @param $numberProcess = Valor numerico asociado al proceso tratado
+ * @return Int = '$id' -> Valor int correspondiente al puesto de trabajo asociado al uso de insumos de un proceso determinado
+ */
 function getIdPuestoTrabajoProceso($idProcess, $numberProcess) {
     $id = null;
     if (validVal($idProcess) && validVal($numberProcess)) {
@@ -128,4 +141,91 @@ function sortArray($asc, $data, $field){
         }
     }
     return $data;
+}
+
+/**
+ * @param $asc -> TRUE = Orden ascendente - FALSE = Orden descendente
+ * @param $data -> Array de objetos JSON
+ * @param $field -> Nombre del campor por el cual se va a ordenar el Array
+ * @return $data -> Misma variable pero ordenada si cumple con las condiciones
+ */
+function sortJSON($asc, $data, $field){
+    if (validVal($field)){
+        for ($i = 0; $i < count($data); $i++){
+            for ($j = 0; $j < count($data); $j++){
+                if (isset($data[$j+1])){
+                    if ($asc){
+                        if ($data[$j]->$field < $data[$j+1]->$field){
+                            $aux = $data[$j];
+                            $data[$j] = $data[$j+1];
+                            $data[$j+1] = $aux;
+                        }
+                    } else {
+                        if ($data[$j]->$field > $data[$j+1]->$field){
+                            $aux = $data[$j];
+                            $data[$j] = $data[$j+1];
+                            $data[$j+1] = $aux;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return $data;
+}
+
+/**
+ * Se obtiene el estado de los usos de insumos asociados a un proceso en su id
+ * @param $idProceso Llave primaria del proceso
+ * @param $numeroProceso Valor asociado al numero de proceso tratado
+ * @return bool '$status' => valor correspondiente al estado del uso de insumos
+ */
+function getStatusUsosProcces($idProceso, $numeroProceso) {
+    $status = false;
+    if (validVal($idProceso) && validVal($numeroProceso)){
+        $sql = "select id from uso_insumo_proceso where idproceso=$idProceso and proceso=$numeroProceso";
+        if (is_array($result = Conector::ejecutarQuery($sql, null)))
+            if (count($result)>0)
+                if ($result[0][0]!=null) $status = true;
+    }
+    return $status;
+}
+
+/**
+ * Valida si la llanta determinada como parametro fue aprobada, posterior a esto se elimina cualquier registro de rechazo asociado a la misma
+ * En caso contrario se registra el fin del proceso de reencauche asociado a la llanta.
+ *
+ * Para ejecutar esta función se requiere tener incluido en el archivo correspondiente los archivos:
+ *
+ * -RLlanta_Detalle.php
+ * -Rechazo_Llanta.php
+ * -Llanta.php
+ * -Servicio_Fin.php
+ * -Conector.php
+ *
+ * @param $idLlanta = Corresponde a la llave primaria de la llanta que presuntamente registro el rechazo del proceso de reencauche
+ * @param $idProceso = Corresponde a la llave primaria del proceso de reencauche donde se registro el presunto rechazo de la llanta
+ * @param $numeroProceso = Valor asociado al numero de proceso tratado
+ * @param $resultadoProceso = Valor booleano PSQL True = 't' y FALSE = 'f' correspondiente al registrado en el proceso de reencauche tratado
+ */
+function validarRechazoProceso($idLlanta, $idProceso, $numeroProceso, $resultadoProceso){
+    if (validVal($idLlanta) && validVal($idProceso) && validVal($numeroProceso)) {
+        if ($resultadoProceso === 't') {//Si el proceso fue aprobado se debe eliminar cualquier registro de rechazo, para asi suprimir todos los registros residuales que se hayan hecho por error
+            $rechazoLlanta = new Rechazo_Llanta('idLlanta', $idLlanta, " and idProceso=$idProceso and proceso=$numeroProceso", null);
+            if (validVal($rechazoLlanta->getId())){
+                $rechazoLlanta->eliminarDetalles();
+                $rechazoLlanta->eliminar();
+            }
+        } else {
+            $llanta = new Llanta('id', $idLlanta, null, null);
+            if (validVal($llanta->getId())){
+                $servicioFin = new Servicio_Fin(null, null, null, null);
+                $servicioFin->setIdLlanta($llanta->getId());
+                $servicioFin->setEstado('f');
+                $servicioFin->setObservaciones('');
+                $servicioFin->setFechaRegistro(date("Y-m-d H:i:s"));
+                $servicioFin->grabar();
+            }
+        }
+    }
 }

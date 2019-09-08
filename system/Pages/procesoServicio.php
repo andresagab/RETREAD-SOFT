@@ -1027,57 +1027,63 @@ if ($servicioFin->getId()==null){
                                 <div class="panel-heading" role="tab" id="Preparacion">
                                     <h4 class="panel-title">
                                         <a id="accionPreparacion" href="#preparacion1" data-toggle="collapse" data-parent="#accordion">
-                                            Preparacion
+                                            Preparación
                                         </a>
                                     </h4>
                                 </div>
                                 <div id="preparacion1" class="panel-collapse collapse in">
                                     <div class="panel-body">
+                                        <!--BUTTON GESTIONAR-->
                                         <div class="col-md-12 <?=$hideBtnRegistrarPreparacion?>">
-                                            <button class="btn btn-success" id="btnRegistrarPreparacion" type="button" name="accion" <?=$disabledbtnRegistrarPreparacion?>>Registar</button>
+                                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-400 mdl-color-text--white" id="btnRegistrarPreparacion" type="button" name="accion">GESTIONAR</button>
                                         </div>
+                                        <!--END BUTTON GESTIONAR-->
+                                        <!--PANEL RESULT-->
                                         <div class="col-md-12 <?=$hideDatosPreparacion?>">
-                                            <div class="col-lg-12 col-md-12 col-sm-12 text-center">
-                                                <h5>Operario: <span class="text-muted"><?=$preparacion->getEmpleado()->getPersona()->getNombresCompletos()?></span></h5>
+                                            <!--SECTION DATA-->
+                                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                                <div class="col-sm-12 col-md-12 col-lg-12" align="left">
+                                                    <h4 class="text-uppercase mdl-color-text--green-500">INFORMACIÓN REGISTRADA</h4>
+                                                </div>
+                                                <!--DATA REGISTERED-->
+                                                <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="left">
+                                                    <p>
+                                                        <span class="text-uppercase">EMPLEADO: </span><span class="text-muted"><?= $preparacion->getEmpleado()->getPersona()->getNombresCompletos() ?></span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="text-uppercase">PUESTO DE TRABAJO: </span><span class="text-muted"><?= $preparacion->getPuestoTrabajo()->getNombre() ?></span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="text-uppercase">OBSERVACIONES: </span><span class="text-muted"><?= $preparacion->getObservaciones(); ?></span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="text-uppercase">ESTADO: </span><span class="text-muted"><?= $preparacion->getNombreChecked(); ?></span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="text-uppercase">TIEMPO DE EJECUCIÓN: </span><span class="text-muted"><?= getDiffTiempoString($preparacion->getFechaInicioProceso(), $preparacion->getFechaRegistro()) ?></span>
+                                                    </p>
+                                                </div>
+                                                <!--END DATA REGISTERED-->
+                                                <!--BUTTONS-->
+                                                <div class="col-sm-12 col-md-12 col-lg-12" id="paddinTop20" align="center">
+                                                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--green-400 mdl-color-text--white" id="btnRegistrarRaspado" type="button" name="accion" onclick="document.location='principal.php?CON=system/Pages/preparacionFormularioNew.php&id=<?= $llanta->getId(); ?>';">GESTIONAR</button>
+                                                    <button ng-click="cargarInfoUsosInsumos(<?= $preparacion->getId() ?>, 2);" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btnFotoRaspado" type="button" <?=$disabledBtnPuestoTrabajoRaspado?> data-toggle="modal" href="/#_puestoTrabajo">Informacion puesto trabajo</button>
+                                                </div>
+                                                <!--END BUTTONS-->
                                             </div>
-                                            <div class="col-lg-12 col-md-12 col-sm-12 text-center">
-                                                <h5>Observaciones: <span class="text-muted"><?= rtrim($preparacion->getObservaciones())?></span></h5>
+                                            <!--END SECTION DATA-->
+                                            <!--IMGS-->
+                                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                                <div class="col-sm-12 col-md-12 col-lg-12" align="left">
+                                                    <p>
+                                                        <span class="text-uppercase">EVIDENCIA FOTOGRÁFICA: </span><span class="text-muted">
+                                                    </p>
+                                                </div>
+                                                <img class="img img-responsive" ng-src="system/Uploads/Imgs/Preparacion/<?= $preparacion->getFoto() ?>">
                                             </div>
-                                            <div class="col-lg-4 col-md-6 col-sm-12 text-center">
-                                                <h5>Estado: <span class="text-muted"><?= rtrim($preparacion->getNombreChecked())?></span></h5>
-                                            </div>
-                                            <div class="col-lg-4 col-md-6 col-sm-12 text-center">
-                                                <h5>Actualmente: <span class="text-muted"><?= rtrim($preparacion->getNombreEstado())?></span></h5>
-                                            </div>
-                                            <div class="col-lg-4 col-md-12 col-sm-12 text-center">
-                                                <h5>Fecha/Hora inicio: <span class="text-muted"><?= rtrim($preparacion->getFechaRegistro())?></span></h5>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-12 text-center <?=$hideDivBtnFinalizarPreparacion?>" id="paddinTop20">
-                                                <button class="btn btn-warning" id="btnFinalizarPreparacion" type="button" <?=$disabledbtnFinalizarPreparacion?>>Finalizar proceso</button>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-12 text-center <?=$hideDivBtnFotoPreparacion?>" id="paddinTop20">
-                                                <button class="btn btn-success" id="btnFotoRaspado" type="button" <?=$disabledBtnFotoPreparacion?> data-toggle="modal" href="/#fotoPreparacion">Ver foto</button>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-12 text-center <?=$hideDivBtnPuestoTrabajoPreparacion?>" id="paddinTop20">
-                                                <button ng-click="cargarInfoUsosInsumos(<?= $preparacion->getId() ?>, 2)" class="btn btn-default" id="btnFotoRaspado" type="button" <?=$disabledBtnPuestoTrabajoPreparacion?> data-toggle="modal" href="/#_puestoTrabajo">Informacion puesto trabajo</button>
-                                            </div>
+                                            <!--END IMGS-->
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class='modal fade' id='fotoPreparacion'>
-                                <div class='modal-dialog'>
-                                    <div class='modal-content'>
-                                        <div class='modal-header'>
-                                            <button type='button' class='close' data-dismiss='modal'>&times;</button>
-                                            <h3 class="text text-primary">Foto</h3>
-                                            <div class="thumbnail">
-                                                <img src="system/Uploads/Imgs/Preparacion/<?= $preparacion->getFoto() ?>">
-                                            </div>
-                                        </div>
-                                        <div class='modal-footer'>
-                                            <button type='button' class='btn btn-danger' id="btnCancelarSolicitud" data-dismiss='modal'>Cerrar</button>
-                                        </div>
+                                        <!--END PANEL RESULT-->
                                     </div>
                                 </div>
                             </div>
@@ -1807,10 +1813,7 @@ if ($servicioFin->getId()==null){
     //--------------------------------------------------------------------------
     //Preparacion
     $("#btnRegistrarPreparacion").click(function (){
-        document.location="principal.php?CON=system/Pages/preparacionFormulario.php&idRaspado=<?=$raspado->getId()?>";
-    });
-    $("#btnFinalizarPreparacion").click(function (){
-        document.location="principal.php?CON=system/Pages/preparacionFormularioFinalizar.php&id=<?=$preparacion->getId()?>";
+        document.location="principal.php?CON=system/Pages/preparacionFormularioNew.php&id=<?=$llanta->getId()?>";
     });
     //Fin preparacion
     //--------------------------------------------------------------------------

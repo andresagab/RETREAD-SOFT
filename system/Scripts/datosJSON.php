@@ -261,6 +261,10 @@ switch ($_GET['metodo']) {
         if (isset($_GET['id'])) echo Raspado::getData(0, 'id', $_GET['id'], null, null, null, false);
         else header('Location: principal.php?CON=system/pages/unknowData.php');
         break;
+    case 'getSimplePreparacionJSON':
+        if (isset($_GET['id'])) echo Preparacion::getData(0, 'id', $_GET['id'], null, null, null, false);
+        else header('Location: principal.php?CON=system/pages/unknowData.php');
+        break;
     case 'getInfoRechazosLlanta':
         //SE SOLICITA LA INFORMACIÓN CORRESPONDIENTE AL RECHAZO DE UNA LLANTA - MAS INFORMACIÓN EN EL METODO 'getDataRechazo' DE LA CLASE 'Rechazo_Llanta'
         if (isset($_GET['idLlanta'])) echo Rechazo_Llanta::getDataRechazo($_GET['idLlanta']);

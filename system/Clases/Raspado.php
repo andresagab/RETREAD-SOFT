@@ -409,7 +409,7 @@ class Raspado {
                         $JSON['puestoTrabajo'] = json_decode(Puesto_Trabajo::getObjetoJSON('id', $object->getIdPuestoTrabajo(), null, null));
                         $JSON['empleado'] = json_decode(Empleado::getObjetoJSON('id', $object->getIdEmpleado(), null, null));
                         $JSON['usosInsumos'] = json_decode(Uso_Insumo_Proceso::getUsosInforme($object->getId(), 1));
-                        $JSON['inspeccionInicial'] = json_decode(Inspeccion_Inicial::getObjetoJSON('id', $object->getIdRelleno(), null, null));
+                        $JSON['inspeccionInicial'] = json_decode(Inspeccion_Inicial::getObjetoJSON('id', $object->getIdInspeccion(), null, null));
                     }
                 }
                 break;
@@ -428,8 +428,8 @@ class Raspado {
                     if ($extras) {
                         $data['puestoTrabajo'] = json_decode(Puesto_Trabajo::getObjetoJSON('id', $object->getIdPuestoTrabajo(), null, null));
                         $data['empleado'] = json_decode(Empleado::getObjetoJSON('id', $object->getIdEmpleado(), null, null));
-                        $data['usosInsumos'] = json_decode(Uso_Insumo_Proceso::getUsosInforme($object->getId(), 6));
-                        $data['relleno'] = json_decode(Relleno::getObjetoJSON('id', $object->getIdRelleno(), null, null));
+                        $data['usosInsumos'] = json_decode(Uso_Insumo_Proceso::getUsosInforme($object->getId(), 1));
+                        $data['inspeccionInicial'] = json_decode(Inspeccion_Inicial::getObjetoJSON('id', $object->getIdInspeccion(), null, null));
                     }
                     array_push($JSON, $data);
                 }
@@ -453,8 +453,8 @@ class Raspado {
                         if ($extras) {
                             $data['puestoTrabajo'] = json_decode(Puesto_Trabajo::getObjetoJSON('id', $object->getIdPuestoTrabajo(), null, null));
                             $data['empleado'] = json_decode(Empleado::getObjetoJSON('id', $object->getIdEmpleado(), null, null));
-                            $data['usosInsumos'] = json_decode(Uso_Insumo_Proceso::getUsosInforme($object->getId(), 6));
-                            $data['relleno'] = json_decode(Relleno::getObjetoJSON('id', $object->getIdRelleno(), null, null));
+                            $data['usosInsumos'] = json_decode(Uso_Insumo_Proceso::getUsosInforme($object->getId(), 1));
+                            $data['relleno'] = json_decode(Inspeccion_Inicial::getObjetoJSON('id', $object->getIdInspeccion(), null, null));
                         }
                         array_push($JSON, $data);
                     }
