@@ -325,7 +325,7 @@ class Inspeccion_Inicial {
         if ($initTime!=null) {
             $diffTime = getDiffTimeInSeconds($initTime, date('Y-m-d H:i:s'));
             $color = '#f1b154';//Naranja
-            if ($diffTime>=240) {
+            if ($diffTime>=30) {
                 $color = '#f1d968';//Amarillo
                 if ($this->getEstado()==='prf') {
                     $color = '#b8ef78';//Verde

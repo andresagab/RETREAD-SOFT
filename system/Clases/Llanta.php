@@ -329,7 +329,7 @@ class Llanta {
     public function grabar() {
         $P='';
         //$sql="insert into {$P}llanta (idServicio, idGravado, idMarca, serie, idAplicacionOriginal, idAplicacionSolicitada, idAplicacionEntregada, urgente, procesado, observaciones, fechaRegistro) values ($this->idServicio, $this->idGravado, $this->idMarca , $this->serie, $this->idAplicacionOriginal, $this->idAplicacionSolicitada, $this->idAplicacionEntregada, '$this->urgente', '$this->procesado', '$this->observaciones', '$this->fechaRegistro')";
-        $sql="insert into {$P}llanta (consecutivo, idServicio, idGravado, idMarca, idDimension, rp, serie, idreferenciaoriginal, idreferenciasolicitada, urgente, procesado, observaciones, fechaRegistro) values ($this->consecutivo, $this->idServicio, $this->idGravado, $this->idMarca, $this->idDimension, $this->rp, $this->serie, $this->idReferenciaOriginal, $this->idReferenciaSolicitada, '$this->urgente', '$this->procesado', '$this->observaciones', '$this->fechaRegistro')";
+        $sql="insert into {$P}llanta (consecutivo, idServicio, idGravado, idMarca, idDimension, rp, serie, idreferenciaoriginal, idreferenciasolicitada, urgente, procesado, observaciones, fechaRegistro) values ($this->consecutivo, $this->idServicio, $this->idGravado, $this->idMarca, $this->idDimension, $this->rp, '$this->serie', $this->idReferenciaOriginal, $this->idReferenciaSolicitada, '$this->urgente', '$this->procesado', '$this->observaciones', '$this->fechaRegistro')";
         $r=Conector::ejecutarQuery($sql, null);
         if ($r!=null) return true;
         else return false;
@@ -358,7 +358,7 @@ class Llanta {
     public function modificar() {
         $P='';
         //$sql="update {$P}llanta set idServicio=$this->idServicio, idGravado=$this->idGravado, idMarca=$this->idMarca, serie=$this->serie, idAplicacionOriginal=$this->idAplicacionOriginal, idAplicacionSolicitada=$this->idAplicacionSolicitada, idAplicacionEntregada=$this->idAplicacionEntregada, urgente='$this->urgente', procesado='$this->procesado', observaciones='$this->observaciones' where id=$this->id";
-        $sql="update {$P}llanta set idMarca=$this->idMarca, idGravado=$this->idGravado, serie=$this->serie, idReferenciaOriginal=$this->idReferenciaOriginal, idReferenciaSolicitada=$this->idReferenciaSolicitada, idDimension=$this->idDimension, urgente='$this->urgente', observaciones='$this->observaciones' where id=$this->id";
+        $sql="update {$P}llanta set idMarca=$this->idMarca, idGravado=$this->idGravado, serie='$this->serie', idReferenciaOriginal=$this->idReferenciaOriginal, idReferenciaSolicitada=$this->idReferenciaSolicitada, idDimension=$this->idDimension, urgente='$this->urgente', observaciones='$this->observaciones' where id=$this->id";
         Conector::ejecutarQuery($sql, null);
     }
 

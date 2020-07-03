@@ -148,7 +148,7 @@ else {
                             <div class="form-group">
                                 <div class="input-group">
                                     <span class="input-group-addon">* Serie:</span>
-                                    <input class="form-control has-primary" id="txtSerie" name="serie" type="number" ng-model="llanta.serie" ng-change="buscarSerieLlanta(llanta.serie)" min="1" required="">
+                                    <input class="form-control has-primary" id="txtSerie" name="serie" type="text" ng-model="llanta.serie" ng-change="buscarSerieLlanta(llanta.serie)" required="">
                                 </div>
                             </div>
                         </div>
