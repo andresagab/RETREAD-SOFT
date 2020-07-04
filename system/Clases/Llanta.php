@@ -1237,6 +1237,13 @@ class Llanta {
     }
 
     //LINE INSERT SINCE 2019-02-27 15:26
+
+    /**
+     * @param $filter string Filtro de consulta sql
+     * @param $order string Orden de consulta sql
+     * @param $extras boolean True para cargar valores extras de la llanta | False para no cargar los valores extras
+     * @return string|json_encode
+     */
     public static function getLlantasOrdenServicio($filter, $order, $extras){
         if ($filter!=null) $filter = "$filter and";
         $JSON = array();
@@ -1312,5 +1319,24 @@ class Llanta {
     }
 
     //END LINE INSERT SINCE 2019-02-27 15:26
+
+    /**
+     * @version Esta función busca y retorna el id de la llanta buscada por rp o número de orden de servicio a travez de la variable $valueSearch pasada como parametro.
+     * @param $valueSearch string|int Valor de la llanta buscada por rp o número de orden de servicio.
+     * @param $extras boolean True para cargar datos extras de la llanta buscada, False para no cargar los datos extras.
+     * @return json_encode $idLLantas valor del id de la llanta buscada en la sentencia sql
+     */
+    public static function getDirectSearch($valueSearch, $extras){
+        $dataJSON = json_encode(array(), JSON_UNESCAPED_UNICODE);
+        if ($valueSearch != null) {
+            $sql = "select id, idservicio from llanta as ll where ll.rp=$valueSearch or ll.idservicio in (select id from servicio where os='$valueSearch') order by fecharegistro desc";
+            if (is_array($result = Conector::ejecutarQuery($sql, null))) {
+                //Si los resultados son mayores a uno cargo todas las llantas, ya que la busqueda fue realiazada por número de orden de servicio, en caso contrario cargo la llanta por id
+                if (count($result) > 1) $dataJSON = LLanta::getLlantasOrdenServicio("s.id={$result[0]['idservicio']}", "order by ll.fecharegistro desc", $extras);
+                else if (count($result) > 0) $dataJSON = LLanta::getLlantasOrdenServicio("ll.id={$result[0]['id']}", "order by ll.fecharegistro desc", $extras);
+            }
+        }
+        return $dataJSON;
+    }
 
 }

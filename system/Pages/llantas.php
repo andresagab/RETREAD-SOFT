@@ -28,8 +28,12 @@ if (strtolower($USUARIO->getRol()->getNombre())!='asesor') {
             <div class="form-group-sm">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input class="mdl-textfield__input" id="buscar" name="buscar" ng-model="buscar">
-                    <span class="mdl-textfield__label" for="buscar"><span class="fa fa-search"></span> Buscar entre el registro {{ elementsPaginator.initialRecord }} y {{ elementsPaginator.finalRecord }}</span>
+                    <span class="mdl-textfield__label" for="buscar"><span class="fa fa-search"></span> Buscar por número de RP u Orden de servicio.</span>
                 </div>
+                <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab btn-warning" type="button" id="btnDirectSearch" ng-click="directSearch(buscar);">
+                    <i class="material-icons">search</i>
+                </button>
+                <div class="mdl-tooltip" data-mdl-for="btnDirectSearch">Busqueda directa</div>
             </div>
         </div>
         <!--  END BUSCADOR  -->

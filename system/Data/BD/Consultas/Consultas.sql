@@ -289,7 +289,7 @@ where tip.id=ref.idtipollanta;
 --END 2019-02-23 20:34
 
 -- 2019-02-27 14:42
-
+--LLANTAS DE ORDEN DE SERVICIO - usado en Metodo getLlantasOrdenServicio de la clase Llante - Método llamado por el archivo inspección inicial
 select s.id as idOs, s.numerofactura, s.os, s.estado as estadoServicio, s.idCliente, s.idvendedor,
        pcl.identificacion as identificacionCliente, pcl.nombres || ' ' || pcl.apellidos as nombresCliente, cl.razonsocial,
        pv.identificacion as identificacionVendedor, pv.nombres || ' ' || pv.apellidos as nombresVendedor,
@@ -330,3 +330,10 @@ and e.id=uipd.idempleado;
 
 select sum(cantidad) from uso_insumo_proceso_detalle;
 -- END 2019-02-28 16:14
+
+------------------------------------------------------------------------------------------------------------------------
+
+-- 03-07-2020 20:40
+--Consulta para buscar una llanta por rp o número de orden de servicio (os), implementada en el método getDirectSearch de la clase Llanta.php
+select id from llanta as ll where ll.rp=1 or ll.idservicio in (select id from servicio where os='1');
+-- END 03-07-2020 20:40
