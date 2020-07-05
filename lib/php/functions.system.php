@@ -31,3 +31,27 @@ function validVal($value){
     if ($value!=null && $value!='' && $value!=" ") return true;
     else return false;
 }
+
+/**
+ * @version Carga y verifica los datos enviado por peticiones http (GET - POST)
+ * @return array Retorna un arreglo con la data recibida en la petición y una variable de estado (status), true: si se recibió una petición http, false: no se recibio una petición http
+ */
+function getDataPOST_GET(){
+    header("Access-control-Allow-Origin: *");
+    header("Access-control-Allow-Methods: GET, POST");
+    header("Access-control-Allow-Headers: X-Requested-with");
+    header("Content-type: text/html; charset=utf-8");
+    //Definimos el arreglo por defecto, status y data, status false para decir que no hay peticiones POST o GET
+    $data = array();
+    $data['status'] = false;
+    $data['data'] = json_decode(null);
+    //Cargamos los datos recibidos por AJAX
+    $postdata = file_get_contents("php://input");
+    $request = json_decode($postdata);
+    if (count($request) > 0) {
+        //Hay datos en POST o GET
+        $data['status'] = true;
+        $data['data'] = $request;
+    }
+    return $data;
+}

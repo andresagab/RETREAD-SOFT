@@ -727,4 +727,18 @@ class Servicio {
         } else return 0;
     }
 
+    /**
+     * @version 1.0 | Esta función busca y retorna el id de la orden de servicio buscada por su número de orden o el número de las llantas rp que tiene registradas, todo esto a travez de la variable $valueSearch pasada como parametro (04-07-2020)
+     * @param string|int $valueSearch Valor de la llanta buscada por rp o número de orden de servicio.
+     * @return string|int|null $idServicio valor del id de la llanta buscada en la sentencia sql
+     */
+    public static function getDirectSearch($valueSearch){
+        $idServicio = null;
+        if ($valueSearch != null) {
+            $sql = "select idservicio from llanta as ll where ll.rp=$valueSearch or ll.idservicio in (select id from servicio where os='$valueSearch') order by fecharegistro desc";
+            if (is_array($result = Conector::ejecutarQuery($sql, null)))
+                if (count($result) > 0) $idServicio = $result[0][0];
+        }
+        return $idServicio;
+    }
 }

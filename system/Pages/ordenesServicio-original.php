@@ -1,9 +1,4 @@
 <?php
-/**
- * @version 2.0 Este archivo fue duplicado a partir de ordenesServicio-original.php, aqui se implementaran las funciones de optimización en la carga de ordenes de servicio y las
- * respectivas funcionalidades de busqueda directa
- * @author Andres Angulo - andrescabj981@gmail.com
- */
 if (strtolower($USUARIO->getRol()->getNombre())=='operario' || strtolower($USUARIO->getRol()->getNombre())=='operario cb') {
     $btnRegistrar='hide';
     $btnEliminarRegistro='hide';
@@ -13,14 +8,13 @@ else {
     $btnEliminarRegistro='';
 }
 ?>
-<script src="lib/factorys/OrdenesSericios.js"></script>
-<script src="lib/controladores/ordenesServicio.js"></script>
+<script src="lib/controladores/ordenesServicio-original.js"></script>
 <div class="col-md-12" ng-controller="ordenesServicio">
     <!--<div class="hidden" id="cargarLista" ng-click="cargarLista()"></div>-->
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
         <strong class="text text-uppercase mdl-color-text--blue"><h2>Ordenes de servicio</h2></strong>
     </div>
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center" id="paddinTop20" ng-show="module.page.loadSpinner">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center" id="paddinTop20" ng-show="html.spinnerCarga">
         <div class="mdl-spinner mdl-js-spinner is-active"></div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center" style="margin-top: 20px">
@@ -36,19 +30,13 @@ else {
             <div class="form-group-sm">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input class="mdl-textfield__input" id="buscar" name="buscar" ng-model="buscar">
-                    <span class="mdl-textfield__label" for="buscar"><span class="fa fa-search"></span> Buscar por número de orden o rp de llanta registrada en la orden.</span>
+                    <span class="mdl-textfield__label" for="buscar"><span class="fa fa-search"></span> Buscar entre el registro {{ values.registroInicio }} y {{ values.registroFinal }}</span>
                 </div>
-                <!--BUTTON SEARCH-->
-                <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab btn-warning" type="button" id="btnDirectSearch" ng-click="directSearch(buscar);">
-                    <i class="material-icons">search</i>
-                </button>
-                <div class="mdl-tooltip" data-mdl-for="btnDirectSearch">Busqueda directa</div>
-                <!--END BUTTON SEARCH-->
             </div>
         </div>
         <div class="visible-xs visible-sm col-xs-12 col-sm-12" style="margin-top: 15px"></div>
         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center">
-            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab btn-success" type="button" id="btnCargarListado" ng-click="loadData();">
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab btn-success" type="button" id="btnCargarListado" ng-click="cargarLista()">
                 <i class="material-icons">sync</i>
             </button>
             <div class="mdl-tooltip" data-mdl-for="btnCargarListado">Recargar listado</div>
@@ -59,17 +47,15 @@ else {
         </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="paddinTop20"></div>
-    <!--  PAGINATOR  -->
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="paddinTop20"></div>
     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-        <span class="text text-muted">{{ elementsPaginator.initialRecord }} - {{ elementsPaginator.finalRecord }} de {{ elementsPaginator.totalRecords }}</span>
+        <span class="text text-muted">{{ values.registroInicio }} - {{ values.registroFinal }} de {{ values.totalRegistros }}</span>
     </div>
     <div class="visible-xs col-xs-12" style="margin-top: 10px"></div>
     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-        <button class="mdl-button mdl-js-button mdl-button--icon" id="paginaAnterior" ng-click="setCurrentPage(false)" ng-disabled="elementsPaginator.previousPage">
+        <button class="mdl-button mdl-js-button mdl-button--icon" id="paginaAnterior" ng-click="setPaginaActual(false)" ng-disabled="html.prevPage">
             <i class="fa fa-angle-left"></i>
         </button>
-        <button class="mdl-button mdl-js-button mdl-button--icon" id="paginaSiguiente" ng-click="setCurrentPage(true)" ng-disabled="elementsPaginator.nextPage">
+        <button class="mdl-button mdl-js-button mdl-button--icon" id="paginaSiguiente" ng-click="setPaginaActual(true)" ng-disabled="html.nextPage">
             <i class="fa fa-angle-right"></i>
         </button>
         <button id="btnLstCantidad" class="mdl-button mdl-js-button mdl-button--icon">
@@ -77,24 +63,22 @@ else {
         </button>
         <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="btnLstCantidad">
             <li disabled class="mdl-menu__item mdl-menu__item--full-bleed-divider">
-                Registros por pagina: <span class="mdl-badge" data-badge="{{ elementsPaginator.recordsForPage }}"></span>
+                Registros por pagina: <span class="mdl-badge" data-badge="{{ values.registrosXPagina.opcion }}"></span>
             </li>
-            <li class="mdl-menu__item" ng-repeat="x in elementsPaginator.availableRecordsForPage" ng-click="setRecordsPage(x)">
-                {{ x }}
+            <li class="mdl-menu__item" ng-repeat="x in lstOpcionesRegistrosPaginas" ng-click="setRegistrosXPagina(x)">
+                {{ x.opcion }}
             </li>
         </ul>
-        <div class="mdl-tooltip" ng-hide="elementsPaginator.previousPage" for="paginaAnterior">Pagina anterior {{ elementsPaginator.currentPage-1 }}</div>
-        <div class="mdl-tooltip" ng-hide="elementsPaginator.nextPage" for="paginaSiguiente">Pagina siguiente {{ elementsPaginator.currentPage+1 }}</div>
+        <div class="mdl-tooltip" ng-hide="html.prevPage" for="paginaAnterior">Pagina anterior {{ values.paginaActual-1 }}</div>
+        <div class="mdl-tooltip" ng-hide="html.nextPage" for="paginaSiguiente">Pagina siguiente {{ values.paginaActual+1 }}</div>
         <div class="mdl-tooltip" for="btnLstCantidad">Cambiar cantidad de registros por pagina</div>
     </div>
     <div class="visible-xs visible-sm col-xs-12 col-sm-12" style="margin-top: 10px"></div>
     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
         <!--<span class="text text-muted mdl-badge" data-badge="{{ values.paginaActual }}">Pagina</span>-->
-        <span class="text text-muted">Pagina: {{ elementsPaginator.currentPage }}</span>
+        <span class="text text-muted">Pagina: {{ values.paginaActual }}</span>
     </div>
-    <!-- END PAGINATOR -->
-    <!-- DATA TABLE -->
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="paddinTop20" ng-show="module.data.objects != null">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="paddinTop20" ng-show="objetos">
         <center>
             <div class="table-responsive">
                 <table class="mdl-data-table mdl-js-data-table">
@@ -111,7 +95,7 @@ else {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="objeto in module.data.objects | filter: buscar | orderBy: orden | limitTo: elementsPaginator.recordsForPage : elementsPaginator.initialRecord-1 as result" style="background: {{ objeto.colorEstado }}; color: {{ objeto.colorLetraEstado }}">
+                        <tr ng-repeat="objeto in objetos | filter: buscar | orderBy: orden" style="background: {{ objeto.colorEstado }}; color: {{ objeto.colorLetraEstado }}">
                             <td>
                                 <span class="text mdl-typography--font-bold" ng-dblclick="openOS(objeto.idos)">
                                     <h4>{{ objeto.os }}</h4>
@@ -133,13 +117,10 @@ else {
                                 </h4>
                             </td>
                         </tr>
-                        <tr>
-                            <td colspan="7" ng-show="result<=0">No se econtraron resultados</td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
-            <div ng-repeat="objeto in module.data.objects | filter: buscar">
+            <div ng-repeat="objeto in objetos | filter: buscar">
                 <div class='modal fade' id='eliminar{{ objeto.idos }}'>
                     <div class='modal-dialog'>
                         <div class='modal-content'>
@@ -158,30 +139,13 @@ else {
             </div>
         </center>
     </div>
-    <!-- END DATA TABLE -->
 </div>
-<!-- MODAL DIALOG -->
 <div class='modal fade' id='_DialogoAyuda'>
     <div class='modal-dialog'>
         <div class='modal-content'>
             <div class='modal-header'>
                 <button type='button' class='close' id="btnCerrarDialogFormularioLlanta_A" data-dismiss='modal'>&times;</button>
                 <h3 class="text text-primary">AYUDA</h3>
-            </div>
-            <div class="modal-header">
-                <div class="col-sm-12 col-lg-12">
-                    <h3>BUSQUEDAS</h3>
-                </div>
-                <div class="col-sm-12 col-lg-12 list-group">
-                    <a class="list-group-item">
-                        <h4 class="list-group-item-heading">BUSCAR EN LISTA</h4>
-                        <p class="list-group-item-text text-justify">Cuando estén los 50 registros cargados podrás buscar sobre cualquier campo de la tabla, incluso los RP correspondientes a las llantas que están registradas en la orden de servicio, recuerda que solo debes digitar el valor de búsqueda.</p>
-                    </a>
-                    <a class="list-group-item">
-                        <h4 class="list-group-item-heading">BUSCAR EN LA BASE DE DATOS</h4>
-                        <p class="list-group-item-text text-justify">Cuando requiera buscar una orden de servicio que no este en la lista, solo debe digitar el número de la orden o el número de una llanta RP que este registrada en la orden de servicio, después debe pulsar sobre el botón buscar que se encuentra al lado derecho del campo de texto. Si el sistema encuentra algún registro lo cargará automáticamente en la tabla, en caso contrarió se notificará que no se encontraron resultados.</p>
-                    </a>
-                </div>
             </div>
             <div class="modal-header">
                 <div class="col-sm-12 col-lg-12">
@@ -232,8 +196,11 @@ else {
     <!--FIN TOOLTIPS-->
     <!--------------------------------------------------------------------->
 </div>
-<!-- END MODAL DIALOG -->
 <script>
+    $(document).ready(function(){
+        //$("#cargarLista").click();
+    });
+    
     $("#btnAdicionar").click(function (){
         window.location="principal.php?CON=system/Pages/ordenesServicioFormulario.php";
     });

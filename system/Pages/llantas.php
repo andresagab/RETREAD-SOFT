@@ -30,10 +30,12 @@ if (strtolower($USUARIO->getRol()->getNombre())!='asesor') {
                     <input class="mdl-textfield__input" id="buscar" name="buscar" ng-model="buscar">
                     <span class="mdl-textfield__label" for="buscar"><span class="fa fa-search"></span> Buscar por número de RP u Orden de servicio.</span>
                 </div>
+                <!--BUTTON SEARCH-->
                 <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab btn-warning" type="button" id="btnDirectSearch" ng-click="directSearch(buscar);">
                     <i class="material-icons">search</i>
                 </button>
                 <div class="mdl-tooltip" data-mdl-for="btnDirectSearch">Busqueda directa</div>
+                <!--END BUTTON SEARCH-->
             </div>
         </div>
         <!--  END BUSCADOR  -->

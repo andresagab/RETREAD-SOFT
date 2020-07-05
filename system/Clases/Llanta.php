@@ -1321,10 +1321,10 @@ class Llanta {
     //END LINE INSERT SINCE 2019-02-27 15:26
 
     /**
-     * @version Esta función busca y retorna el id de la llanta buscada por rp o número de orden de servicio a travez de la variable $valueSearch pasada como parametro.
+     * @version Esta función busca y retorna el id de la llanta buscada por rp o número de orden de servicio a travez de la variable $valueSearch pasada como parametro. (03-07-2020)
      * @param $valueSearch string|int Valor de la llanta buscada por rp o número de orden de servicio.
      * @param $extras boolean True para cargar datos extras de la llanta buscada, False para no cargar los datos extras.
-     * @return json_encode $idLLantas valor del id de la llanta buscada en la sentencia sql
+     * @return json_encode $idLLantas valor del id de la llanta buscada en la sentencia sql     *
      */
     public static function getDirectSearch($valueSearch, $extras){
         $dataJSON = json_encode(array(), JSON_UNESCAPED_UNICODE);
