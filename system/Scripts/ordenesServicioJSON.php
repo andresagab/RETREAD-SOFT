@@ -17,15 +17,35 @@ $JSON['status'] = false;
 $JSON['data'] = [];
 //Definimos el filtro de busqueda en vacio
 $filter = "";
+//Declaramos una variable para el limite de consulta
+$limit = 'limit 50';
 //Comprobamos si tenememos datos http, en caso de ser afirmativo significa que el usuario realizo una busqueda
 $httpData = getDataPOST_GET();
 //Definimos una variable para determinar que no se encontraron resultados
 $finded =  false;
 if ($httpData['status']) {
-    if (isset($httpData['data']->valueSearch)) {
-        if (($idServicio = Servicio::getDirectSearch($httpData['data']->valueSearch)) != null) {
-            $filter = "s.id='$idServicio' and";
-            $finded = true;
+    if (isset($httpData['data']->valueSearch) && isset($httpData['data']->client)) {
+        //Comprobamos si el usuario envio un número o el nombre del cliente
+        if ($httpData['data']->client) {
+            //Buscamos por nombre de cliente
+            if (($idServicio = Servicio::getDirectSearch($httpData['data']->valueSearch, true)) != null) {
+                $filter = "s.id IN (";
+                for ($i = 0; $i < count($idServicio); $i++) {
+                    if ($i + 1 < count($idServicio)) $separator = ', ';
+                    else $separator = '';
+                    $filter .= "{$idServicio[$i][0]}$separator";
+                }
+                $filter .= ') and ';
+                $finded = true;
+                //desactivamos el limite de busqueda
+                $limit = '';
+            }
+        } else {
+            //Buscamos por rp de llanta o número de orden de servicio
+            if (($idServicio = Servicio::getDirectSearch($httpData['data']->valueSearch, false)) != null) {
+                $filter = "s.id='$idServicio' and";
+                $finded = true;
+            }
         }
     }
 }
@@ -42,7 +62,7 @@ $sql="select s.id as idOs, s.numerofactura, s.os, s.estado estadoOs, s.fecharegi
           and e.id=s.idvendedor 
           and pe.identificacion=e.identificacion
           and r.id=e.idcargo
-          order by s.fecharecoleccion desc limit 50";
+          order by s.fecharecoleccion desc $limit";
 //Validamos si se encontro algun en la busqueda o si no se hizo una petición de busqueda, de ser así ejecutamos la consulta correspondiente, en caso contrario dejamos a $JSON['data] como json vacio
 if ($finded || !$httpData['status']) $JSON['data'] = json_decode(Servicio::getDataJSON(false, $sql, null, null, null, null));
 if (count($JSON['data']) > 0) $JSON['status'] = true;

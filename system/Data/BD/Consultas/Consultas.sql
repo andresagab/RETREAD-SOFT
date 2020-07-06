@@ -1,23 +1,23 @@
 -- select pt.id as idpuestotrabajo, pt.nombre as puestotrabajo, p.nombre as insumo, uipd.usado as usado, uipd.terminado as terminado, ipt.cantidad as cantidad, ipt.id as idinsumo, per.nombres || ' ' || per.apellidos as empleado_usador, perer.nombres || ' ' || perer.apellidos as empleado_envio
--- from uso_insumo_proceso as uip, uso_insumo_proceso_detalle as uipd, insumo_puestotrabajo as ipt, puesto_trabajo as pt, producto as i, puc as p, empleado as e, persona as per, usuario as u, usuario_persona as up, empleado as er, persona as perer 
--- where uipd.idusoinsumoproceso=uip.id 
--- and ipt.id=uipd.idinsumopt 
--- and pt.id=ipt.idpuestotrabajo 
--- and i.id=ipt.idinsumo 
+-- from uso_insumo_proceso as uip, uso_insumo_proceso_detalle as uipd, insumo_puestotrabajo as ipt, puesto_trabajo as pt, producto as i, puc as p, empleado as e, persona as per, usuario as u, usuario_persona as up, empleado as er, persona as perer
+-- where uipd.idusoinsumoproceso=uip.id
+-- and ipt.id=uipd.idinsumopt
+-- and pt.id=ipt.idpuestotrabajo
+-- and i.id=ipt.idinsumo
 -- and p.codigo=i.codpuc
 -- and e.id=uipd.idempleado
 -- and per.identificacion=e.identificacion
--- and u.usuario=ipt.usuario 
--- and up.idusuario=u.id 
--- and perer.identificacion=up.identificacion 
+-- and u.usuario=ipt.usuario
+-- and up.idusuario=u.id
+-- and perer.identificacion=up.identificacion
 -- and er.identificacion=perer.identificacion
--- and uip.idproceso=1 
+-- and uip.idproceso=1
 -- and uip.proceso=2
--- 
+--
 -- select o.id, nombre, descripcion, ruta, idmenu, o.fecharegistro from opcion as o, rol_accesos as ra where o.id=idopcion and idrol=0;
 
 -- /*Ordenes de servicios*/
--- 
+--
 -- select s.id, s.os, s.numerofactura, pe.nombres || ' ' || pe.apellidos as vendedor, e.id as idVendedor, e.identificacion as identificacionVendedor, c.id as idCliente, pc.nombres || ' ' || pc.apellidos as clientes, c.identificacion as identificacionCliente, s.fecharegistro as fechaRecoleccion
 -- from servicio as s, cliente as c, empleado as e, persona as pe, persona as pc
 -- where e.id=s.idvendedor
@@ -26,57 +26,57 @@
 -- and pc.identificacion=c.identificacion;
 
 -- Llantas os
--- 
+--
 -- select s.id as idOs, s.numerofactura, s.os, ll.id as idLlanta, ll.rp, ll.serie from servicio as s, llanta as ll where ll.idservicio=s.id;
--- 
+--
 -- select s.id as idOs, s.numerofactura, s.os, ll.id as idLlanta, ll.rp, ll.serie
 -- from servicio as s, llanta as ll
 -- where ll.idservicio=s.id;
 
 -- Llanta informe rencauche
--- 
+--
 -- select s.id as idOs, s.numerofactura, s.os, s.estado as estadoServicio,
--- pcl.identificacion as identificacionCliente, pcl.nombres || ' ' || pcl.apellidos as nombresCliente, cl.razonsocial, 
--- pv.identificacion as identificacionVendedor, pv.nombres || ' ' || pv.apellidos as nombresVendedor, 
+-- pcl.identificacion as identificacionCliente, pcl.nombres || ' ' || pcl.apellidos as nombresCliente, cl.razonsocial,
+-- pv.identificacion as identificacionVendedor, pv.nombres || ' ' || pv.apellidos as nombresVendedor,
 -- ll.id as idLlanta, ll.rp, ll.serie, ll.urgente as llantaUrgente,
 -- mll.id as idMarca, mll.nombre as nombreMarca,
 -- gll.id as idGravado, gll.nombre as nombreGravado,
 -- 'B: ' || dr_ao.base || ' - PR: ' || dr_ao.profundidad || ' - PE: ' || dr_ao.peso || ' - LR: ' || dr_ao.largo as medidasAplicacionOriginal, rtll_dr_ao.referencia as referenciaAplicacionOriginal, tll_ao.nombre as tipoAplicacionOriginal,
 -- 'B: ' || dr_as.base || ' - PR: ' || dr_as.profundidad || ' - PE: ' || dr_as.peso || ' - LR: ' || dr_as.largo as medidasAplicacionSolicitada, rtll_dr_as.referencia as referenciaAplicacionSolicitada, tll_as.nombre as tipoAplicacionSolicitada
 -- from llanta as ll, servicio as s, cliente as cl, persona as pcl, empleado as v, persona as pv, marca_llanta as mll, gravado_llanta as gll, dimension_referencia as dr_ao, referencia_tipo_llanta as rtll_dr_ao, tipo_llanta as tll_ao, dimension_referencia as dr_as, referencia_tipo_llanta as rtll_dr_as, tipo_llanta as tll_as
--- where s.id=ll.idservicio 
--- and cl.id=s.idcliente 
--- and pcl.identificacion=cl.identificacion 
--- and v.id=s.idvendedor 
--- and pv.identificacion=v.identificacion 
+-- where s.id=ll.idservicio
+-- and cl.id=s.idcliente
+-- and pcl.identificacion=cl.identificacion
+-- and v.id=s.idvendedor
+-- and pv.identificacion=v.identificacion
 -- and mll.id=ll.idmarca
--- and gll.id=ll.idgravado 
--- and dr_ao.id=ll.idaplicacionoriginal 
--- and rtll_dr_ao.id=dr_ao.idreferenciatipollanta 
--- and tll_ao.id=rtll_dr_ao.idtipollanta 
--- and dr_as.id=ll.idaplicacionsolicitada 
--- and rtll_dr_as.id=dr_as.idreferenciatipollanta 
--- and tll_as.id=rtll_dr_as.idtipollanta 
--- 
+-- and gll.id=ll.idgravado
+-- and dr_ao.id=ll.idaplicacionoriginal
+-- and rtll_dr_ao.id=dr_ao.idreferenciatipollanta
+-- and tll_ao.id=rtll_dr_ao.idtipollanta
+-- and dr_as.id=ll.idaplicacionsolicitada
+-- and rtll_dr_as.id=dr_as.idreferenciatipollanta
+-- and tll_as.id=rtll_dr_as.idtipollanta
+--
 
 -- ID PROCESOS
--- 
--- select * 
--- from inspeccion_inicial as ii, raspado as ras, preparacion as pre, reparacion as rep, cementado as cem, relleno as rel, corte_banda as cb, embandado as emb, vulcanizado as v, inspeccion_final as insf, terminacion as t 
+--
+-- select *
+-- from inspeccion_inicial as ii, raspado as ras, preparacion as pre, reparacion as rep, cementado as cem, relleno as rel, corte_banda as cb, embandado as emb, vulcanizado as v, inspeccion_final as insf, terminacion as t
 -- where ii.idllanta=2
--- and ras.idinspeccion=ii.id 
--- and pre.idraspado=ras.id 
--- and rep.idpreparacion=pre.id 
--- and cem.idreparacion=rep.id 
--- and rel.idcementado=cem.id 
--- and cb.idrelleno=rel.id 
--- and emb.idcortebanda=cb.id 
--- and v.idembandado=emb.id 
--- and insf.idvulcanizado=v.id 
--- and t.idinspeccion_final=insf.id 
+-- and ras.idinspeccion=ii.id
+-- and pre.idraspado=ras.id
+-- and rep.idpreparacion=pre.id
+-- and cem.idreparacion=rep.id
+-- and rel.idcementado=cem.id
+-- and cb.idrelleno=rel.id
+-- and emb.idcortebanda=cb.id
+-- and v.idembandado=emb.id
+-- and insf.idvulcanizado=v.id
+-- and t.idinspeccion_final=insf.id
 
 -- CONFIGURACION
--- 
+--
 -- create table configuracion(
 --     id serial primary key,
 --     nombre text not null unique,
@@ -88,28 +88,28 @@
 -- insert into configuracion (nombre, valor, descripcion, fechaRegistro) values ('camaras', '12', 'Este campo identifica la cantidad maximas de posiciones de camaras a registrar', now());
 
 -- INFORME BODEGA
--- 
+--
 -- select s.id as idOs, s.numerofactura, s.os, s.estado as estadoServicio,
--- pcl.identificacion as identificacionCliente, pcl.nombres || ' ' || pcl.apellidos as nombresCliente, cl.razonsocial, 
--- pv.identificacion as identificacionVendedor, pv.nombres || ' ' || pv.apellidos as nombresVendedor, 
+-- pcl.identificacion as identificacionCliente, pcl.nombres || ' ' || pcl.apellidos as nombresCliente, cl.razonsocial,
+-- pv.identificacion as identificacionVendedor, pv.nombres || ' ' || pv.apellidos as nombresVendedor,
 -- ll.id as idLlanta, ll.rp, ll.serie, ll.urgente as llantaUrgente,
 -- mll.id as idMarca, mll.nombre as nombreMarca,
 -- gll.id as idGravado, gll.nombre as nombreGravado,
 -- 'B: ' || dr_ao.base || ' - PR: ' || dr_ao.profundidad || ' - PE: ' || dr_ao.peso || ' - LR: ' || dr_ao.largo as medidasAplicacionOriginal, rtll_dr_ao.referencia as referenciaAplicacionOriginal, tll_ao.nombre as tipoAplicacionOriginal,
 -- 'B: ' || dr_as.base || ' - PR: ' || dr_as.profundidad || ' - PE: ' || dr_as.peso || ' - LR: ' || dr_as.largo as medidasAplicacionSolicitada, rtll_dr_as.referencia as referenciaAplicacionSolicitada, tll_as.nombre as tipoAplicacionSolicitada
 -- from llanta as ll, servicio as s, cliente as cl, persona as pcl, empleado as v, persona as pv, marca_llanta as mll, gravado_llanta as gll, dimension_referencia as dr_ao, referencia_tipo_llanta as rtll_dr_ao, tipo_llanta as tll_ao, dimension_referencia as dr_as, referencia_tipo_llanta as rtll_dr_as, tipo_llanta as tll_as
--- where s.id=ll.idservicio 
--- and cl.id=s.idcliente 
--- and pcl.identificacion=cl.identificacion 
--- and v.id=s.idvendedor 
--- and pv.identificacion=v.identificacion 
+-- where s.id=ll.idservicio
+-- and cl.id=s.idcliente
+-- and pcl.identificacion=cl.identificacion
+-- and v.id=s.idvendedor
+-- and pv.identificacion=v.identificacion
 -- and mll.id=ll.idmarca
--- and gll.id=ll.idgravado 
--- and dr_ao.id=ll.idaplicacionoriginal 
--- and rtll_dr_ao.id=dr_ao.idreferenciatipollanta 
--- and tll_ao.id=rtll_dr_ao.idtipollanta 
--- and dr_as.id=ll.idaplicacionsolicitada 
--- and rtll_dr_as.id=dr_as.idreferenciatipollanta 
+-- and gll.id=ll.idgravado
+-- and dr_ao.id=ll.idaplicacionoriginal
+-- and rtll_dr_ao.id=dr_ao.idreferenciatipollanta
+-- and tll_ao.id=rtll_dr_ao.idtipollanta
+-- and dr_as.id=ll.idaplicacionsolicitada
+-- and rtll_dr_as.id=dr_as.idreferenciatipollanta
 -- and tll_as.id=rtll_dr_as.idtipollanta
 
 -- select id, identificacion, nit, razonSocial, fechaRegistro from cliente  where identificacion like '%10%' or identificacion in (select identificacion from persona where nombres like '%10%')
@@ -337,3 +337,36 @@ select sum(cantidad) from uso_insumo_proceso_detalle;
 --Consulta para buscar una llanta por rp o número de orden de servicio (os), implementada en el método getDirectSearch de la clase Llanta.php
 select id from llanta as ll where ll.rp=1 or ll.idservicio in (select id from servicio where os='1');
 -- END 03-07-2020 20:40
+
+-- 06-07-2020 09:39
+--Consulta para buscar una orden de servicio por número de orden o rp de llanta correspondiente a la orden
+select idservicio from llanta as ll where ll.rp=1 or ll.idservicio in (select id from servicio where os='1') order by fecharegistro desc;
+--Consulta para generar id, razon social y/o nombres de los clientes
+select c.id as idcliente, c.razonsocial, p.nombres || ' ' || p.apellidos as nomeClient from cliente c, persona p where c.identificacion=p.identificacion;
+--Buscar cliente por nombre o razon social:
+--mejor rendimiento:
+select c.id from cliente c, persona p where c.identificacion=p.identificacion and (c.razonsocial ilike '%luis eduardo ceron potilla%' or p.nombres || ' ' || p.apellidos ilike '%luis eduardo ceron potilla%');
+--sql 2:
+select c.id from cliente c natural join persona p where (c.razonsocial ilike '%luis eduardo ceron potilla%' or p.nombres || ' ' || p.apellidos ilike '%luis eduardo ceron potilla%');
+--mas lenta igual funcionalidad
+select c.id from cliente c, persona p where c.razonsocial ilike '%luis eduardo ceron potilla%' or p.nombres || ' ' || p.apellidos ilike '%luis eduardo ceron potilla%' and c.identificacion=p.identificacion;
+-----------------
+--Buscar orden de servicio (id) por nombre de cliente o razon social:
+--mejor rendimiento:
+select s.id from servicio s, cliente c, persona p where s.idcliente=c.id and c.identificacion=p.identificacion and (c.razonsocial ilike '%julio cesar bastidas%' or p.nombres || ' ' || p.apellidos ilike '%julio cesar bastidas%');
+--name test: Inversiones Pasto - julio cesar bastidas
+--test de ordenes de servicio con id = x,y,x
+select s.id as idOs, s.numerofactura, s.os, s.estado estadoOs, s.fecharegistro as fecharegistroos, s.fecharecoleccion as fecharecoleccionos,
+       c.id as idCliente, c.identificacion as identificacionCliente, c.razonsocial, c.nit,
+       pc.nombres as nombresCliente, pc.apellidos as apellidosCliente, pc.email as emailCliente, pc.direccion as direccionCliente, pc.celular as celularCliente, pc.fechanacimiento as clienteFechaNacimiento,
+       e.id as idEmpleado, e.identificacion as identificacionEmpleado,
+       pe.nombres as nombresEmpleado, pe.apellidos as apellidosEmpleado, pe.email as emailEmpleado, pe.direccion as direccionEmpleado, pe.celular as celularEmpleado, pe.fechanacimiento as empleadoFechaNacimiento,
+       r.id as idRol, r.nombre as nombreRol, r.estado as estadoRol
+from servicio as s, cliente as c, persona as pc, empleado as e, persona as pe, rol as r
+where c.id=s.idcliente
+  and pc.identificacion=c.identificacion
+  and e.id=s.idvendedor
+  and pe.identificacion=e.identificacion
+  and r.id=e.idcargo and s.id IN (240, 275, 383)
+order by s.fecharecoleccion;
+-- END 06-07-2020 09:39

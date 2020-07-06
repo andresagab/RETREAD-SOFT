@@ -36,7 +36,7 @@ else {
             <div class="form-group-sm">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input class="mdl-textfield__input" id="buscar" name="buscar" ng-model="buscar">
-                    <span class="mdl-textfield__label" for="buscar"><span class="fa fa-search"></span> Buscar por número de orden o rp de llanta registrada en la orden.</span>
+                    <span class="mdl-textfield__label" for="buscar"><span class="fa fa-search"></span> Buscar por número de orden, rp de llanta o cliente.</span>
                 </div>
                 <!--BUTTON SEARCH-->
                 <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab btn-warning" type="button" id="btnDirectSearch" ng-click="directSearch(buscar);">
@@ -179,7 +179,24 @@ else {
                     </a>
                     <a class="list-group-item">
                         <h4 class="list-group-item-heading">BUSCAR EN LA BASE DE DATOS</h4>
-                        <p class="list-group-item-text text-justify">Cuando requiera buscar una orden de servicio que no este en la lista, solo debe digitar el número de la orden o el número de una llanta RP que este registrada en la orden de servicio, después debe pulsar sobre el botón buscar que se encuentra al lado derecho del campo de texto. Si el sistema encuentra algún registro lo cargará automáticamente en la tabla, en caso contrarió se notificará que no se encontraron resultados.</p>
+                        <p class="list-group-item-text text-justify">Cuando requiera buscar una orden de servicio que no este en la lista, solo debe digitar el número de la orden, el número de una llanta RP que este registrada en la orden de servicio o el nombre del cliente correspondiente a la orden de servicio, después debe pulsar sobre el botón buscar que se encuentra al lado derecho del campo de texto. Si el sistema encuentra algún registro lo cargará automáticamente en la tabla, en caso contrarió se notificará que no se encontraron resultados.</p>
+                    </a>
+                    <a class="list-group-item">
+                        <h4 class="list-group-item-heading">RECOMENDACIONES PARA BÚSQUEDA POR CLIENTE</h4>
+                        <p class="list-group-item-text text-left">
+                            <ul class="list-group text-left">
+                                <li class="list-group-item">Buscar por nombre completo: Ejemplo "Pedro Pablo Pérez Pérez"</li>
+                                <li class="list-group-item">Buscar por nombres: Ejemplo "Pedro Pablo"</li>
+                                <li class="list-group-item">Buscar por un nombre: Ejemplo "Pedro"</li>
+                                <li class="list-group-item">Buscar por apellidos: Ejemplo "Pérez Pérez"</li>
+                                <li class="list-group-item">Buscar por un apellido: Ejemplo "Pérez"</li>
+                                <li class="list-group-item">Buscar por razonsocial: Ejemplo "Comercializadora Nariño"</li>
+                                <li class="list-group-item">
+                                    <span class="text-danger"><b>No buscar por un nombre y un apellido: Ejemplo "Pedro Pérez"</b></span><br>
+                                    <span>En este caso solo se encontrarán resultados si el cliente fue registrado con un solo nombre y un solo apellido.</span>
+                                </li>
+                            </ul>
+                        </p>
                     </a>
                 </div>
             </div>

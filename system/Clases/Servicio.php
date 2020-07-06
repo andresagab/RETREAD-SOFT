@@ -730,14 +730,23 @@ class Servicio {
     /**
      * @version 1.0 | Esta función busca y retorna el id de la orden de servicio buscada por su número de orden o el número de las llantas rp que tiene registradas, todo esto a travez de la variable $valueSearch pasada como parametro (04-07-2020)
      * @param string|int $valueSearch Valor de la llanta buscada por rp o número de orden de servicio.
-     * @return string|int|null $idServicio valor del id de la llanta buscada en la sentencia sql
+     * @param bool| $client True se buscará por nombre de cliente, False se buscará por número RP o número de OS
+     * @return string|int|null|array $idServicio valor del id de la llanta buscada en la sentencia sql
      */
-    public static function getDirectSearch($valueSearch){
+    public static function getDirectSearch($valueSearch, $client){
         $idServicio = null;
         if ($valueSearch != null) {
-            $sql = "select idservicio from llanta as ll where ll.rp=$valueSearch or ll.idservicio in (select id from servicio where os='$valueSearch') order by fecharegistro desc";
-            if (is_array($result = Conector::ejecutarQuery($sql, null)))
-                if (count($result) > 0) $idServicio = $result[0][0];
+            if (!$client) {
+                //Buscamos por número rp u orden de servicio
+                $sql = "select idservicio from llanta as ll where ll.rp=$valueSearch or ll.idservicio in (select id from servicio where os='$valueSearch') order by fecharegistro desc";
+                if (is_array($result = Conector::ejecutarQuery($sql, null)))
+                    if (count($result) > 0) $idServicio = $result[0][0];
+            } else {
+                //Buscamos por nombre de cliente - se pueden encontrar mas de un resultado
+                $sql = "select s.id from servicio s, cliente c, persona p where s.idcliente=c.id and c.identificacion=p.identificacion and (c.razonsocial ilike '%{$valueSearch}%' or p.nombres || ' ' || p.apellidos ilike '%{$valueSearch}%');";
+                if (is_array($result = Conector::ejecutarQuery($sql, null)))
+                    if (count($result) > 0) $idServicio = $result;
+            }
         }
         return $idServicio;
     }
