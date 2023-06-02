@@ -38,7 +38,7 @@ class Rol {
     		} else {
     			$sql="select id, nombre, estado, fechaRegistro from {$P}rol where $campo=$valor $filtro $orden";
     			$resultado=Conector::ejecutarQuery($sql, $BD);
-    			if (count($resultado>0)) {
+    			if (count($resultado) > 0) {
     				foreach ($resultado[0] as $key => $value) $this->$key=$value;
     				$this->cargarAtributos($resultado[0]);
     			}

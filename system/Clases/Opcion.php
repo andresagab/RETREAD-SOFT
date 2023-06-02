@@ -40,7 +40,7 @@ class Opcion {
             } else {
                 $sql="select id, idMenu, nombre, ruta, descripcion, fechaRegistro from {$P}opcion where $campo=$valor $filtro $orden";
                 $resultado=Conector::ejecutarQuery($sql, null);
-                if (count($resultado>0)) {
+                if (count($resultado)>0) {
                     foreach ($resultado[0] as $key => $value) $this->$key=$value;
                     $this->cargarAtributos($resultado[0]);
                 }

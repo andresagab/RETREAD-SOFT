@@ -273,7 +273,7 @@ switch ($_GET['metodo']) {
           and rorig.id=ll.idreferenciaoriginal 
           and tipllorg.id=rorig.idtipollanta 
           and tipllsol.id=rsoli.idtipollanta 
-          and os.id=ll.idservicio order by cb.fecharegistro desc");
+          and os.id=ll.idservicio order by cb.fecharegistro desc limit 1000");
         break;
     case 'getBitacorasJSON':
         echo Bitacora::getDataJSON(1, null, null, null, 'order by fecharegistro desc', null, true);

@@ -43,7 +43,7 @@ if (isset($method)){
                         $object->setIdProducto($request->producto->idproducto);
                         $object->setCantidad($request->cantidad);
                         $day=substr($request->fechaRegistro, 8, 10);
-                        $object->setFechaRegistro(substr($request->fechaRegistro, 0, 8) . ($day-1) . ' ' . date('H:i:s'));
+                        $object->setFechaRegistro($request->savingDate . ' ' . date('H:i:s'));
                         if ($object->add(true)) {
                             $response='OK';
                             $nameCategoria=strtolower($object->getProducto()->getCategoria()->getNombre());
