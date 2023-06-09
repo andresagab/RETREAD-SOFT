@@ -48,10 +48,13 @@ function getDataPOST_GET(){
     //Cargamos los datos recibidos por AJAX
     $postdata = file_get_contents("php://input");
     $request = json_decode($postdata);
-    if (count($request) > 0) {
-        //Hay datos en POST o GET
-        $data['status'] = true;
-        $data['data'] = $request;
+    if ($request)
+    {
+        if (count($request) > 0) {
+            //Hay datos en POST o GET
+            $data['status'] = true;
+            $data['data'] = $request;
+        }
     }
     return $data;
 }

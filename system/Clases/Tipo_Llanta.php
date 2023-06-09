@@ -37,7 +37,7 @@ class Tipo_Llanta {
             } else {
                 $sql="select id, nombre, descripcion, fechaRegistro from {$P}tipo_llanta where $campo=$valor $filtro $orden";
                 $resultado=Conector::ejecutarQuery($sql, null);
-                if (count($resultado>0)) {
+                if (count($resultado) > 0) {
                     foreach ($resultado[0] as $key => $value) $this->$key=$value;
                     $this->cargarAtributos($resultado[0]);
                 }

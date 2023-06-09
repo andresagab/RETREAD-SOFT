@@ -249,7 +249,14 @@ switch ($_GET['metodo']) {
             } else echo '[]';
             break;
     case 'getRegistrosBandasJSON':
-        //echo Registro_Banda::getDataJSON(1, null, null, null, 'order by fechaRegistro desc', null, true);
+
+        # load pagination data
+        $pagination = json_decode($_GET['pagination'], true);
+        $page = $pagination['current_page'];
+        $perPage = (int) $pagination['records_per_page'];
+        # set offset
+        $offset = (int) ($page - 1) * $perPage;
+        # make sql and return as json response
         echo Corte_Banda::getDataJSON("select cb.id, cb.idpreparacion, cb.idrelleno, cb.idempleado, cb.estado, cb.empates, cb.foto, cb.observaciones, cb.fecharegistro, p.checked as chkPreparacion,  
           p.estado as estadoPreparacion, p.observaciones as observacionesPreparacion, 
           r.anchobanda, r.largobanda, r.cinturon, r.cinturoncantidad, r.profundidad, r.radio, r.estado as estadoRaspado, r.observaciones as raspadoObservaciones, r.checked as chkRaspado,  
@@ -273,7 +280,23 @@ switch ($_GET['metodo']) {
           and rorig.id=ll.idreferenciaoriginal 
           and tipllorg.id=rorig.idtipollanta 
           and tipllsol.id=rsoli.idtipollanta 
-          and os.id=ll.idservicio order by cb.fecharegistro desc limit 1000");
+          and os.id=ll.idservicio order by cb.fecharegistro desc limit $perPage offset $offset");
+        break;
+    case 'getTotalCortesBanda':
+        echo Corte_Banda::getDataJSON("select count(cb.id) as total
+        from corte_banda as cb, preparacion as p, raspado as r, inspeccion_inicial as ii, llanta as ll, servicio as os, gravado_llanta as gll, marca_llanta as mll, dimension_llanta as dll, referencia_tipo_llanta as rsoli, referencia_tipo_llanta as rorig, tipo_llanta as tipllorg, tipo_llanta as tipllsol    
+        where p.id=cb.idpreparacion 
+        and r.id=p.idraspado 
+        and ii.id=r.idinspeccion 
+        and ll.id=ii.idllanta 
+        and gll.id=ll.idgravado 
+        and mll.id=ll.idmarca 
+        and dll.id=ll.iddimension
+        and rsoli.id=ll.idreferenciasolicitada 
+        and rorig.id=ll.idreferenciaoriginal 
+        and tipllorg.id=rorig.idtipollanta 
+        and tipllsol.id=rsoli.idtipollanta 
+        and os.id=ll.idservicio");
         break;
     case 'getBitacorasJSON':
         echo Bitacora::getDataJSON(1, null, null, null, 'order by fecharegistro desc', null, true);

@@ -21,16 +21,16 @@ if ($USUARIO->getRol()->getNombre()!='operario') {
                     <div class="form-group-sm">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input class="mdl-textfield__input" id="buscar" name="buscar" ng-model="buscar">
-                            <span class="mdl-textfield__label" for="buscar"><span class="fa fa-search"></span> Buscar entre el registro {{ elementsPaginator.initialRecord }} y {{ elementsPaginator.finalRecord }}</span>
+                            <span class="mdl-textfield__label" for="buscar"><span class="fa fa-search"></span> Buscar entre el registro {{ component.pagination.current_page * component.pagination.records_per_page - (component.pagination.records_per_page - 1) }} y {{ component.pagination.current_page * component.pagination.records_per_page }}</span>
                         </div>
                     </div>
                 </div>
                 <div class="visible-xs visible-sm col-xs-12 col-sm-12" style="margin-top: 15px"></div>
                 <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center">
-                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab btn-success" type="button" id="btnCargarListado" ng-click="loadData()">
+                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab btn-success" type="button" id="btnCargarListado" ng-click="loadData(0)">
                         <i class="fa fa-refresh"></i>
                     </button>
-                    <div class="mdl-tooltip" data-mdl-for="btnCargarListado">Recargar listado</div>
+                    <div class="mdl-tooltip" data-mdl-for="btnCargarListado">Recargar listado de la página {{ component.pagination.current_page }}</div>
                     <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab btn-info hide" id="btnAyuda" type="button" href="/#_DialogoAyuda" data-toggle='modal'>
                         <i class="fa fa-question-circle"></i>
                     </button>
@@ -39,35 +39,57 @@ if ($USUARIO->getRol()->getNombre()!='operario') {
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="paddinTop20"></div>
             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-                <span class="text text-muted">{{ elementsPaginator.initialRecord }} - {{ elementsPaginator.finalRecord }} de {{ elementsPaginator.totalRecords }}</span>
+                <span class="text text-muted">{{ component.pagination.current_page * component.pagination.records_per_page - (component.pagination.records_per_page - 1) }} - {{ component.pagination.current_page * component.pagination.records_per_page }} de {{ component.pagination.max_records }}</span>
             </div>
             <div class="visible-xs col-xs-12" style="margin-top: 10px"></div>
             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-                <button class="mdl-button mdl-js-button mdl-button--icon" id="paginaAnterior" ng-click="setCurrentPage(false)" ng-disabled="elementsPaginator.previousPage">
+                <!-- <button class="mdl-button mdl-js-button mdl-button--icon" id="paginaAnterior" ng-click="setCurrentPage(false)" ng-disabled="elementsPaginator.previousPage"> -->
+                <button class="mdl-button mdl-js-button mdl-button--icon" id="paginaAnterior" ng-click="loadData(-1)" ng-disabled="component.pagination.current_page == 1">
                     <i class="fa fa-angle-left"></i>
                 </button>
-                <button class="mdl-button mdl-js-button mdl-button--icon" id="paginaSiguiente" ng-click="setCurrentPage(true)" ng-disabled="elementsPaginator.nextPage">
+                <!-- <button class="mdl-button mdl-js-button mdl-button--icon" id="paginaSiguiente" ng-click="setCurrentPage(true)" ng-disabled="elementsPaginator.nextPage"> -->
+                <button class="mdl-button mdl-js-button mdl-button--icon" id="paginaSiguiente" ng-click="loadData(1)" ng-disabled="component.pagination.current_page == component.pagination.total_pages">
                     <i class="fa fa-angle-right"></i>
                 </button>
+                <!-- records per page -->
                 <button id="btnLstCantidad" class="mdl-button mdl-js-button mdl-button--icon">
                     <i class="fa fa-angle-down"></i>
                 </button>
                 <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="btnLstCantidad">
                     <li disabled class="mdl-menu__item mdl-menu__item--full-bleed-divider">
-                        Registros por pagina: <span class="mdl-badge" data-badge="{{ elementsPaginator.recordsForPage }}"></span>
+                        <!-- Registros por pagina: <span class="mdl-badge" data-badge="{{ elementsPaginator.recordsForPage }}"></span> -->
+                        Registros por pagina: <span class="mdl-badge" data-badge="{{ component.pagination.records_per_page }}"></span>
                     </li>
-                    <li class="mdl-menu__item" ng-repeat="x in elementsPaginator.availableRecordsForPage" ng-click="setRecordsPage(x)">
+                    <!-- <li class="mdl-menu__item" ng-repeat="x in elementsPaginator.availableRecordsForPage" ng-click="setRecordsPage(x)"> -->
+                    <li class="mdl-menu__item" ng-repeat="x in [5, 10, 25, 50, 100, 500, 1000, 5000]" ng-click="setRecordsPerPage(x)">
                         {{ x }}
                     </li>
                 </ul>
-                <div class="mdl-tooltip" ng-hide="elementsPaginator.previousPage" for="paginaAnterior">Pagina anterior {{ elementsPaginator.currentPage-1 }}</div>
-                <div class="mdl-tooltip" ng-hide="elementsPaginator.nextPage" for="paginaSiguiente">Pagina siguiente {{ elementsPaginator.currentPage+1 }}</div>
+                <!-- pages -->
+                <button id="btnListPages" class="mdl-button mdl-js-button mdl-button--icon">
+                    <i class="fa fa-list-ol"></i>
+                </button>
+                <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="btnListPages">
+                    <li disabled class="mdl-menu__item mdl-menu__item--full-bleed-divider">
+                        <!-- Registros por pagina: <span class="mdl-badge" data-badge="{{ elementsPaginator.recordsForPage }}"></span> -->
+                        Página actual: <span class="mdl-badge" data-badge="{{ component.pagination.current_page }}"></span>
+                    </li>
+                    <!-- <li class="mdl-menu__item" ng-repeat="x in elementsPaginator.availableRecordsForPage" ng-click="setRecordsPage(x)"> -->
+                    <li class="mdl-menu__item" ng-repeat="x in component.pagination.pages" ng-click="goToPage(x)">
+                        {{ x }}
+                    </li>
+                </ul>
+                <!-- tooltips -->
+                <div class="mdl-tooltip" ng-hide="component.pagination.current_page == 1" for="paginaAnterior">Pagina anterior {{ component.pagination.current_page - 1 }}</div>
+                <div class="mdl-tooltip" ng-hide="component.pagination.current_page == component.pagination.total_pages" for="paginaSiguiente">Pagina siguiente {{ component.pagination.current_page + 1 }}</div>
                 <div class="mdl-tooltip" for="btnLstCantidad">Cambiar cantidad de registros por pagina</div>
+                <div class="mdl-tooltip" for="btnListPage">Ver lista de páginas</div>
             </div>
             <div class="visible-xs visible-sm col-xs-12 col-sm-12" style="margin-top: 10px"></div>
             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                 <!--<span class="text text-muted mdl-badge" data-badge="{{ values.paginaActual }}">Pagina</span>-->
-                <span class="text text-muted">Pagina: {{ elementsPaginator.currentPage }}</span>
+                <!-- <span class="text text-muted">Pagina: {{ elementsPaginator.currentPage }}</span> -->
+                <span class="text text-muted">Pagina: {{ component.pagination.current_page }} de {{ component.pagination.total_pages }}</span>
             </div>
             <!--List-->
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="paddinTop20" ng-show="page.data.objects">
@@ -89,7 +111,8 @@ if ($USUARIO->getRol()->getNombre()!='operario') {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="object in page.data.objects | filter: buscar | orderBy: order | limitTo: elementsPaginator.recordsForPage : elementsPaginator.initialRecord-1 as result" ng-show="page.data.objects" style="background-color: {{ object.colorEstado }};">
+                            <!-- <tr ng-repeat="object in page.data.objects | filter: buscar | orderBy: order | limitTo: elementsPaginator.recordsForPage : elementsPaginator.initialRecord-1 as result" ng-show="page.data.objects" style="background-color: {{ object.colorEstado }};"> -->
+                            <tr ng-repeat="object in page.data.objects | filter: buscar | orderBy: order as result" ng-show="page.data.objects" style="background-color: {{ object.colorEstado }};">
                                 <td>{{ object.os }}</td>
                                 <td>{{ object.rp }}</td>
                                 <td class="mdl-data-table__cell--non-numeric">{{ object.nombregravado }}</td>
