@@ -48,9 +48,11 @@ else {
         </div>
         <div class="visible-xs visible-sm col-xs-12 col-sm-12" style="margin-top: 15px"></div>
         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center">
-            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab btn-success" type="button" id="btnCargarListado" ng-click="loadData();">
+            <!-- reload button -->
+            <!-- disabled to optimize searching of data (27-12-2023)
+                <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab btn-success" type="button" id="btnCargarListado" ng-click="loadData();">
                 <i class="material-icons">sync</i>
-            </button>
+            </button> -->
             <div class="mdl-tooltip" data-mdl-for="btnCargarListado">Recargar listado</div>
             <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab btn-info" id="btnAyuda" type="button" href="/#_DialogoAyuda" data-toggle='modal'>
                 <i class="material-icons">help</i>
