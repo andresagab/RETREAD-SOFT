@@ -458,11 +458,6 @@ if ($USUARIO->getRol()->getNombre()!='operario') {
                                                 <!--List-->
                                                 <div role="tabpanel" class="tab-pane active" id="lista">
                                                     <div class="col-md-12 col-sm-12">
-                                                        <div class="col-sm-12 col-lg-1" id="paddinTop20">
-                                                            <button ng-show="html.btnRecargarInsumos" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab btn-info" id="btnRecargarListaInsumos" type="button" ng-click="cargarInsumosPuestoTrabajo(puestoTrabajo.id);">
-                                                                <i class="fa fa-refresh"></i>
-                                                            </button>
-                                                        </div>
                                                         <div class="col-sm-12 col-lg-10">
                                                             <strong class="text text-success control-label"><h2>Insumos</h2></strong>
                                                         </div>
@@ -478,11 +473,15 @@ if ($USUARIO->getRol()->getNombre()!='operario') {
                                                     <div class="col-lg-12" style="padding-top: 20px;">
                                                         <div class="form-group">
                                                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                                                <input class="mdl-textfield__input" id="txtSearch" name="txtSearch" ng-model="txtSearchInsumos">
+                                                                <input class="mdl-textfield__input" id="txtSearch" name="txtSearch" ng-model="html.supply_searcher">
                                                                 <span class="mdl-textfield__label" for="txtSearch" style="display: inline-flex;">
                                                                     <span class="material-icons">search</span><span> Buscar insumos o herramientas</span>
                                                                 </span>
+                                                                <!-- <button ng-click="cargarInsumosPuestoTrabajo(html.idPuestoTrabajo)">Buscar</button> -->
                                                             </div>
+                                                            <button ng-show="!html.spinnerCargaDialogo" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab btn-success" id="btn_search_supplies" type="button" ng-click="cargarInsumosPuestoTrabajo(html.idPuestoTrabajo)">
+                                                                <i class="fa fa-search"></i>
+                                                            </button>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-12" ng-show="insumos" id="paddinTop20">
@@ -503,7 +502,7 @@ if ($USUARIO->getRol()->getNombre()!='operario') {
                                                                     </thead>
                                                                     <tbody>
                                                                     <!--<tr ng-repeat="dato in insumos | orderBy: orden">-->
-                                                                    <tr ng-repeat="dato in insumos | filter: txtSearchInsumos">
+                                                                    <tr ng-repeat="dato in insumos | filter: html.supply_searcher">
                                                                         <td class="mdl-data-table__cell--non-numeric">
                                                                             <div class="thumbnail">
                                                                                 <img ng-hide="dato.insumo[0]['notImage']" class="img-responsive" style="width: 50px;" src="system/Uploads/Imgs/Productos/{{ dato.insumo[0]['foto'] }}">

@@ -158,15 +158,21 @@ class Insumo_Puesto_Trabajo {
         }
     }
     
-    public static function getLista($filtro, $orden) {
+    public static function getLista($filtro, $orden, $full_where = false) {
         $P='';
-        if ($filtro!=null) $filtro=" where $filtro";
-        $sql="select id, idPuestoTrabajo, idInsumo, usuario, cantidad, estado, fechaRegistro from {$P}insumo_puestotrabajo $filtro $orden";
+        if ($filtro!=null && !$full_where) 
+        {
+            $filtro=" where $filtro";
+            $sql="select id, idPuestoTrabajo, idInsumo, usuario, cantidad, estado, fechaRegistro from {$P}insumo_puestotrabajo $filtro $orden";
+        }
+        # else, set alias for each field
+        else
+            $sql = "select ip.id, ip.idPuestoTrabajo, ip.idInsumo, ip.usuario, ip.cantidad, ip.estado, ip.fechaRegistro from {$P}insumo_puestotrabajo as ip $filtro $orden";
         return Conector::ejecutarQuery($sql, null);
     }
     
-    public static function getListaEnObjetos($filtro, $orden) {
-        $datos= Insumo_Puesto_Trabajo::getLista($filtro, $orden);
+    public static function getListaEnObjetos($filtro, $orden, $full_where = false) {
+        $datos= Insumo_Puesto_Trabajo::getLista($filtro, $orden, $full_where);
         $objetos=array();
         for ($i = 0; $i < count($datos); $i++) {
             $objetos[$i]=new Insumo_Puesto_Trabajo($datos[$i], null, null, null);
@@ -209,8 +215,8 @@ class Insumo_Puesto_Trabajo {
         return json_encode($JSON, JSON_UNESCAPED_UNICODE);
     }
     
-    public static function getObjetosJSON($filtro, $orden) {
-        $datos= Insumo_Puesto_Trabajo::getListaEnObjetos($filtro, $orden);
+    public static function getObjetosJSON($filtro, $orden, $full_where = false) {
+        $datos= Insumo_Puesto_Trabajo::getListaEnObjetos($filtro, $orden, $full_where);
         $JSON=array();
         for ($i = 0; $i < count($datos); $i++) {
             $objeto=$datos[$i];

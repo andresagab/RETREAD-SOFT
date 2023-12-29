@@ -148,8 +148,18 @@ switch ($_GET['metodo']) {
             //order by ip.id, ip.estado asc";
         echo Insumo_Puesto_Trabajo::getDataJSON(2, null, null, null, null, $sql, true);
             break;
+	case 'search_supplies_in_work_area':
+        echo Insumo_Puesto_Trabajo::getObjetosJSON("join producto as p on ip.idinsumo = p.id join puc on p.codpuc = puc.codigo where ip.idPuestoTrabajo={$_GET['idPT']} and ip.id not in (select idInsumoPt from insumo_terminacion) and lower(puc.nombre) like '%" . strtolower($_GET['supply_searcher']) . "%'", "order by ip.id asc", true);
+        break;
 	case 'getInsumosPuestoTrabajo':
-	    echo Insumo_Puesto_Trabajo::getObjetosJSON("idPuestoTrabajo={$_GET['idPT']} and id not in (select idInsumoPt from insumo_terminacion)", "order by id asc");
+        try
+        {
+            echo Insumo_Puesto_Trabajo::getObjetosJSON("idPuestoTrabajo={$_GET['idPT']} and id not in (select idInsumoPt from insumo_terminacion)", "order by id asc");
+        }
+        catch (Exception $e)
+        {
+            echo $e->getMessage();
+        }
         //echo Insumo_Puesto_Trabajo::getInsumosPuestoTrabajoSQLJSON($_GET['idPT']);
         //echo Puesto_Trabajo::getInsumosPtJSON($_GET['idPT']);
             break;
