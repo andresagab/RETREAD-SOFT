@@ -58,3 +58,18 @@ function getDataPOST_GET(){
     }
     return $data;
 }
+
+function getColorStatusProcess($initTime, $status, $limit){
+    $color = '#ffffff';//Blanco
+    if ($initTime!=null) {
+        $diffTime = getDiffTimeInSeconds($initTime, date('Y-m-d H:i:s'));
+        $color = '#f1b154';//Naranja
+        if ($diffTime>=$limit) {
+            $color = '#f1d968';//Amarillo
+        }
+    }
+    if ($status==='prf') {
+        $color = '#b8ef78';//Verde
+    }
+    return $color;
+}

@@ -91,5 +91,5 @@ switch ($accion){
         
         break;
 }
-if ($header) header("Location: principal.php?CON=system/Pages/raspadoFormulario.php&id={$raspado->getId()}");
+if ($header) header("Location: principal.php?CON=system/Pages/new_raspadoFormulario.php&id={$raspado->getId()}");
 else header("Location: principal.php?CON=system/Pages/procesoServicio.php&id=$idLlanta");
